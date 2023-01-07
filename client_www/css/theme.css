@@ -1,0 +1,56 @@
+
+.scuff-theme-light {
+
+	--scuff-workspace-bg-main: #111;
+	--scuff-workspace-bg-dots: #333;
+
+	--scuff-block-font: "Helvetica Neue";
+	--scuff-block-font-fill: #ffffff;
+	
+	--scuff-block-input-bg: #ffffff;
+	--scuff-block-input-font-fill: #575E75;
+
+	--scuff-block-motion-bg-primary: #4c97ff;
+	--scuff-block-motion-bg-secondary: #4280d7;
+	--scuff-block-motion-bg-tertiary: #3373cc;
+
+	--scuff-block-looks-bg-primary: #9966ff;
+	--scuff-block-looks-bg-secondary: #855cd6;
+	--scuff-block-looks-bg-tertiary: #774dcb;
+
+	--scuff-block-sounds-bg-primary: #cf63cf;
+	--scuff-block-sounds-bg-secondary: #c94fc9;
+	--scuff-block-sounds-bg-tertiary: #bd42bd;
+
+	--scuff-block-events-bg-primary: #ffbf00;
+	--scuff-block-events-bg-secondary: #e6ac00;
+	--scuff-block-events-bg-tertiary: #cc9900;
+
+	--scuff-block-control-bg-primary: #ffab19;
+	--scuff-block-control-bg-secondary: #ec9c13;
+	--scuff-block-control-bg-tertiary: #cf8b17;
+
+	--scuff-block-sensing-bg-primary: #5cb1d6;
+	--scuff-block-sensing-bg-secondary: #47a8d1;
+	--scuff-block-sensing-bg-tertiary: #2e8eb8;
+
+	--scuff-block-operators-bg-primary: #59c059;
+	--scuff-block-operators-bg-secondary: #46b946;
+	--scuff-block-operators-bg-tertiary: #389438;
+
+	--scuff-block-data-bg-primary: #ff8c1a;
+	--scuff-block-data-bg-secondary: #ff8000;
+	--scuff-block-data-bg-tertiary: #db6e00;
+
+	--scuff-block-list-bg-primary: #ff661a;
+	--scuff-block-list-bg-secondary: #ff5500;
+	--scuff-block-list-bg-tertiary: #e64d00;
+
+	--scuff-block-more-bg-primary: #ff6680;
+	--scuff-block-more-bg-secondary: #ff4d6a;
+	--scuff-block-more-bg-tertiary: #ff3355;
+
+	--scuff-block-extension-bg-primary: #0fbd8c;
+	--scuff-block-extension-bg-secondary: #0da57a;
+	--scuff-block-extension-bg-tertiary: #0b8e69;
+}

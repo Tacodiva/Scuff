@@ -1,0 +1,20 @@
+
+body {
+    margin: 0;
+}
+
+.scuff-block-text {
+    fill: var(--scuff-block-font-fill);
+    font-family: var(--scuff-block-font), Helvetica, sans-serif;
+    font-size: 12pt;
+    font-weight: 500;
+}
+
+.scuff-workspace-bg-main {
+    fill: var(--scuff-workspace-bg-main);
+    background-color: var(--scuff-workspace-bg-main);
+}
+
+.scuff-workspace-bg-dots {
+    fill: var(--scuff-workspace-bg-dots);
+}
