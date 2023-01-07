@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start": "node build/server/index.js",
-    "dev": "concurrently \"npx tsc -p server_bundle --watch\" \"PORT=8000 nodemon -q build/server/index.js -w build/server\" \"rollup -c client_bundle/rollup.config.mjs -w\""
+    "dev": "concurrently \"npx tsc -p server_bundle --watch\" \"PORT=8000 nodemon -q build/server/index.js -w build/server\" \"rollup -c client_bundle/rollup.config.mjs -w\"",
+    "build": "rollup -c client_bundle/rollup.config.mjs"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
