@@ -8,10 +8,11 @@ import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import { ScuffrBackground, ScuffrBackgroundElement, ScuffrBackgroundShape } from "./SVGBackgroundRenderer";
 import { ScuffrTextElement } from "./SVGTextRenderer";
 import { BlockInputType } from "../BlockInputType";
+import type { SVGRenderedScript } from "./SVGScriptRenderer";
 
 interface IScuffrBlockParent<T> extends ScuffrParentElement {
     onChildDrag?(key: T, event: MouseEvent): boolean;
-    get(key: T): ScuffrBlockInstanceElement | null;
+    getBlock(key: T): ScuffrBlockInstanceElement | null;
 }
 
 class ScuffrParentRef<T> {
@@ -28,24 +29,14 @@ class ScuffrParentRef<T> {
     }
 
     public get(): ScuffrBlockInstanceElement {
-        const block = this.parent.get(this.childKey);
+        const block = this.parent.getBlock(this.childKey);
         if (!block) throw new Error("Invalid parent reference, couldn't find child with key on parent.");
         return block;
     }
 }
 
-class SVGBlockRenderContext {
-    public readonly workspace: SVGRenderedWorkspace;
-    public readonly attachmentPoints: BlockAttachmentPoint[];
-
-    public constructor(workspace: SVGRenderedWorkspace, attachmentPoints: BlockAttachmentPoint[]) {
-        this.workspace = workspace;
-        this.attachmentPoints = attachmentPoints;
-    }
-}
-
 interface ISVGBlockRenderer {
-    renderBlock(block: BlockInstance, parentRef: ScuffrParentRef<unknown>, ctx: SVGBlockRenderContext): ScuffrBlockInstanceElement;
+    renderBlock(block: BlockInstance, parentRef: ScuffrParentRef<unknown>, root: SVGRenderedScript): ScuffrBlockInstanceElement;
 }
 
 interface ISVGBlockTypeRenderable extends BlockType {
@@ -86,9 +77,9 @@ class ScuffrLiteralInputElement extends ScuffrParentElement implements IScuffrBl
 
 class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrBlockPartElement {
     public override readonly children: readonly [ScuffrBackgroundElement, ScuffrBlockContentElement];
-    public override readonly parent: IScuffrBlockParent<unknown>;
+    public override parent: IScuffrBlockParent<unknown>;
     public readonly block: BlockInstance;
-    public readonly parentRef: ScuffrParentRef<unknown>;
+    public parentRef: ScuffrParentRef<unknown>;
 
     public get background() { return this.children[0]; }
     public get content() { return this.children[1]; }
@@ -102,6 +93,11 @@ class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrB
             new ScuffrBackgroundElement(this, background),
             new ScuffrBlockContentElement(this)
         ];
+    }
+
+    public setParent(parentRef: ScuffrParentRef<unknown>) {
+        this.parentRef = parentRef;
+        this.parent = parentRef.parent;
     }
 
     public getBackground(): ScuffrBackground {
@@ -119,10 +115,15 @@ class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrB
     }
 }
 
+interface ScuffrBlockContentInput {
+    element: IScuffrBlockPartElement,
+    index: number
+}
+
 class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBlockParent<BlockInputType> {
     public children: IScuffrBlockPartElement[];
     public parent: ScuffrBlockInstanceElement;
-    public inputs: Map<string, IScuffrBlockPartElement>;
+    public inputs: Map<string, ScuffrBlockContentInput>;
 
     public constructor(parent: ScuffrBlockInstanceElement) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), { x: 0, y: 0 }, { x: 0, y: 0 }, parent.workspace);
@@ -131,21 +132,27 @@ class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBl
         this.inputs = new Map();
     }
 
-    public get(key: BlockInputType): ScuffrBlockInstanceElement | null {
-        const input = this.inputs.get(key.id);
-        if (input instanceof ScuffrBlockInstanceElement) return input;
+    public getInput(key: BlockInputType) : ScuffrBlockContentInput | null {
+        return this.inputs.get(key.id) ?? null;
+    }
+
+    public getBlock(key: BlockInputType): ScuffrBlockInstanceElement | null {
+        const input = this.getInput(key);
+        if (input && input.element instanceof ScuffrBlockInstanceElement)
+            return input.element;
         return null;
     }
 
-    public onChildDrag?(key: BlockInputType, event: MouseEvent): boolean {
-        const block = this.get(key);
-        if (!block) {
+    public onChildDrag(key: BlockInputType, event: MouseEvent): boolean {
+        const input = this.getInput(key);
+        if (!(input && input.element instanceof ScuffrBlockInstanceElement)) {
             console.warn("Block instance recieved invalid key in onChildDrag.");
             return true;
         }
         this.parent.block.resetInput(key);
-        this.update(block);
-        this.workspace.dragRenderedBlock(this.parent, event);
+        this.update(input.element);
+        this.children.splice(input.index);
+        this.workspace.dragRenderedBlock(input.element, event);
         return true;
     }
 }
@@ -158,7 +165,7 @@ class SVGBlockRenderer implements ISVGBlockRenderer {
         this.blockType = type;
     }
 
-    public renderBlock(block: BlockInstance, parentRef: ScuffrParentRef<unknown>, ctx: SVGBlockRenderContext): ScuffrBlockInstanceElement {
+    public renderBlock(block: BlockInstance, parentRef: ScuffrParentRef<unknown>, root: SVGRenderedScript): ScuffrBlockInstanceElement {
         if (block.type !== this.blockType)
             throw new Error(`Block renderer created for rendering ${this.blockType.id} cannot render ${block.type.id}`);
 
@@ -174,10 +181,10 @@ class SVGBlockRenderer implements ISVGBlockRenderer {
         for (let partIdx = 0; partIdx < parts.length; partIdx++) {
             const part = parts[partIdx];
 
-            const renderedPart = part.render(instanceElement.content, ctx);
-            instanceElement.content.children.push(renderedPart);
+            const renderedPart = part.render(instanceElement.content, root);
+            const renderedPartIdx = instanceElement.content.children.push(renderedPart);
             if (part instanceof BlockInputType)
-                instanceElement.content.inputs.set(part.id, renderedPart);
+                instanceElement.content.inputs.set(part.id, {element: renderedPart, index: renderedPartIdx});
             x = background.shape.prePartPadding(block, partIdx, x, renderedPart);
             renderedPart.translation.x += x;
             renderedPart.updateTraslation();
@@ -192,5 +199,5 @@ class SVGBlockRenderer implements ISVGBlockRenderer {
     }
 }
 
-export { SVGBlockRenderer, SVGBlockRenderContext, ScuffrBlockInstanceElement, ScuffrLiteralInputElement, ScuffrBlockContentElement, ScuffrParentRef };
+export { SVGBlockRenderer, ScuffrBlockInstanceElement, ScuffrLiteralInputElement, ScuffrBlockContentElement, ScuffrParentRef };
 export type { ISVGBlockTypeRenderable as ISVGBlockRenderRenderable, ISVGBlockRenderer, IScuffrBlockPartElement, IScuffrBlockParent };

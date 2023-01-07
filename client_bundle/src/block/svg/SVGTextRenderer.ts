@@ -4,7 +4,7 @@ class ScuffrTextElement extends ScuffrElement {
     public parent: ScuffrParentElement;
 
     constructor(parent: ScuffrParentElement, text: string, fill?: string) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), { x: 0, y: 0 }, { x: 0, y: 0 }, parent.workspace);
+        super(document.createElementNS(SVG_NS, "text"), { x: 0, y: 0 }, { x: 0, y: 0 }, parent.workspace);
         this.parent = parent;
         this.dom.setAttribute("dominant-baseline", "middle");
         this.dom.setAttribute("dy", '1');
@@ -12,8 +12,13 @@ class ScuffrTextElement extends ScuffrElement {
         if (fill)
             this.dom.setAttribute("style", `fill: ${fill};`);
         this.dom.appendChild(document.createTextNode(text));
-        const bounds = this.dom.getBoundingClientRect();
-        this.dimensions = { x: bounds.width / this.workspace.scale, y: bounds.height / this.workspace.scale };
+
+        parent.workspace.textStagingElement.appendChild(this.dom);        
+        
+        const bounds = this.dom.getBoundingClientRect();        
+        this.dimensions = { x: bounds.width, y: bounds.height };
+
+        this.parent.dom.appendChild(this.dom);
     }
 }
 

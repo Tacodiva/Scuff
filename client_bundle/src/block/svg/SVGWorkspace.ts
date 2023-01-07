@@ -3,7 +3,7 @@ import type BlockInstance from "../BlockInstance";
 import { BlockScript } from "../BlockScript";
 import type BlockScripts from "../BlockScripts";
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import type { ScuffrBlockInstanceElement } from "./SVGBlockRenderer";
+import { ScuffrParentRef, type ScuffrBlockInstanceElement } from "./SVGBlockRenderer";
 import { renderScript, SVGRenderedScript, } from "./SVGScriptRenderer";
 
 abstract class DragContext {
@@ -70,20 +70,21 @@ class ScriptDragContext extends DragContext {
 class SVGWorkspace extends ScuffrParentElement {
 
     public parent: null;
-    
+
     public readonly blockScripts: BlockScripts;
     public children: SVGRenderedScript[];
 
     public readonly scriptContainer: SVGElement;
+    public readonly textStagingElement: SVGElement;
     public readonly backgroundPattern: SVGPatternElement;
     public readonly backgroundElement: SVGRectElement;
 
     private _dragCtx: DragContext | null;
     private _mouseDownPos: Vec2 | null;
-    private _appliedScale: number;
 
     public constructor(root: SVGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
         super(root, { x: 0, y: 0 }, { x: 0, y: 0 });
+        (<any>window).workspace = this;
         this.parent = null;
 
         this.blockScripts = blockScripts;
@@ -92,6 +93,7 @@ class SVGWorkspace extends ScuffrParentElement {
         this.backgroundPattern = backgroundPattern;
         this.backgroundElement = root.appendChild(document.createElementNS(SVG_NS, "rect"));
         this.scriptContainer = root.appendChild(document.createElementNS(SVG_NS, "g"));
+        this.textStagingElement = root.appendChild(document.createElementNS(SVG_NS, "g"));
 
         this.backgroundElement.setAttribute("width", "100%");
         this.backgroundElement.setAttribute("height", "100%");
@@ -99,7 +101,6 @@ class SVGWorkspace extends ScuffrParentElement {
 
         this._dragCtx = null;
         this._mouseDownPos = null;
-        this._appliedScale = 1;
 
         this.updateGlobalTransform();
 
@@ -158,7 +159,7 @@ class SVGWorkspace extends ScuffrParentElement {
         renderedScript.children.push(block);
         script.translation = block.getAbsoluteTranslation();
         renderedScript.updateTransform();
-        // block.setParent(renderedScript, new BlockContainerRef(0, script));
+        block.setParent(new ScuffrParentRef(0, renderedScript));
         renderedScript.dom.appendChild(block.dom);
         block.translation = { x: 0, y: 0 };
         block.updateTraslation();
@@ -176,8 +177,8 @@ class SVGWorkspace extends ScuffrParentElement {
 
     public toWorkspaceCoords(pos: Vec2): Vec2 {
         return {
-            x: pos.x / this._appliedScale - this.blockScripts.transformPosition.x,
-            y: pos.y / this._appliedScale - this.blockScripts.transformPosition.y
+            x: pos.x / this.blockScripts.transformScale - this.blockScripts.transformPosition.x,
+            y: pos.y / this.blockScripts.transformScale - this.blockScripts.transformPosition.y
         };
     }
 
@@ -213,13 +214,8 @@ class SVGWorkspace extends ScuffrParentElement {
         const transform = `scale(${this.blockScripts.transformScale}) translate(${this.blockScripts.transformPosition.x}, ${this.blockScripts.transformPosition.y})`;
         this.scriptContainer.setAttribute("transform", transform);
         this.backgroundPattern.setAttribute("patternTransform", transform);
-        this._appliedScale = this.blockScripts.transformScale;
     }
-
-    get scale() {
-        return this._appliedScale;
-    }
-
+    
     public addListeners() {
         window.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
         window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
@@ -298,19 +294,6 @@ class SVGWorkspace extends ScuffrParentElement {
 
 function renderWorkspace(root: SVGElement, backgroundPattern: SVGPatternElement, scripts: BlockScripts): SVGWorkspace {
     const element = new SVGWorkspace(root, backgroundPattern, scripts);
-
-    if (true) {
-        for (const script of element.children) {
-            for (const connection of script.attachmentPoints) {
-                const pos = connection.getAbsoluteTranslation();
-                const point = element.scriptContainer.appendChild(document.createElementNS(SVG_NS, "circle"));
-                point.setAttribute("r", "10");
-                point.setAttribute("style", "fill: red;");
-                point.setAttribute("transform", `translate(${pos.x}, ${pos.y})`);
-            }
-        }
-    }
-
     return element;
 }
 

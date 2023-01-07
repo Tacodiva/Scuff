@@ -1,9 +1,10 @@
 import type BlockInstance from "./BlockInstance";
-import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement, SVGBlockRenderContext } from "./svg/SVGBlockRenderer";
+import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "./svg/SVGBlockRenderer";
+import type { SVGRenderedScript } from "./svg/SVGScriptRenderer";
 import { ScuffrTextElement } from "./svg/SVGTextRenderer";
 
 interface IBlockPart {
-    render(block: ScuffrBlockContentElement, ctx: SVGBlockRenderContext): IScuffrBlockPartElement;
+    render(block: ScuffrBlockContentElement, root: SVGRenderedScript): IScuffrBlockPartElement;
 }
 
 class BlockPartText implements IBlockPart {
@@ -14,7 +15,7 @@ class BlockPartText implements IBlockPart {
         this.text = text;
     }
 
-    public render(block: ScuffrBlockContentElement, ctx: SVGBlockRenderContext): IScuffrBlockPartElement {
+    public render(block: ScuffrBlockContentElement, root: SVGRenderedScript): IScuffrBlockPartElement {
         return new ScuffrTextElement(block, this.text);
     }
 }

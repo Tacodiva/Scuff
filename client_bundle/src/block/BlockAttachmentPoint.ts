@@ -1,5 +1,6 @@
 import type { Vec2 } from "../utils/Vec2"
 import type BlockInstance from "./BlockInstance";
+import type { ScuffrElement, ScuffrElementImpl } from "./svg/ScuffrElement";
 import type { ScuffrBlockInstanceElement } from "./svg/SVGBlockRenderer";
 
 interface IBlockAttachmentPointType {
@@ -9,9 +10,9 @@ interface IBlockAttachmentPointType {
 class BlockAttachmentPoint {
     public readonly translation: Vec2;
     public readonly type: IBlockAttachmentPointType;
-    public readonly parent : ScuffrBlockInstanceElement;
+    public readonly parent : ScuffrElement;
 
-    public constructor(parent : ScuffrBlockInstanceElement, type: IBlockAttachmentPointType, translation : Vec2 = {x: 0, y: 0}) {
+    public constructor(parent : ScuffrElement, type: IBlockAttachmentPointType, translation : Vec2 = {x: 0, y: 0}) {
         this.type = type;
         this.translation = translation;
         this.parent = parent;

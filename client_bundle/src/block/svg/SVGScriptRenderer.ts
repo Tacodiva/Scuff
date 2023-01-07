@@ -1,4 +1,4 @@
-import { ScuffrBlockInstanceElement, ScuffrParentRef, SVGBlockRenderContext, type IScuffrBlockParent } from "./SVGBlockRenderer";
+import { ScuffrBlockInstanceElement, ScuffrParentRef, type IScuffrBlockParent } from "./SVGBlockRenderer";
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import { BlockScript } from "../BlockScript";
 import type { Vec2 } from "../../utils/Vec2";
@@ -32,8 +32,7 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
 
         for (let blockIdx = 0; blockIdx < this.script.blocks.length; blockIdx++) {
             const block = this.script.blocks[blockIdx];
-            const context = new SVGBlockRenderContext(this.workspace, this.attachmentPoints);
-            const renderedBlock = block.render(null, new ScuffrParentRef(blockIdx, this), context);
+            const renderedBlock = block.render(null, new ScuffrParentRef(blockIdx, this), this);
             this.children.push(renderedBlock);
             const dimensions = renderedBlock.dimensions;
             const height = dimensions.y;
@@ -59,6 +58,15 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
         }
 
         this.dimensions = { x, y };
+
+        // Debug
+        // for (const connection of this.attachmentPoints) {
+        //     const pos = connection.getAbsoluteTranslation();
+        //     const point = this.dom.appendChild(document.createElementNS(SVG_NS, "circle"));
+        //     point.setAttribute("r", "10");
+        //     point.setAttribute("style", "fill: red;");
+        //     point.setAttribute("transform", `translate(${pos.x - this.translation.x}, ${pos.y - this.translation.y})`);
+        // }
     }
 
     public updateTransform() {
@@ -80,11 +88,11 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
         const newScript = new BlockScript(newScriptBlocks, pos);
         const newRenderedScript = this.workspace.addScript(newScript);
         this.workspace.dragRenderedScript(newRenderedScript, event);
-        
+
         return true;
     }
 
-    public get(key: number): ScuffrBlockInstanceElement | null {
+    public getBlock(key: number): ScuffrBlockInstanceElement | null {
         return this.children[key];
     }
 }

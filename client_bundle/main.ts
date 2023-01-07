@@ -11,7 +11,6 @@ const script = new BlockScript([
 			test: Blocks.OP_PLUS.createInstance({
 				test: Blocks.OP_PLUS.createInstance({
 					test: Blocks.OP_PLUS.createInstance({
-						test: Blocks.OP_PLUS.createInstance({}),
 						testII: Blocks.OP_PLUS.createInstance(),
 					}),
 				}),

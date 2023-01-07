@@ -1,9 +1,10 @@
-import type { ScuffrBlockInstanceElement, ScuffrParentRef, SVGBlockRenderContext } from "./svg/SVGBlockRenderer";
+import type { ScuffrBlockInstanceElement, ScuffrParentRef } from "./svg/SVGBlockRenderer";
 import type { IBlockInput } from "./BlockInputType";
 import type { BlockInputType } from "./BlockInputType";
 import type BlockType from "./BlockType";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrParentElement } from "./svg/ScuffrElement";
+import type { SVGRenderedScript } from "./svg/SVGScriptRenderer";
 
 class BlockInstance implements IBlockInput {
     public readonly type: BlockType;
@@ -42,17 +43,9 @@ class BlockInstance implements IBlockInput {
         this._inputs.set(input.id, input.defaultValue);
     }
 
-    public render(parent : ScuffrBlockInstanceElement | null, parentRef: ScuffrParentRef<unknown>, ctx: SVGBlockRenderContext): ScuffrBlockInstanceElement {
-        return this.type.renderer.renderBlock(this, parentRef, ctx);
+    public render(parent : ScuffrBlockInstanceElement | null, parentRef: ScuffrParentRef<unknown>, root: SVGRenderedScript): ScuffrBlockInstanceElement {
+        return this.type.renderer.renderBlock(this, parentRef, root);
     }
-
-    // public getChild(key: BlockInputType): BlockInstance {
-    //     const input = this.getInput(key.id);
-    //     if (!(input instanceof BlockInstance))
-    //         throw new Error(`Input ${key.id} is not a block.`);
-    //     return input;
-    // }
-
 }
 
 export { BlockInstance as default };
