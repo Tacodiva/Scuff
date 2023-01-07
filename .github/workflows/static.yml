@@ -36,13 +36,11 @@ jobs:
         uses: actions/setup-node@v3.6.0
       - run: npm i
       - run: npm run build
+      - run: cp -r build/client client_www/bundle  
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
-          path: |
-            client_www/
-            build/client/
+          path: client_www
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
