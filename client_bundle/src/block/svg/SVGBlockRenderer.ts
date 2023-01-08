@@ -13,6 +13,7 @@ import type { SVGRenderedScript } from "./SVGScriptRenderer";
 interface IScuffrBlockParent<T> extends ScuffrParentElement {
     onChildDrag?(key: T, event: MouseEvent): boolean;
     getBlock(key: T): ScuffrBlockInstanceElement | null;
+    getRoot(): SVGRenderedScript;
 }
 
 class ScuffrParentRef<T> {
@@ -45,18 +46,15 @@ interface ISVGBlockTypeRenderable extends BlockType {
 
 interface IScuffrBlockPartElement extends ScuffrElement {
     getBackground?(): ScuffrBackground | null;
+    setRoot?(root: SVGRenderedScript): void;
 }
-
-// interface IScuffrBlockInputElement extends IScuffrBlockPartElement {
-
-// }
 
 class ScuffrLiteralInputElement extends ScuffrParentElement implements IScuffrBlockPartElement {
     public override readonly children: readonly [ScuffrBackgroundElement, ScuffrTextElement];
     public override readonly parent: ScuffrBlockContentElement;
 
     public constructor(parent: ScuffrBlockContentElement, text: string) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), { x: 0, y: 0 }, { x: 0, y: 0 }, parent.workspace);
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [
             new ScuffrBackgroundElement(this, new ScuffrBackground(
@@ -68,6 +66,7 @@ class ScuffrLiteralInputElement extends ScuffrParentElement implements IScuffrBl
         ];
         this.children[0].updateDimensions(this.children[1]);
         this.dimensions = this.children[0].dimensions;
+        this.topLeftOffset = this.children[0].topLeftOffset;
     }
 
     public getBackground(): ScuffrBackground {
@@ -78,17 +77,25 @@ class ScuffrLiteralInputElement extends ScuffrParentElement implements IScuffrBl
 class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrBlockPartElement {
     public override readonly children: readonly [ScuffrBackgroundElement, ScuffrBlockContentElement];
     public override parent: IScuffrBlockParent<unknown>;
+    public root: SVGRenderedScript;
     public readonly block: BlockInstance;
     public parentRef: ScuffrParentRef<unknown>;
+
+    public attachmentPointStart: number;
+    public attachmentPointCount: number;
+
 
     public get background() { return this.children[0]; }
     public get content() { return this.children[1]; }
 
-    public constructor(parentRef: ScuffrParentRef<unknown>, block: BlockInstance, dom: SVGElement, background: ScuffrBackground) {
-        super(dom, { x: 0, y: 0 }, { x: 0, y: 0 }, parentRef.parent.workspace);
+    public constructor(root: SVGRenderedScript, parentRef: ScuffrParentRef<unknown>, block: BlockInstance, dom: SVGElement, background: ScuffrBackground) {
+        super(dom, parentRef.parent.workspace);
+        this.root = root;
         this.parent = parentRef.parent;
         this.parentRef = parentRef;
         this.block = block;
+        this.attachmentPointStart = root.attachmentPoints.length;
+        this.attachmentPointCount = 0;
         this.children = [
             new ScuffrBackgroundElement(this, background),
             new ScuffrBlockContentElement(this)
@@ -98,6 +105,16 @@ class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrB
     public setParent(parentRef: ScuffrParentRef<unknown>) {
         this.parentRef = parentRef;
         this.parent = parentRef.parent;
+        const root = parentRef.parent.getRoot();
+        if (root !== this.root)
+            this.setRoot(parentRef.parent.getRoot());
+    }
+
+    public setRoot(root: SVGRenderedScript) {
+        this.root = root;
+        for (const child of this.content.children) {
+            if (child.setRoot) child.setRoot(root);
+        }
     }
 
     public getBackground(): ScuffrBackground {
@@ -106,12 +123,25 @@ class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrB
 
     public updateDimensions(dimensions: Vec2) {
         this.content.dimensions = dimensions;
+        this.content.topLeftOffset = { x: 0, y: dimensions.y / 2 };
         this.background.updateDimensions(this.content);
         this.dimensions = this.background.dimensions;
+        this.topLeftOffset = this.background.topLeftOffset;
     }
 
     public override onDrag(event: MouseEvent): boolean {
         return this.parentRef.onDrag(event);
+    }
+
+    public getInput(key: BlockInputType): ScuffrBlockContentInput | null {
+        return this.content.getInput(key);
+    }
+
+    public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {
+        const oldInput = this.getInput(key);
+        if (!oldInput) throw new Error(`No input ${key.id} on block ${this.block.type.id}.`)
+        this.block.setInput(key, block.block);
+        this.update(block);
     }
 }
 
@@ -126,13 +156,13 @@ class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBl
     public inputs: Map<string, ScuffrBlockContentInput>;
 
     public constructor(parent: ScuffrBlockInstanceElement) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), { x: 0, y: 0 }, { x: 0, y: 0 }, parent.workspace);
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
         this.inputs = new Map();
     }
 
-    public getInput(key: BlockInputType) : ScuffrBlockContentInput | null {
+    public getInput(key: BlockInputType): ScuffrBlockContentInput | null {
         return this.inputs.get(key.id) ?? null;
     }
 
@@ -149,11 +179,15 @@ class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBl
             console.warn("Block instance recieved invalid key in onChildDrag.");
             return true;
         }
+        // this.children.splice(input.index);
+        this.workspace.dragRenderedBlock(input.element, event);
         this.parent.block.resetInput(key);
         this.update(input.element);
-        this.children.splice(input.index);
-        this.workspace.dragRenderedBlock(input.element, event);
         return true;
+    }
+
+    public getRoot(): SVGRenderedScript {
+        return this.parent.root;
     }
 }
 
@@ -171,7 +205,7 @@ class SVGBlockRenderer implements ISVGBlockRenderer {
 
         const background = this.blockType.getBackground(block);
         const instanceElementDOM = parentRef.parent.dom.appendChild(document.createElementNS(SVG_NS, "g"));
-        const instanceElement = new ScuffrBlockInstanceElement(parentRef, block, instanceElementDOM, background);
+        const instanceElement = new ScuffrBlockInstanceElement(root, parentRef, block, instanceElementDOM, background);
 
         const parts = block.type.parts;
 
@@ -184,7 +218,7 @@ class SVGBlockRenderer implements ISVGBlockRenderer {
             const renderedPart = part.render(instanceElement.content, root);
             const renderedPartIdx = instanceElement.content.children.push(renderedPart);
             if (part instanceof BlockInputType)
-                instanceElement.content.inputs.set(part.id, {element: renderedPart, index: renderedPartIdx});
+                instanceElement.content.inputs.set(part.id, { element: renderedPart, index: renderedPartIdx });
             x = background.shape.prePartPadding(block, partIdx, x, renderedPart);
             renderedPart.translation.x += x;
             renderedPart.updateTraslation();
@@ -195,6 +229,7 @@ class SVGBlockRenderer implements ISVGBlockRenderer {
 
 
         instanceElement.updateDimensions({ x, y: height });
+        instanceElement.attachmentPointCount = root.attachmentPoints.length - instanceElement.attachmentPointStart;
         return instanceElement;
     }
 }

@@ -4,6 +4,7 @@ import { BlockScript } from "../BlockScript";
 import type { Vec2 } from "../../utils/Vec2";
 import type { SVGRenderedWorkspace } from "./SVGWorkspace";
 import type { BlockAttachmentPoint } from "../BlockAttachmentPoint";
+import { ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 
 class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParent<number> {
 
@@ -11,14 +12,21 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
     public readonly parent: SVGRenderedWorkspace;
 
     public readonly script: BlockScript;
-    public readonly attachmentPoints: BlockAttachmentPoint[];
+    public readonly attachmentPoints: ScuffrAttachmentPoint[];
 
     public constructor(workspace: SVGRenderedWorkspace, script: BlockScript) {
-        super(workspace.scriptContainer.appendChild(document.createElementNS(SVG_NS, "g")), { x: 0, y: 0 }, { x: 0, y: 0 }, workspace);
+        super(workspace.scriptContainer.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
         this.parent = workspace;
         this.children = [];
         this.script = script;
         this.attachmentPoints = [];
+    }
+
+    public insertScript(index: number, script: SVGRenderedScript) {
+        this.script.blocks.splice(index, 0, ...script.script.blocks);
+        if (index === 0)
+            this.script.translation.y += this.topOffset - script.bottomOffset;
+        this.update();
     }
 
     public override update(element?: ScuffrElement) {
@@ -32,7 +40,10 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
 
         for (let blockIdx = 0; blockIdx < this.script.blocks.length; blockIdx++) {
             const block = this.script.blocks[blockIdx];
+            // const attachmentPointStart = this.attachmentPoints.length;
             const renderedBlock = block.render(null, new ScuffrParentRef(blockIdx, this), this);
+            // renderedBlock.attachmentPointStart = attachmentPointStart;
+            // renderedBlock.attachmentPointEnd = this.attachmentPoints.length;
             this.children.push(renderedBlock);
             const dimensions = renderedBlock.dimensions;
             const height = dimensions.y;
@@ -46,27 +57,34 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
             }
             if (dimensions.x > x) x = dimensions.x
 
-            //     if (blockIdx === 0) {
-            //         if (block.type.canStackUp(block))
-            //             this.attachPoints.push({ translation: { x: this.script.translation.x, y: this.script.translation.y }, type: new BlockStackAttachmentPointType(false, true) });
-            //     }
-            //     if (block.type.canStackDown(block))
-            //         if (blockIdx === this.script.blocks.length - 1)
-            //             this.attachPoints.push({ translation: { x: this.script.translation.x, y: y + this.script.translation.y }, type: new BlockStackAttachmentPointType(true, false) });
-            //         else
-            //             this.attachPoints.push({ translation: { x: this.script.translation.x, y: y + this.script.translation.y }, type: new BlockStackAttachmentPointType(true, true) });
+            if (blockIdx === 0) {
+                if (block.type.canStackUp(block))
+                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, false, true, { x: 0, y: - height / 2 }))
+            }
+            if (block.type.canStackDown(block))
+                if (blockIdx === this.script.blocks.length - 1)
+                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y }))
+                else
+                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
         }
 
-        this.dimensions = { x, y };
+        this.topLeftOffset = { x: 0, y: this.children[0].dimensions.y / 2 };
+        this.dimensions = { x, y: y + this.topLeftOffset.y };
 
-        // Debug
-        // for (const connection of this.attachmentPoints) {
-        //     const pos = connection.getAbsoluteTranslation();
-        //     const point = this.dom.appendChild(document.createElementNS(SVG_NS, "circle"));
-        //     point.setAttribute("r", "10");
-        //     point.setAttribute("style", "fill: red;");
-        //     point.setAttribute("transform", `translate(${pos.x - this.translation.x}, ${pos.y - this.translation.y})`);
-        // }
+        this.drawDebug();
+    }
+
+    public drawDebug() {
+        for (const connection of this.attachmentPoints) {
+            const pos = connection.translation;
+            const point = this.dom.appendChild(document.createElementNS(SVG_NS, "circle"));
+            point.setAttribute("r", "10");
+            if (connection instanceof ScuffrScriptAttachmentPoint)
+                point.setAttribute("style", "fill: #ff0000a0;");
+            else
+                point.setAttribute("style", "fill: #00ff00a0;");
+            point.setAttribute("transform", `translate(${pos.x}, ${pos.y})`);
+        }
     }
 
     public updateTransform() {
@@ -83,7 +101,7 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
 
         const draggedChild = this.children[key];
         const pos = draggedChild.getAbsoluteTranslation();
-        const newScriptBlocks = this.script.blocks.splice(key, this.script.blocks.length - key);
+        const newScriptBlocks = this.script.blocks.splice(key);
         this.update();
         const newScript = new BlockScript(newScriptBlocks, pos);
         const newRenderedScript = this.workspace.addScript(newScript);
@@ -94,6 +112,10 @@ class SVGRenderedScript extends ScuffrParentElement implements IScuffrBlockParen
 
     public getBlock(key: number): ScuffrBlockInstanceElement | null {
         return this.children[key];
+    }
+
+    public getRoot(): SVGRenderedScript {
+        return this;
     }
 }
 

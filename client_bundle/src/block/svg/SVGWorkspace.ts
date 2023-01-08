@@ -2,9 +2,10 @@ import type { Vec2 } from "../../utils/Vec2";
 import type BlockInstance from "../BlockInstance";
 import { BlockScript } from "../BlockScript";
 import type BlockScripts from "../BlockScripts";
+import type { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import { ScuffrParentRef, type ScuffrBlockInstanceElement } from "./SVGBlockRenderer";
-import { renderScript, SVGRenderedScript, } from "./SVGScriptRenderer";
+import { renderScript, SVGRenderedScript } from "./SVGScriptRenderer";
 
 abstract class DragContext {
     public startPos: Vec2;
@@ -26,7 +27,6 @@ class PanningDragContext extends DragContext {
         super(startPos);
         this.workspace = workspace;
         this.startTransform = workspace.blockScripts.transformPosition;
-
     }
 
     public update(event: MouseEvent): void {
@@ -43,11 +43,15 @@ class PanningDragContext extends DragContext {
 }
 
 class ScriptDragContext extends DragContext {
+    public static readonly ATTACH_RADIUS = 40;
+
     public readonly workspace: SVGWorkspace;
     public readonly script: SVGRenderedScript;
     public readonly offset: Vec2;
 
-    constructor(workspace: SVGWorkspace, script: SVGRenderedScript, startPos: Vec2) {
+    private _attachmentPoint: ScuffrAttachmentPoint | null;
+
+    public constructor(workspace: SVGWorkspace, script: SVGRenderedScript, startPos: Vec2) {
         super(startPos);
         this.workspace = workspace;
         this.script = script;
@@ -56,14 +60,44 @@ class ScriptDragContext extends DragContext {
             x: script.script.translation.x - startPosWorkspace.x,
             y: script.script.translation.y - startPosWorkspace.y,
         };
+        this._attachmentPoint = null;
     }
 
     public update(event: MouseEvent): void {
         const scriptCoords = this.workspace.toWorkspaceCoords(event);
         scriptCoords.x += this.offset.x;
         scriptCoords.y += this.offset.y;
+
         this.script.script.translation = scriptCoords;
         this.script.updateTransform();
+
+        this._attachmentPoint = this._findAttachmentPoint();
+    }
+
+    public override end(): void {
+        if (this._attachmentPoint) {
+            this._attachmentPoint.takeScript(this.script);
+            if (!this.workspace.deleteRenderedScript(this.script))
+                console.warn("Failed to remove rendered script on drag end.");
+        }
+    }
+
+    private _findAttachmentPoint(): ScuffrAttachmentPoint | null {
+        let closestDist = ScriptDragContext.ATTACH_RADIUS * ScriptDragContext.ATTACH_RADIUS;
+        let closest = null;
+        for (const targetScript of this.workspace.children) {
+            if (targetScript === this.script) continue;
+            for (const targetPoint of targetScript.attachmentPoints) {
+                const delta = targetPoint.calculateDelta(this.script, targetScript);
+                const dist = delta.x * delta.x + delta.y * delta.y;
+                if (dist <= closestDist
+                    && targetPoint.canTakeScript(this.script)) {
+                    closestDist = dist;
+                    closest = targetPoint;
+                }
+            }
+        }
+        return closest;
     }
 }
 
@@ -83,7 +117,7 @@ class SVGWorkspace extends ScuffrParentElement {
     private _mouseDownPos: Vec2 | null;
 
     public constructor(root: SVGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
-        super(root, { x: 0, y: 0 }, { x: 0, y: 0 });
+        super(root);
         (<any>window).workspace = this;
         this.parent = null;
 
@@ -136,8 +170,8 @@ class SVGWorkspace extends ScuffrParentElement {
 
     private _deleteScriptAt(idx: number): boolean {
         if (idx === -1) return false;
-        this.blockScripts.scripts.splice(idx);
-        this.children.splice(idx);
+        this.blockScripts.scripts.splice(idx, 1);
+        this.children.splice(idx, 1)[0].dom.remove();
         return true;
     }
 
@@ -154,16 +188,31 @@ class SVGWorkspace extends ScuffrParentElement {
 
     public dragRenderedBlock(block: ScuffrBlockInstanceElement, mousePos: Vec2) {
         const script = new BlockScript([block.block]);
+        const oldRoot = block.root;
         const renderedScript = new SVGRenderedScript(this, script);
-        renderedScript.dimensions = block.dimensions;
+
         renderedScript.children.push(block);
+        renderedScript.dimensions = block.dimensions;
         script.translation = block.getAbsoluteTranslation();
         renderedScript.updateTransform();
+
         block.setParent(new ScuffrParentRef(0, renderedScript));
         renderedScript.dom.appendChild(block.dom);
+
         block.translation = { x: 0, y: 0 };
         block.updateTraslation();
+
+        for (const attachmentPoint of
+            oldRoot.attachmentPoints.splice(block.attachmentPointStart, block.attachmentPointCount)
+        ) {
+            attachmentPoint.recalculateTranslation();
+            renderedScript.attachmentPoints.push(attachmentPoint);
+        }
+        block.attachmentPointStart = 0;
+        block.attachmentPointCount = renderedScript.attachmentPoints.length;
+
         this._addRenderedScript(renderedScript);
+        renderedScript.drawDebug();
         this.dragRenderedScript(renderedScript, mousePos);
     }
 
@@ -215,7 +264,7 @@ class SVGWorkspace extends ScuffrParentElement {
         this.scriptContainer.setAttribute("transform", transform);
         this.backgroundPattern.setAttribute("patternTransform", transform);
     }
-    
+
     public addListeners() {
         window.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
         window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });

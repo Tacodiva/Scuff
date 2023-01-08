@@ -49,12 +49,14 @@ class ScuffrBackgroundElement extends ScuffrElementImpl {
             x: size.x + padding.x * 2,
             y: size.y + padding.y * 2
         }
+
+        this.topLeftOffset = this.background.shape.getTopLeftOffset(size);
     }
 }
 
 abstract class ScuffrBackgroundShape {
 
-    private static readonly _ROUND_CLASS = class extends ScuffrBackgroundShape {
+    public static readonly ROUND_BLOCK = new class extends ScuffrBackgroundShape {
         public override createPath(size: Vec2): string {
             let radius = size.y / 2;
             return `m ${size.x - 8} ${-radius} a ${radius} ${radius} 0 0 1 0 ${size.y} H 6 a ${radius} ${radius} 0 0 1 0 ${-size.y} z`;
@@ -63,10 +65,11 @@ abstract class ScuffrBackgroundShape {
         public getPadding(contentSize: Vec2): Vec2 {
             return { x: contentSize.y / 2 - 6, y: 4 };
         }
-    };
 
-
-    public static readonly ROUND_BLOCK = new this._ROUND_CLASS({ x: 20, y: 32 }, 4);
+        public getTopLeftOffset(contentSize: Vec2): Vec2 {
+            return { x: contentSize.y / 2 - 6, y: contentSize.y / 2 };
+        }
+    }({ x: 20, y: 32 }, 4);
 
     public static readonly STACK_BODY = new class extends ScuffrBackgroundShape {
         public override createPath(size: Vec2): string {
@@ -83,6 +86,10 @@ abstract class ScuffrBackgroundShape {
         public getPadding(contentSize: Vec2): Vec2 {
             return { x: 8, y: 0 };
         }
+
+        public getTopLeftOffset(contentSize: Vec2): Vec2 {
+            return { x: 0, y: contentSize.y / 2 };
+        }
     }({ x: 60, y: 48 });
 
     public readonly minSize: Vec2;
@@ -94,6 +101,7 @@ abstract class ScuffrBackgroundShape {
         this.snugglePadding = snugglePadding;
     }
 
+    public abstract getTopLeftOffset(contentSize: Vec2): Vec2;
     public abstract getPadding(contentSize: Vec2): Vec2;
 
     public prePartPadding(block: BlockInstance, partIdx: number, x: number, part: IScuffrBlockPartElement): number {

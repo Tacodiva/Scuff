@@ -9,14 +9,16 @@ abstract class ScuffrElement {
     public readonly dom: SVGElement;
     public dimensions: Vec2;
     public translation: Vec2;
+    public topLeftOffset: Vec2;
 
     public abstract parent: ScuffrParentElement | null;
 
-    public constructor(dom: SVGElement, translation: Vec2, dimensions: Vec2, workspace?: SVGRenderedWorkspace) {
+    public constructor(dom: SVGElement, workspace?: SVGRenderedWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }) {
         this.workspace = workspace ?? this._getWorkspace();
         this.dom = dom;
         this.translation = translation;
         this.dimensions = dimensions;
+        this.topLeftOffset = topLeftOffset;
 
         (<any>this.dom)[ScuffrElement.DATA_NAME] = this;
     }
@@ -31,7 +33,6 @@ abstract class ScuffrElement {
     }
 
     protected _getWorkspace(): SVGRenderedWorkspace {
-        if (this.parent) return this.parent.workspace;
         throw new Error("No workspace provided in constructor and element did not override _getWorkspace()!");
     }
 
@@ -50,12 +51,28 @@ abstract class ScuffrElement {
     public updateTraslation() {
         this.dom.setAttribute("transform", `translate(${this.translation.x}, ${this.translation.y})`)
     }
+
+    public get topOffset() {
+        return -this.topLeftOffset.y;
+    }
+
+    public get bottomOffset() {
+        return this.dimensions.y + this.topOffset;
+    }
+
+    public get leftOffset() {
+        return -this.topLeftOffset.x;
+    }
+
+    public get rightOffset() {
+        return this.dimensions.x + this.leftOffset;
+    }
 }
 
 abstract class ScuffrParentElement extends ScuffrElement {
-    public abstract children : readonly ScuffrElement[];
+    public abstract children: readonly ScuffrElement[];
 
-    public update(child : ScuffrElement) {
+    public update(child: ScuffrElement) {
         if (!this.parent)
             throw new Error("Failed to update element. Reached root node.");
         this.parent.update(this);
@@ -65,8 +82,8 @@ abstract class ScuffrParentElement extends ScuffrElement {
 class ScuffrElementImpl extends ScuffrElement {
     public override parent: ScuffrParentElement;
 
-    constructor(parent: ScuffrParentElement, dom: SVGElement, translation: Vec2, dimensions: Vec2) {
-        super(dom, translation, dimensions, parent.workspace);
+    constructor(parent: ScuffrParentElement, dom: SVGElement, translation?: Vec2, dimensions?: Vec2, topLeftOffset?: Vec2) {
+        super(dom, parent.workspace, translation, dimensions, topLeftOffset);
         this.parent = parent;
     }
 }

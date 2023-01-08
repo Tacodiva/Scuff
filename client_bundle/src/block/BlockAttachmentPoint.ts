@@ -1,24 +1,25 @@
 import type { Vec2 } from "../utils/Vec2"
 import type BlockInstance from "./BlockInstance";
+import type { BlockScript } from "./BlockScript";
 import type { ScuffrElement, ScuffrElementImpl } from "./svg/ScuffrElement";
 import type { ScuffrBlockInstanceElement } from "./svg/SVGBlockRenderer";
 
 interface IBlockAttachmentPointType {
-    canTakeValue(value: BlockInstance): boolean;
+    canTakeScript(script: BlockScript): boolean;
 }
 
 class BlockAttachmentPoint {
     public readonly translation: Vec2;
     public readonly type: IBlockAttachmentPointType;
-    public readonly parent : ScuffrElement;
+    public readonly parent: ScuffrElement;
 
-    public constructor(parent : ScuffrElement, type: IBlockAttachmentPointType, translation : Vec2 = {x: 0, y: 0}) {
+    public constructor(parent: ScuffrElement, type: IBlockAttachmentPointType, translation: Vec2 = { x: 0, y: 0 }) {
         this.type = type;
         this.translation = translation;
         this.parent = parent;
     }
 
-    public getAbsoluteTranslation() : Vec2 {
+    public getAbsoluteTranslation(): Vec2 {
         const parentPos = this.parent.getAbsoluteTranslation();
         return {
             x: this.translation.x + parentPos.x,
@@ -36,13 +37,15 @@ class BlockStackAttachmentPointType implements IBlockAttachmentPointType {
         this.requireStackDown = requireAttachDown;
     }
 
-    public canTakeValue(value: BlockInstance): boolean {
+    public canTakeScript(script: BlockScript): boolean {
         if (this.requireStackDown) {
-            if (!value.type.canStackDown(value))
+            const lastBlock = script.blocks[script.blocks.length - 1];
+            if (!lastBlock.type.canStackDown(lastBlock))
                 return false;
         }
         if (this.requireStackUp) {
-            if (!value.type.canStackUp(value))
+            const firstBlock = script.blocks[0];
+            if (!firstBlock.type.canStackUp(firstBlock))
                 return false;
         }
         return true;
