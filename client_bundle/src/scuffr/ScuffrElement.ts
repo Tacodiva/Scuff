@@ -1,10 +1,10 @@
-import type { Vec2 } from "../../utils/Vec2";
-import type { SVGRenderedWorkspace } from "./SVGWorkspace";
+import type { Vec2 } from "../utils/Vec2";
+import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 
 abstract class ScuffrElement {
     public static readonly DATA_NAME = "sfs-rendered-element";
 
-    public readonly workspace: SVGRenderedWorkspace;
+    public readonly workspace: ScuffrWorkspace;
 
     public readonly dom: SVGElement;
     public dimensions: Vec2;
@@ -13,7 +13,7 @@ abstract class ScuffrElement {
 
     public abstract parent: ScuffrParentElement | null;
 
-    public constructor(dom: SVGElement, workspace?: SVGRenderedWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }) {
+    public constructor(dom: SVGElement, workspace?: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }) {
         this.workspace = workspace ?? this._getWorkspace();
         this.dom = dom;
         this.translation = translation;
@@ -32,7 +32,7 @@ abstract class ScuffrElement {
         }
     }
 
-    protected _getWorkspace(): SVGRenderedWorkspace {
+    protected _getWorkspace(): ScuffrWorkspace {
         throw new Error("No workspace provided in constructor and element did not override _getWorkspace()!");
     }
 
@@ -79,13 +79,4 @@ abstract class ScuffrParentElement extends ScuffrElement {
     }
 }
 
-class ScuffrElementImpl extends ScuffrElement {
-    public override parent: ScuffrParentElement;
-
-    constructor(parent: ScuffrParentElement, dom: SVGElement, translation?: Vec2, dimensions?: Vec2, topLeftOffset?: Vec2) {
-        super(dom, parent.workspace, translation, dimensions, topLeftOffset);
-        this.parent = parent;
-    }
-}
-
-export { ScuffrParentElement, ScuffrElement, ScuffrElementImpl }
+export { ScuffrParentElement, ScuffrElement }

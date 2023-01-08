@@ -1,4 +1,4 @@
-import { ScuffrElement, ScuffrElementImpl, ScuffrParentElement } from "./ScuffrElement";
+import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 
 class ScuffrTextElement extends ScuffrElement {
     public parent: ScuffrParentElement;

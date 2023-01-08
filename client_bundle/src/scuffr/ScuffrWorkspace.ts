@@ -1,11 +1,12 @@
-import type { Vec2 } from "../../utils/Vec2";
-import type BlockInstance from "../BlockInstance";
-import { BlockScript } from "../BlockScript";
-import type BlockScripts from "../BlockScripts";
+import { BlockScript } from "../block/BlockScript";
+import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
+import { ScuffrBlockRef } from "./ScuffrBlockRef";
+import type { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import { ScuffrParentRef, type ScuffrBlockInstanceElement } from "./SVGBlockRenderer";
-import { renderScript, SVGRenderedScript } from "./SVGScriptRenderer";
+import { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
+import type { BlockScripts } from "../block/BlockScripts";
+import type { BlockInstance } from "../block/BlockInstance";
 
 abstract class DragContext {
     public startPos: Vec2;
@@ -20,10 +21,10 @@ abstract class DragContext {
 }
 
 class PanningDragContext extends DragContext {
-    public readonly workspace: SVGWorkspace;
+    public readonly workspace: ScuffrWorkspace;
     public readonly startTransform: Vec2;
 
-    constructor(workspace: SVGWorkspace, startPos: Vec2) {
+    constructor(workspace: ScuffrWorkspace, startPos: Vec2) {
         super(startPos);
         this.workspace = workspace;
         this.startTransform = workspace.blockScripts.transformPosition;
@@ -45,13 +46,13 @@ class PanningDragContext extends DragContext {
 class ScriptDragContext extends DragContext {
     public static readonly ATTACH_RADIUS = 40;
 
-    public readonly workspace: SVGWorkspace;
-    public readonly script: SVGRenderedScript;
+    public readonly workspace: ScuffrWorkspace;
+    public readonly script: ScuffrRootScriptElement;
     public readonly offset: Vec2;
 
     private _attachmentPoint: ScuffrAttachmentPoint | null;
 
-    public constructor(workspace: SVGWorkspace, script: SVGRenderedScript, startPos: Vec2) {
+    public constructor(workspace: ScuffrWorkspace, script: ScuffrRootScriptElement, startPos: Vec2) {
         super(startPos);
         this.workspace = workspace;
         this.script = script;
@@ -101,12 +102,11 @@ class ScriptDragContext extends DragContext {
     }
 }
 
-class SVGWorkspace extends ScuffrParentElement {
-
+export class ScuffrWorkspace extends ScuffrParentElement {
     public parent: null;
 
     public readonly blockScripts: BlockScripts;
-    public children: SVGRenderedScript[];
+    public children: ScuffrRootScriptElement[];
 
     public readonly scriptContainer: SVGElement;
     public readonly textStagingElement: SVGElement;
@@ -139,17 +139,20 @@ class SVGWorkspace extends ScuffrParentElement {
         this.updateGlobalTransform();
 
         for (const script of this.blockScripts.scripts) {
-            this.children.push(renderScript(this, script));
+            const rendered = new ScuffrRootScriptElement(this, script);
+            rendered.update();
+            this.children.push(rendered);
         }
     }
 
-    public addScript(script: BlockScript): SVGRenderedScript {
-        const rendered = renderScript(this, script);
+    public addScript(script: BlockScript): ScuffrRootScriptElement {
+        const rendered = new ScuffrRootScriptElement(this, script);
+        rendered.update();
         this._addRenderedScript(rendered);
         return rendered;
     }
 
-    private _addRenderedScript(script: SVGRenderedScript) {
+    private _addRenderedScript(script: ScuffrRootScriptElement) {
         this.blockScripts.scripts.push(script.script);
         this.children.push(script);
     }
@@ -158,11 +161,11 @@ class SVGWorkspace extends ScuffrParentElement {
         return this._deleteScriptAt(this.blockScripts.scripts.indexOf(script));
     }
 
-    public deleteRenderedScript(script: SVGRenderedScript): boolean {
+    public deleteRenderedScript(script: ScuffrRootScriptElement): boolean {
         return this._deleteScriptAt(this.children.indexOf(script));
     }
 
-    public getRenderedScript(script: BlockScript): SVGRenderedScript {
+    public getRenderedScript(script: BlockScript): ScuffrRootScriptElement {
         const rendered = this.children.find(rendered => rendered.script === script);
         if (!rendered) throw new Error("Script not a part of this workspace.");
         return rendered;
@@ -187,32 +190,8 @@ class SVGWorkspace extends ScuffrParentElement {
     }
 
     public dragRenderedBlock(block: ScuffrBlockInstanceElement, mousePos: Vec2) {
-        const script = new BlockScript([block.block]);
-        const oldRoot = block.root;
-        const renderedScript = new SVGRenderedScript(this, script);
-
-        renderedScript.children.push(block);
-        renderedScript.dimensions = block.dimensions;
-        script.translation = block.getAbsoluteTranslation();
-        renderedScript.updateTransform();
-
-        block.setParent(new ScuffrParentRef(0, renderedScript));
-        renderedScript.dom.appendChild(block.dom);
-
-        block.translation = { x: 0, y: 0 };
-        block.updateTraslation();
-
-        for (const attachmentPoint of
-            oldRoot.attachmentPoints.splice(block.attachmentPointStart, block.attachmentPointCount)
-        ) {
-            attachmentPoint.recalculateTranslation();
-            renderedScript.attachmentPoints.push(attachmentPoint);
-        }
-        block.attachmentPointStart = 0;
-        block.attachmentPointCount = renderedScript.attachmentPoints.length;
-
+        const renderedScript = new ScuffrRootScriptElement(this, block);
         this._addRenderedScript(renderedScript);
-        renderedScript.drawDebug();
         this.dragRenderedScript(renderedScript, mousePos);
     }
 
@@ -220,8 +199,10 @@ class SVGWorkspace extends ScuffrParentElement {
         this.dragRenderedScript(this.getRenderedScript(script), mousePos);
     }
 
-    public dragRenderedScript(script: SVGRenderedScript, mousePos: Vec2) {
+    public dragRenderedScript(script: ScuffrRootScriptElement, mousePos: Vec2) {
         this.drag(new ScriptDragContext(this, script, mousePos));
+        // Move the script to the bottom of the container so it renders on top of everything else
+        this.scriptContainer.appendChild(script.dom);
     }
 
     public toWorkspaceCoords(pos: Vec2): Vec2 {
@@ -231,7 +212,7 @@ class SVGWorkspace extends ScuffrParentElement {
         };
     }
 
-    protected override _getWorkspace(): SVGWorkspace {
+    protected override _getWorkspace(): ScuffrWorkspace {
         return this;
     }
 
@@ -340,10 +321,3 @@ class SVGWorkspace extends ScuffrParentElement {
             event.preventDefault();
     }
 }
-
-function renderWorkspace(root: SVGElement, backgroundPattern: SVGPatternElement, scripts: BlockScripts): SVGWorkspace {
-    const element = new SVGWorkspace(root, backgroundPattern, scripts);
-    return element;
-}
-
-export { renderWorkspace, SVGWorkspace as SVGRenderedWorkspace, DragContext }

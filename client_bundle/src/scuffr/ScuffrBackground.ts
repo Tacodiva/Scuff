@@ -1,7 +1,7 @@
-import type { Vec2 } from "../../utils/Vec2";
-import type BlockInstance from "../BlockInstance";
-import { ScuffrElement, ScuffrElementImpl, ScuffrParentElement } from "./ScuffrElement";
-import type { IScuffrBlockPartElement } from "./SVGBlockRenderer";
+import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
+import type { IScuffrBlockPartElement } from "./ScuffrBlockInstanceElement";
+import type { Vec2 } from "../utils/Vec2";
+import type { BlockInstance } from "../block/BlockInstance";
 
 class ScuffrBackground {
     public readonly shape: ScuffrBackgroundShape;
@@ -15,11 +15,13 @@ class ScuffrBackground {
     }
 }
 
-class ScuffrBackgroundElement extends ScuffrElementImpl {
+class ScuffrBackgroundElement extends ScuffrElement {
+    public override parent: ScuffrParentElement;
     public readonly background: ScuffrBackground;
 
     public constructor(parent: ScuffrParentElement, background: ScuffrBackground) {
-        super(parent, parent.dom.appendChild(background.shape.createElement()), { x: 0, y: 0 }, { x: 0, y: 0 });
+        super(parent.dom.appendChild(background.shape.createElement()), parent.workspace);
+        this.parent = parent;
         this.background = background;
         this.parent.dom.prepend(this.dom);
     }

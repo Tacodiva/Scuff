@@ -1,16 +1,16 @@
-import type BlockInstance from "./BlockInstance";
 import type { IBlockPart } from "./BlockParts";
-import type { BlockScript } from "./BlockScript";
-import type BlockType from "./BlockType";
-import { ScuffrBlockInputAttachmentPoint } from "./svg/ScuffrAttachmentPoint";
-import { ScuffrBlockContentElement, ScuffrLiteralInputElement, ScuffrParentRef, type IScuffrBlockPartElement, type ScuffrBlockInstanceElement } from "./svg/SVGBlockRenderer";
-import type { SVGRenderedScript } from "./svg/SVGScriptRenderer";
+import { ScuffrBlockInputAttachmentPoint } from "../scuffr/ScuffrAttachmentPoint";
+import type { ScuffrRootScriptElement } from "../scuffr/ScuffrRootScriptElement";
+import { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
+import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
+import { ScuffrLiteralInputElement } from "../scuffr/ScuffrLiteralInputElement";
+import type { BlockType } from "./BlockType";
 
-interface IBlockInput {
-    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrParentRef<BlockInputType>, root: SVGRenderedScript): IScuffrBlockPartElement;
+export interface IBlockInput {
+    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>, root: ScuffrRootScriptElement): IScuffrBlockPartElement;
 }
 
-abstract class BlockInputType implements IBlockPart {
+export abstract class BlockInputType implements IBlockPart {
     public readonly id: string;
     public readonly defaultValue: IBlockInput;
 
@@ -22,9 +22,9 @@ abstract class BlockInputType implements IBlockPart {
         this.block = block;
     }
 
-    public render(block: ScuffrBlockContentElement, root: SVGRenderedScript): IScuffrBlockPartElement {
+    public render(block: ScuffrBlockContentElement, root: ScuffrRootScriptElement): IScuffrBlockPartElement {
         const input = block.parent.block.getInput(this.id);
-        const rendered = input.render(block.parent, new ScuffrParentRef(this, block), root);
+        const rendered = input.render(block.parent, new ScuffrBlockRef(this, block), root);
         root.attachmentPoints.push(new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered));
         return rendered;
     }
@@ -32,7 +32,7 @@ abstract class BlockInputType implements IBlockPart {
     public abstract canTakeValue(value: IBlockInput): boolean;
 }
 
-class BlockInputString implements IBlockInput {
+export class BlockInputString implements IBlockInput {
     private _value: string;
 
     public constructor(value: string) {
@@ -43,12 +43,12 @@ class BlockInputString implements IBlockInput {
         return true;
     }
 
-    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrParentRef<unknown>, root: SVGRenderedScript): IScuffrBlockPartElement {
+    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<unknown>, root: ScuffrRootScriptElement): IScuffrBlockPartElement {
         return new ScuffrLiteralInputElement(parent.content, this._value);
     }
 }
 
-class BlockInputTypeString extends BlockInputType {
+export class BlockInputTypeString extends BlockInputType {
 
     public constructor(id: string, block: BlockType, defaultValue: string = "") {
         super(id, block, new BlockInputString(defaultValue));
@@ -58,6 +58,3 @@ class BlockInputTypeString extends BlockInputType {
         return true;
     }
 }
-
-export type { IBlockInput };
-export { BlockInputType, BlockInputTypeString };

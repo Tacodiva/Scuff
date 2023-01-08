@@ -1,9 +1,7 @@
 import type { Vec2 } from "../utils/Vec2";
-import type BlockInstance from "./BlockInstance";
-import Blocks from "./Blocks";
-import { SVGRenderedScript } from "./svg/SVGScriptRenderer";
+import type { BlockInstance } from "./BlockInstance";
 
-class BlockScript {
+export class BlockScript {
 
     public blocks: BlockInstance[];
     public translation: Vec2;
@@ -14,5 +12,3 @@ class BlockScript {
     }
 
 }
-
-export { BlockScript }

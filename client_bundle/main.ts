@@ -1,26 +1,27 @@
-import Blocks from './src/block/Blocks';
 import { BlockScript } from './src/block/BlockScript';
+import { ScratchBlocks } from './src/scratch_blocks/ScratchBlocks';
 import Target from './src/Target';
 import App from './svelte/App.svelte';
+import './css';
 
 const target = new Target();
 
 const script = new BlockScript([
-	Blocks.MOVE_STEPS.createInstance({
-		test: Blocks.OP_PLUS.createInstance({
-			test: Blocks.OP_PLUS.createInstance({
-				test: Blocks.OP_PLUS.createInstance({
-					test: Blocks.OP_PLUS.createInstance({
-						testII: Blocks.OP_PLUS.createInstance(),
+	ScratchBlocks.MOVE_STEPS.createInstance({
+		test: ScratchBlocks.OP_PLUS.createInstance({
+			test: ScratchBlocks.OP_PLUS.createInstance({
+				test: ScratchBlocks.OP_PLUS.createInstance({
+					test: ScratchBlocks.OP_PLUS.createInstance({
+						testII: ScratchBlocks.OP_PLUS.createInstance(),
 					}),
 				}),
 			}),
-			testII: Blocks.OP_PLUS.createInstance(),
+			testII: ScratchBlocks.OP_PLUS.createInstance(),
 		}),
 	}),
-	Blocks.MOVE_STEPS.createInstance(),
-	Blocks.MOVE_STEPS.createInstance({
-		test: Blocks.OP_PLUS.createInstance({}),
+	ScratchBlocks.MOVE_STEPS.createInstance(),
+	ScratchBlocks.MOVE_STEPS.createInstance({
+		test: ScratchBlocks.OP_PLUS.createInstance({}),
 	}),
 ]);
 

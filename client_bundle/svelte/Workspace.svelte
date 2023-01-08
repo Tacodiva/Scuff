@@ -1,20 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type BlockScripts from "../src/block/BlockScripts";
-    import {
-        renderWorkspace,
-        type SVGRenderedWorkspace,
-    } from "../src/block/svg/SVGWorkspace";
+    import type { BlockScripts } from "../src/block/BlockScripts";
+    import { ScuffrWorkspace } from "../src/scuffr/ScuffrWorkspace";
 
     export var scripts: BlockScripts;
 
     var elementSVGRoot: SVGSVGElement;
     var elementBackgroundPattern: SVGPatternElement;
     var elementWorkspace: SVGGElement;
-    var worksapce: SVGRenderedWorkspace;
+    var worksapce: ScuffrWorkspace;
 
     onMount(() => {
-        worksapce = renderWorkspace(
+        worksapce = new ScuffrWorkspace(
             elementWorkspace,
             elementBackgroundPattern,
             scripts
@@ -30,8 +27,7 @@
 <svg
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
-    width="100%"
-    height="2000px"
+    style="width: 100vw; height: 100vh;"
     bind:this={elementSVGRoot}
 >
     <defs>
@@ -48,7 +44,7 @@
     </defs>
     <g bind:this={elementWorkspace} />
     <text style="fill:white;font-family:monospace;" dominant-baseline="hanging">
-        <tspan x="2" y="5">Scuff alpha 2</tspan>
+        <tspan x="2" y="5">Scuff alpha 3</tspan>
         <tspan x="2" dy="1.2em">Ignore the debug circles!</tspan>
     </text>
 </svg>

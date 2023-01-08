@@ -1,14 +1,11 @@
-import type BlockInstance from "./BlockInstance";
-import BlockType from "./BlockType";
-import { ScuffrBackground, ScuffrBackgroundShape } from "./svg/SVGBackgroundRenderer";
-import type { ISVGBlockRenderRenderable } from "./svg/SVGBlockRenderer";
+import { BlockType } from "./BlockType";
+import { ScuffrBackground, ScuffrBackgroundShape } from "../scuffr/ScuffrBackground";
+import type { BlockInstance } from "./BlockInstance";
 
-abstract class BlockTypeRound extends BlockType implements ISVGBlockRenderRenderable {
+export abstract class BlockTypeRound extends BlockType {
 
     public getBackground(block: BlockInstance): ScuffrBackground {
         return new ScuffrBackground(ScuffrBackgroundShape.ROUND_BLOCK, this.category.colorPrimary, this.category.colorTertiary);
     }
 
 }
-
-export { BlockTypeRound as default }

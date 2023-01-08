@@ -1,8 +1,8 @@
-import type { Vec2 } from "../../utils/Vec2";
-import type { BlockInputType } from "../BlockInputType";
 import type { ScuffrElement } from "./ScuffrElement";
-import type { IScuffrBlockPartElement, ScuffrBlockInstanceElement } from "./SVGBlockRenderer";
-import type { SVGRenderedScript } from "./SVGScriptRenderer";
+import type { IScuffrBlockPartElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
+import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
+import type { Vec2 } from "../utils/Vec2";
+import type { BlockInputType } from "../block/BlockInputType";
 
 abstract class ScuffrAttachmentPoint {
     public abstract readonly parent: ScuffrElement;
@@ -15,7 +15,7 @@ abstract class ScuffrAttachmentPoint {
         this._translation = null;
     }
 
-    public calculateDelta(source: SVGRenderedScript, target: SVGRenderedScript): Vec2 {
+    public calculateDelta(source: ScuffrRootScriptElement, target: ScuffrRootScriptElement): Vec2 {
         const translation = this.translation;
         return {
             x: this.translation.x + target.translation.x - source.translation.x,
@@ -36,12 +36,12 @@ abstract class ScuffrAttachmentPoint {
         };
     }
 
-    public abstract get root() : SVGRenderedScript;
+    public abstract get root() : ScuffrRootScriptElement;
 
     public abstract addHighlight(): void;
     public abstract removeHighlight(): void;
-    public abstract canTakeScript(script: SVGRenderedScript): boolean;
-    public abstract takeScript(script: SVGRenderedScript): void;
+    public abstract canTakeScript(script: ScuffrRootScriptElement): boolean;
+    public abstract takeScript(script: ScuffrRootScriptElement): void;
 }
 
 class ScuffrBlockInputAttachmentPoint extends ScuffrAttachmentPoint {
@@ -62,12 +62,12 @@ class ScuffrBlockInputAttachmentPoint extends ScuffrAttachmentPoint {
     public removeHighlight(): void {
     }
 
-    public canTakeScript(script: SVGRenderedScript): boolean {
+    public canTakeScript(script: ScuffrRootScriptElement): boolean {
         if (script.children.length !== 1) return false;
         return this.input.canTakeValue(script.children[0].block);
     }
 
-    public takeScript(script: SVGRenderedScript): void {
+    public takeScript(script: ScuffrRootScriptElement): void {
         this.block.setInput(this.input, script.children[0]);
     }
 
@@ -77,13 +77,13 @@ class ScuffrBlockInputAttachmentPoint extends ScuffrAttachmentPoint {
 }
 
 class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
-    public readonly parent: SVGRenderedScript;
+    public readonly parent: ScuffrRootScriptElement;
     public readonly index: number;
 
     public readonly requireStackUp: boolean;
     public readonly requireStackDown: boolean;
 
-    public constructor(script: SVGRenderedScript, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
+    public constructor(script: ScuffrRootScriptElement, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
         super(offset);
         this.parent = script;
         this.index = index;
@@ -97,7 +97,7 @@ class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
     public removeHighlight(): void {
     }
 
-    public canTakeScript(script: SVGRenderedScript): boolean {
+    public canTakeScript(script: ScuffrRootScriptElement): boolean {
         if (this.requireStackUp) {
             const firstBlock = script.script.blocks[0];
             if (!firstBlock.type.canStackUp(firstBlock))
@@ -111,11 +111,11 @@ class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
         return true;
     }
 
-    public takeScript(script: SVGRenderedScript): void {
+    public takeScript(script: ScuffrRootScriptElement): void {
         this.parent.insertScript(this.index, script);
     }
 
-    public override calculateDelta(source: SVGRenderedScript, target: SVGRenderedScript): Vec2 {
+    public override calculateDelta(source: ScuffrRootScriptElement, target: ScuffrRootScriptElement): Vec2 {
         const delta = super.calculateDelta(source, target);
         if (delta.y < 0) {
             let newY = delta.y - source.topOffset;
@@ -127,7 +127,7 @@ class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
         return delta;
     }
 
-    public get root(): SVGRenderedScript {
+    public get root(): ScuffrRootScriptElement {
         return this.parent.getRoot();
     }
 }

@@ -1,5 +1,5 @@
 
-class BlockCategory {
+export class BlockCategory {
 
     public static readonly MOTION = new BlockCategory("motion");
     public static readonly OPERATORS = new BlockCategory("operators");
@@ -16,5 +16,3 @@ class BlockCategory {
         this.colorTertiary = `var(--scuff-block-${id}-bg-tertiary)`;
     }
 }
-
-export { BlockCategory as default }

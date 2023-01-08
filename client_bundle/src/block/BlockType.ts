@@ -1,19 +1,18 @@
 import type { IBlockPart } from "./BlockParts";
 import type { BlockInputType } from "./BlockInputType";
 import { BlockPartText } from "./BlockParts";
-import type BlockCategory from "./BlockCategory";
-import BlockInstance from "./BlockInstance";
+import { BlockInstance } from "./BlockInstance";
 import type l10nString from "../l10n";
-import type { ISVGBlockRenderer } from "./svg/SVGBlockRenderer";
+import type { ScuffrBackground } from "../scuffr/ScuffrBackground";
+import type { BlockCategory } from "./BlockCategory";
 
-interface BlockTypeDescription {
+export interface BlockTypeDescription {
     text: l10nString;
     inputs?: BlockInputType[];
     category: BlockCategory;
-    renderer: ISVGBlockRenderer;
 }
 
-abstract class BlockType {
+export abstract class BlockType {
 
     public readonly id: string;
 
@@ -22,20 +21,16 @@ abstract class BlockType {
     private _inputs: Map<string, BlockInputType> | null;
     private _parts: IBlockPart[] | null;
 
-    private _renderer: ISVGBlockRenderer | null;
-
     constructor(id: string) {
         this.id = id;
         this._inputs = null;
         this._parts = null;
-        this._renderer = null;
         this._category = null;
     }
 
     protected init(desc: BlockTypeDescription) {
         this._inputs = new Map();
         this._parts = [];
-        this._renderer = desc.renderer;
         this._category = desc.category;
 
         const text = desc.text.str;
@@ -82,11 +77,6 @@ abstract class BlockType {
         return this._parts!;
     }
 
-    public get renderer(): ISVGBlockRenderer {
-        this.checkInited();
-        return this._renderer!;
-    }
-
     public get category(): BlockCategory {
         this.checkInited();
         return this._category!;
@@ -111,7 +101,7 @@ abstract class BlockType {
     public canStackUp(block: BlockInstance): boolean {
         return false;
     }
-}
 
-export type { BlockTypeDescription };
-export default BlockType;
+    public abstract getBackground(block: BlockInstance): ScuffrBackground;
+
+}

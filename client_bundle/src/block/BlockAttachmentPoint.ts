@@ -1,8 +1,6 @@
 import type { Vec2 } from "../utils/Vec2"
-import type BlockInstance from "./BlockInstance";
 import type { BlockScript } from "./BlockScript";
-import type { ScuffrElement, ScuffrElementImpl } from "./svg/ScuffrElement";
-import type { ScuffrBlockInstanceElement } from "./svg/SVGBlockRenderer";
+import type { ScuffrElement } from "../scuffr/ScuffrElement";
 
 interface IBlockAttachmentPointType {
     canTakeScript(script: BlockScript): boolean;

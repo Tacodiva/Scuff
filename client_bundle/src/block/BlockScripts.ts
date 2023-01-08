@@ -1,7 +1,7 @@
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockScript } from "./BlockScript";
 
-class BlockScripts {
+export class BlockScripts {
 
     public scripts: BlockScript[];
 
@@ -14,5 +14,3 @@ class BlockScripts {
         this.transformScale = 1;
     }
 }
-
-export { BlockScripts as default }

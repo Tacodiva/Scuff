@@ -1,19 +1,18 @@
-import type BlockInstance from "./BlockInstance";
-import BlockType, { type BlockTypeDescription } from "./BlockType";
-import { ScuffrBackground, ScuffrBackgroundShape } from "./svg/SVGBackgroundRenderer";
-import type { ISVGBlockRenderRenderable } from "./svg/SVGBlockRenderer";
+import { BlockType, type BlockTypeDescription } from "./BlockType";
+import { ScuffrBackground, ScuffrBackgroundShape } from "../scuffr/ScuffrBackground";
+import type { BlockInstance } from "./BlockInstance";
 
-enum StackableBlockShape {
+export enum StackableBlockShape {
     HEAD,
     BODY,
     TAIL
 }
 
-interface StackableBlockTypeDescription extends BlockTypeDescription {
+export interface StackableBlockTypeDescription extends BlockTypeDescription {
     shape?: StackableBlockShape;
 }
 
-abstract class BlockTypeStackable extends BlockType implements ISVGBlockRenderRenderable {
+export abstract class BlockTypeStackable extends BlockType {
     private _shape: StackableBlockShape | null;
 
     constructor(id: string) {
@@ -25,11 +24,11 @@ abstract class BlockTypeStackable extends BlockType implements ISVGBlockRenderRe
         this._shape = desc.shape ?? StackableBlockShape.BODY;
         super.init(desc);
     }
-    
+
     public override canStackDown(block: BlockInstance): boolean {
         return this._shape !== StackableBlockShape.TAIL;
     }
-    
+
     public override canStackUp(block: BlockInstance): boolean {
         return this._shape !== StackableBlockShape.HEAD;
     }
@@ -42,6 +41,3 @@ abstract class BlockTypeStackable extends BlockType implements ISVGBlockRenderRe
         return ScuffrBackgroundShape.STACK_BODY;
     }
 }
-
-export { BlockTypeStackable as StackableBlockType, StackableBlockShape };
-export type { StackableBlockTypeDescription };

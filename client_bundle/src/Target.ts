@@ -1,4 +1,4 @@
-import BlockScripts from "./block/BlockScripts";
+import { BlockScripts } from "./block/BlockScripts";
 
 class Target {
 
