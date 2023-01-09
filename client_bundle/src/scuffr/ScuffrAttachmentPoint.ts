@@ -1,6 +1,6 @@
 import type { ScuffrElement } from "./ScuffrElement";
 import type { IScuffrBlockPartElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
-import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
+import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInputType } from "../block/BlockInputType";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";

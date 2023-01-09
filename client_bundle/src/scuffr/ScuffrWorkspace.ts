@@ -1,9 +1,9 @@
-import { BlockScript } from "../block/BlockScript";
+import { BlockScript, BlockScriptRoot } from "../block/BlockScript";
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint, type ScuffrAttachmentPointList } from "./ScuffrAttachmentPoint";
 import type { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
+import { ScuffrRootScriptElement } from "./ScuffrScriptElement";
 import type { BlockScripts } from "../block/BlockScripts";
 import type { BlockInstance } from "../block/BlockInstance";
 import type { ScuffrLiteralInputElement } from "./ScuffrLiteralInputElement";
@@ -78,8 +78,8 @@ class ScriptDragAction extends ScuffrAction {
         this.script = script;
         const startPosWorkspace = this.workspace.toWorkspaceCoords(startPos);
         this.offset = {
-            x: script.script.translation.x - startPosWorkspace.x,
-            y: script.script.translation.y - startPosWorkspace.y,
+            x: script.translationX - startPosWorkspace.x,
+            y: script.translationY - startPosWorkspace.y,
         };
         this._attachmentPoint = null;
     }
@@ -89,7 +89,7 @@ class ScriptDragAction extends ScuffrAction {
         scriptCoords.x += this.offset.x;
         scriptCoords.y += this.offset.y;
 
-        this.script.script.translation = scriptCoords;
+        this.script.translationSelf = scriptCoords;
         this.script.updateTraslation();
 
         this._attachmentPoint = this._findAttachmentPoint();
@@ -268,19 +268,19 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         }
     }
 
-    public addScript(script: BlockScript): ScuffrRootScriptElement {
+    public addScript(script: BlockScriptRoot): ScuffrRootScriptElement {
         const rendered = new ScuffrRootScriptElement(this, script);
         rendered.updateAll();
-        this._addRenderedScript(rendered);
+        this.addRenderedScript(rendered);
         return rendered;
     }
 
-    private _addRenderedScript(script: ScuffrRootScriptElement) {
+    public addRenderedScript(script: ScuffrRootScriptElement) {
         this.blockScripts.scripts.push(script.script);
         this.children.push(script);
     }
 
-    public deleteScript(script: BlockScript, deleteBlocks?: boolean): boolean {
+    public deleteScript(script: BlockScriptRoot, deleteBlocks?: boolean): boolean {
         return this._deleteScriptAt(this.blockScripts.scripts.indexOf(script), deleteBlocks);
     }
 
@@ -288,7 +288,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         return this._deleteScriptAt(this.children.indexOf(script), deleteBlocks);
     }
 
-    public getRenderedScript(script: BlockScript): ScuffrRootScriptElement {
+    public getRenderedScript(script: BlockScriptRoot): ScuffrRootScriptElement {
         const rendered = this.children.find(rendered => rendered.script === script);
         if (!rendered) throw new Error("Script not a part of this workspace.");
         return rendered;
@@ -303,23 +303,23 @@ export class ScuffrWorkspace extends ScuffrParentElement {
     }
 
     public dragBlock(block: BlockInstance, mousePos: Vec2) {
-        const script = new BlockScript([block]);
+        const script = new BlockScriptRoot([block]);
         const renderedScript = this.addScript(script);
         let pos = this.toWorkspaceCoords(mousePos);
         pos.x -= renderedScript.dimensions.x / 2;
         pos.y -= renderedScript.dimensions.y / 2;
-        script.translation = pos;
+        renderedScript.translationSelf = pos;
         renderedScript.updateTraslation();
         this.dragRenderedScript(renderedScript, mousePos);
     }
 
     public dragRenderedBlock(block: ScuffrBlockInstanceElement, mousePos: Vec2) {
-        const renderedScript = new ScuffrRootScriptElement(this, block);
-        this._addRenderedScript(renderedScript);
+        const renderedScript = new ScuffrRootScriptElement(this, [block]);
+        this.addRenderedScript(renderedScript);
         this.dragRenderedScript(renderedScript, mousePos);
     }
 
-    public dragScript(script: BlockScript, mousePos: Vec2) {
+    public dragScript(script: BlockScriptRoot, mousePos: Vec2) {
         this.dragRenderedScript(this.getRenderedScript(script), mousePos);
     }
 

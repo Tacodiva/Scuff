@@ -5,21 +5,53 @@
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
 
-	<title>Svelte app</title>
+	<title>Scuff</title>
 
-	<link rel='icon' type='image/png' href='favicon.png'>
-	<link rel='stylesheet' href='bundle/bundle.css'>
+	<style>
+		#scuff-loading {
+			width: 100vw;
+			height: 100vh;
+
+			background-color: #111;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#scuff-loading>div {
+			width: min(50px, 5vw);
+			height: min(50px, 5vw);
+			border-radius: 50%;
+			border: 15px solid transparent;
+			border-top-color: #07d;
+			border-bottom-color: #07d;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
 
 	<script src='lib/require.js'></script>
+	<link rel='stylesheet' href='bundle/bundle.css'>
 
 	<script>
 		const SVG_NS = "http://www.w3.org/2000/svg";
-	</script>
 
-	<script defer src='bundle/bundle.js'></script>
+		requirejs(["bundle/bundle.js"], (bundle) => bundle.load(() => {
+			document.getElementById("scuff-loading").remove();
+			bundle.main();
+		}));
+	</script>
 </head>
 
-<body class="scuff-theme-light">
+<body>
+	<div id="scuff-loading">
+		<div></div>
+	</div>
 </body>
 
 </html>

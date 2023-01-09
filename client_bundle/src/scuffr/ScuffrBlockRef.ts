@@ -1,6 +1,6 @@
 import type { ScuffrParentElement } from "./ScuffrElement";
 import type { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
-import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
+import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
 
 export interface IScuffrBlockParent<T = unknown> extends ScuffrParentElement  {
     onChildDrag?(key: T, event: MouseEvent): boolean;

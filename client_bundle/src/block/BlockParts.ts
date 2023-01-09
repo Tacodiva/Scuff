@@ -1,5 +1,5 @@
 import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
-import type { ScuffrRootScriptElement } from "../scuffr/ScuffrRootScriptElement";
+import type { ScuffrRootScriptElement } from "../scuffr/ScuffrScriptElement";
 import { ScuffrTextElement } from "../scuffr/ScuffrTextElement";
 
 export interface IBlockPart {

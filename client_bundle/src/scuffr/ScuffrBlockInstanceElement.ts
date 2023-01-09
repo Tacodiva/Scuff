@@ -1,7 +1,7 @@
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import { ScuffrBackground, ScuffrBackgroundElement } from "./ScuffrBackground";
+import { ScuffrBackground, ScuffrBackgroundElement, type IScuffrBackgroundModifier, type ScuffrBackgroundContentLine } from "./ScuffrBackground";
 import { BlockInputType } from "../block/BlockInputType";
-import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
+import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
 import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
 import type { BlockInstance } from "../block/BlockInstance";
 import { ScuffrAttachmentPointList, type IScuffrPointAttachable } from "./ScuffrAttachmentPoint";
@@ -9,6 +9,7 @@ import { ScuffrAttachmentPointList, type IScuffrPointAttachable } from "./Scuffr
 export interface IScuffrBlockPartElement extends ScuffrElement {
     getBackground?(): ScuffrBackground | null;
     onAncestryChange?(root: ScuffrRootScriptElement | null): void;
+    getBackgroundModifier?(): IScuffrBackgroundModifier | null;
 }
 
 export abstract class ScuffrBackgroundedBlockPartElement<TContent extends ScuffrElement> extends ScuffrBackgroundElement<TContent> implements IScuffrBlockPartElement, IScuffrPointAttachable {
@@ -78,6 +79,25 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
     public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {
         this.content.setInput(key, block);
     }
+
+    protected override getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
+        const lines: ScuffrBackgroundContentLine[] = [];
+        let lineContent: IScuffrBlockPartElement[] | null = null;
+        for (const part of this.content.children) {
+            if (part.getBackgroundModifier) {
+                if (lineContent) {
+                    lines.push({ elements: lineContent, dimensions: { x: 0, y: 0 } });
+                    lineContent = [];
+                }
+                lines.push({ elements: [part], modifier: part.getBackgroundModifier() ?? undefined, dimensions: { x: 0, y: 0 } });
+            } else {
+                if (!lineContent) lineContent = [];
+                lineContent.push(part);
+            }
+        }
+        if (lineContent) lines.push({ elements: lineContent, dimensions: { x: 0, y: 0 } });
+        return lines;
+    }
 }
 
 interface ScuffrBlockContentInput {
@@ -111,27 +131,6 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         if (part instanceof BlockInputType)
             this.inputs.set(part.id, { element: renderedPart, index });
         return renderedPart;
-    }
-
-    public override update(propagateUp: boolean): void {
-        let x = 0;
-        let height = 0;
-        const backgroundShape = this.parent.getBackground().shape;
-
-        for (let partIdx = 0; partIdx < this.children.length; partIdx++) {
-            const renderedPart = this.children[partIdx];
-
-            x = backgroundShape.prePartPadding(this.parent.block, partIdx, x, renderedPart);
-            renderedPart.translationParent.x = x;
-            renderedPart.updateTraslation();
-            x = backgroundShape.postPartPadding(this.parent.block, partIdx, x, renderedPart);
-
-            if (renderedPart.dimensions.y > height) height = renderedPart.dimensions.y;
-        }
-
-        this.dimensions = { x, y: height };
-        this.topLeftOffset = { x: 0, y: height / 2 };
-        super.update(propagateUp);
     }
 
     public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {

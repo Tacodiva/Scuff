@@ -1,9 +1,8 @@
 
-.scuff-theme-light {
-
-	
+.scuff-theme-dark {
 	--scuff-workspace-bg-main: #111;
 	--scuff-workspace-bg-dots: #333;
+	--scuff-workspace-text: #f9f9f9;
 	
 	--scuff-block-font: "Helvetica Neue";
 	--scuff-block-font-fill: #ffffff;
@@ -55,4 +54,11 @@
 	--scuff-block-extension-bg-primary: #0fbd8c;
 	--scuff-block-extension-bg-secondary: #0da57a;
 	--scuff-block-extension-bg-tertiary: #0b8e69;
+}
+
+.scuff-theme-light {
+	--scuff-workspace-bg-main: #f9f9f9;
+	--scuff-workspace-bg-dots: #ddd;
+	--scuff-workspace-text: #111;
+
 }

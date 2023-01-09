@@ -19,7 +19,7 @@ export default {
 
 	output: {
 		sourcemap: !production,
-		format: 'iife',
+		format: 'amd',
 		name: 'app',
 		file: 'build/client/bundle.js',
 	},

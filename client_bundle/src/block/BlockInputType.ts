@@ -4,6 +4,7 @@ import { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
 import type { ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
 import { ScuffrLiteralInputElement } from "../scuffr/ScuffrLiteralInputElement";
 import type { BlockType } from "./BlockType";
+import { BlockScriptInput } from "./BlockScript";
 
 export interface IBlockInput {
     render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrPointAttachable;
@@ -51,6 +52,16 @@ export class BlockInputTypeString extends BlockInputType {
 
     public constructor(id: string, block: BlockType, defaultValue: string = "") {
         super(id, block, new BlockInputString(defaultValue));
+    }
+
+    public canTakeValue(value: IBlockInput): boolean {
+        return true;
+    }
+}
+
+export class BlockInputTypeSubscript extends BlockInputType {
+    public constructor(id: string, block: BlockType) {
+        super(id, block, new BlockScriptInput());
     }
 
     public canTakeValue(value: IBlockInput): boolean {

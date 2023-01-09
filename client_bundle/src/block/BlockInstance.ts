@@ -3,7 +3,7 @@ import type { IBlockInput } from "./BlockInputType";
 import type { BlockInputType } from "./BlockInputType";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrParentElement } from "../scuffr/ScuffrElement";
-import type { ScuffrRootScriptElement } from "../scuffr/ScuffrRootScriptElement";
+import type { ScuffrRootScriptElement } from "../scuffr/ScuffrScriptElement";
 import type { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
 import type { BlockType } from "./BlockType";
 
