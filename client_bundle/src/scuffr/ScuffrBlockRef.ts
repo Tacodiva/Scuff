@@ -9,7 +9,7 @@ export interface IScuffrBlockParent<T = unknown> extends ScuffrParentElement  {
 }
 
 export class ScuffrBlockRef<T = unknown> {
-    public readonly childKey: T;
+    public childKey: T;
     public readonly parent: IScuffrBlockParent<T>;
 
     public constructor(key: T, container: IScuffrBlockParent<T>) {

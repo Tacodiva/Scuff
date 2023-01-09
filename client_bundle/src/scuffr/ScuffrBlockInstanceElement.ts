@@ -1,95 +1,70 @@
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import { ScuffrBackground, ScuffrBackgroundElement, ScuffrBackgroundShape } from "./ScuffrBackground";
+import { ScuffrBackground, ScuffrBackgroundElement } from "./ScuffrBackground";
 import { BlockInputType } from "../block/BlockInputType";
 import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
-import type { IScuffrBlockParent, ScuffrBlockRef } from "./ScuffrBlockRef";
-import type { Vec2 } from "../utils/Vec2";
+import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
 import type { BlockInstance } from "../block/BlockInstance";
+import { ScuffrAttachmentPointList, type IScuffrPointAttachable } from "./ScuffrAttachmentPoint";
 
 export interface IScuffrBlockPartElement extends ScuffrElement {
     getBackground?(): ScuffrBackground | null;
-    setRoot?(root: ScuffrRootScriptElement): void;
+    onAncestryChange?(root: ScuffrRootScriptElement | null): void;
 }
 
-export class ScuffrBlockInstanceElement extends ScuffrParentElement implements IScuffrBlockPartElement {
-    public override readonly children: readonly [ScuffrBackgroundElement, ScuffrBlockContentElement];
-    public override parent: IScuffrBlockParent;
+export abstract class ScuffrBackgroundedBlockPartElement<TContent extends ScuffrElement> extends ScuffrBackgroundElement<TContent> implements IScuffrBlockPartElement, IScuffrPointAttachable {
+    public readonly attachmentPoints: ScuffrAttachmentPointList;
     public root: ScuffrRootScriptElement;
+
+    public constructor(root: ScuffrRootScriptElement, parent: ScuffrParentElement, background: ScuffrBackground) {
+        super(parent, background);
+        this.root = root;
+        this.attachmentPoints = new ScuffrAttachmentPointList(root);
+    }
+
+    public getBackground(): ScuffrBackground {
+        return this.background;
+    }
+
+    public onAncestryChange(root: ScuffrRootScriptElement | null) {
+        if (root !== null) this.root = root;
+        this.attachmentPoints.onAncestryChange(root);
+    }
+
+    public override onTranslationUpdate(): void {
+        this.attachmentPoints.recalculateTranslation();
+        super.onTranslationUpdate();
+    }
+}
+
+export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartElement<ScuffrBlockContentElement> {
+    public override parent: IScuffrBlockParent;
     public readonly block: BlockInstance;
     public parentRef: ScuffrBlockRef;
 
-    public attachmentPointStart: number;
-    public attachmentPointCount: number;
-
-    public get background() { return this.children[0]; }
-    public get content() { return this.children[1]; }
-
-    public constructor(block: BlockInstance, parentRef: ScuffrBlockRef, root: ScuffrRootScriptElement) {
-        super(parentRef.parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parentRef.parent.workspace);
-        
-        const background = block.type.getBackground(block);
-
-        this.root = root;
+    public constructor(block: BlockInstance, parentRef: ScuffrBlockRef) {
+        super(parentRef.parent.getRoot(), parentRef.parent, block.type.getBackground(block));
         this.parent = parentRef.parent;
         this.parentRef = parentRef;
         this.block = block;
-        this.attachmentPointStart = root.attachmentPoints.length;
-        this.children = [
-            new ScuffrBackgroundElement(this, background),
-            new ScuffrBlockContentElement(this)
-        ];
+        this.content.renderAll();
+    }
 
-        const parts = block.type.parts;
-
-        let x = 0;
-        let height = 0;
-
-        for (let partIdx = 0; partIdx < parts.length; partIdx++) {
-            const part = parts[partIdx];
-
-            const renderedPart = part.render(this.content, root);
-            const renderedPartIdx = this.content.children.push(renderedPart);
-            if (part instanceof BlockInputType)
-                this.content.inputs.set(part.id, { element: renderedPart, index: renderedPartIdx });
-            x = background.shape.prePartPadding(block, partIdx, x, renderedPart);
-            renderedPart.translation.x += x;
-            renderedPart.updateTraslation();
-            x = background.shape.postPartPadding(block, partIdx, x, renderedPart);
-
-            if (renderedPart.dimensions.y > height) height = renderedPart.dimensions.y;
-        }
-
-
-        this.updateDimensions({ x, y: height });
-        this.attachmentPointCount = root.attachmentPoints.length - this.attachmentPointStart;
-        return this;
+    protected createContent(): ScuffrBlockContentElement {
+        return new ScuffrBlockContentElement(this);
     }
 
     public setParent(parentRef: ScuffrBlockRef) {
         this.parentRef = parentRef;
         this.parent = parentRef.parent;
         const root = parentRef.parent.getRoot();
-        if (root !== this.root)
-            this.setRoot(parentRef.parent.getRoot());
+        this.onAncestryChange(parentRef.parent.getRoot());
     }
 
-    public setRoot(root: ScuffrRootScriptElement) {
-        this.root = root;
+    public override onAncestryChange(root: ScuffrRootScriptElement | null): void {
+        super.onAncestryChange(root);
         for (const child of this.content.children) {
-            if (child.setRoot) child.setRoot(root);
+            if (child.onAncestryChange) child.onAncestryChange(root);
         }
-    }
-
-    public getBackground(): ScuffrBackground {
-        return this.background.background;
-    }
-
-    public updateDimensions(dimensions: Vec2) {
-        this.content.dimensions = dimensions;
-        this.content.topLeftOffset = { x: 0, y: dimensions.y / 2 };
-        this.background.updateDimensions(this.content);
-        this.dimensions = this.background.dimensions;
-        this.topLeftOffset = this.background.topLeftOffset;
     }
 
     public override onDrag(event: MouseEvent): boolean {
@@ -101,10 +76,7 @@ export class ScuffrBlockInstanceElement extends ScuffrParentElement implements I
     }
 
     public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {
-        const oldInput = this.getInput(key);
-        if (!oldInput) throw new Error(`No input ${key.id} on block ${this.block.type.id}.`)
-        this.block.setInput(key, block.block);
-        this.update(block);
+        this.content.setInput(key, block);
     }
 }
 
@@ -118,11 +90,60 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
     public parent: ScuffrBlockInstanceElement;
     public inputs: Map<string, ScuffrBlockContentInput>;
 
+    public get root() { return this.parent.root; }
+
     public constructor(parent: ScuffrBlockInstanceElement) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
         this.inputs = new Map();
+    }
+
+    public renderAll() {
+        for (let partIdx = 0; partIdx < this.parent.block.type.parts.length; partIdx++)
+            this._renderPart(partIdx);
+    }
+
+    private _renderPart(index: number) {
+        const part = this.parent.block.type.parts[index];
+        const renderedPart = part.render(this, this.root);
+        this.children[index] = (renderedPart);
+        if (part instanceof BlockInputType)
+            this.inputs.set(part.id, { element: renderedPart, index });
+        return renderedPart;
+    }
+
+    public override update(propagateUp: boolean): void {
+        let x = 0;
+        let height = 0;
+        const backgroundShape = this.parent.getBackground().shape;
+
+        for (let partIdx = 0; partIdx < this.children.length; partIdx++) {
+            const renderedPart = this.children[partIdx];
+
+            x = backgroundShape.prePartPadding(this.parent.block, partIdx, x, renderedPart);
+            renderedPart.translationParent.x = x;
+            renderedPart.updateTraslation();
+            x = backgroundShape.postPartPadding(this.parent.block, partIdx, x, renderedPart);
+
+            if (renderedPart.dimensions.y > height) height = renderedPart.dimensions.y;
+        }
+
+        this.dimensions = { x, y: height };
+        this.topLeftOffset = { x: 0, y: height / 2 };
+        super.update(propagateUp);
+    }
+
+    public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {
+        this.parent.block.setInput(key, block.block);
+        const oldInput = this.getInput(key);
+        if (!oldInput) throw new Error(`No input ${key.id} on block ${this.parent.block.type.id}.`);
+        this.dom.replaceChild(block.dom, oldInput.element.dom);
+        if (oldInput.element.onAncestryChange) oldInput.element.onAncestryChange(null);
+        block.setParent(new ScuffrBlockRef(key, this));
+        this.children[oldInput.index] = block;
+        this.inputs.set(key.id, { element: block, index: oldInput.index });
+        this.update(true);
     }
 
     public getInput(key: BlockInputType): ScuffrBlockContentInput | null {
@@ -142,10 +163,11 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
             console.warn("Block instance recieved invalid key in onChildDrag.");
             return true;
         }
-        // this.children.splice(input.index);
+        input.element.attachmentPoints.clear();
         this.workspace.dragRenderedBlock(input.element, event);
         this.parent.block.resetInput(key);
-        this.update(input.element);
+        this._renderPart(input.index).updateAll();
+        this.update(true);
         return true;
     }
 

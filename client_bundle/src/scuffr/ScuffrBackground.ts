@@ -2,6 +2,8 @@ import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import type { IScuffrBlockPartElement } from "./ScuffrBlockInstanceElement";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInstance } from "../block/BlockInstance";
+import { ScuffrAttachmentPointList } from "./ScuffrAttachmentPoint";
+import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 
 class ScuffrBackground {
     public readonly shape: ScuffrBackgroundShape;
@@ -15,37 +17,45 @@ class ScuffrBackground {
     }
 }
 
-class ScuffrBackgroundElement extends ScuffrElement {
-    public override parent: ScuffrParentElement;
+abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = ScuffrElement> extends ScuffrParentElement implements IScuffrBlockPartElement {
+    public abstract override parent: ScuffrParentElement;
+    public override children: readonly [TContent];
     public readonly background: ScuffrBackground;
+    public readonly backgroundDOM: SVGElement;
+
+    public get content() { return this.children[0]; }
 
     public constructor(parent: ScuffrParentElement, background: ScuffrBackground) {
-        super(parent.dom.appendChild(background.shape.createElement()), parent.workspace);
-        this.parent = parent;
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
+        this.backgroundDOM = this.dom.appendChild(background.shape.createElement())
         this.background = background;
-        this.parent.dom.prepend(this.dom);
+        this.children = [this.createContent()];
     }
 
-    public updateDimensions(content: ScuffrElement) {
+    protected abstract createContent(): TContent;
+
+    public override update(propagateUp: boolean) {
         const size = {
-            x: content.dimensions.x,
-            y: content.dimensions.y
+            x: this.content.dimensions.x,
+            y: this.content.dimensions.y
         }
 
         const ajustX = size.x < this.background.shape.minSize.x;
         if (ajustX) size.x = this.background.shape.minSize.x;
         if (size.y < this.background.shape.minSize.y) size.y = this.background.shape.minSize.y;
 
-        this.background.shape.updateElement(this.dom, size, this.background);
+        this.background.shape.updateElement(this.backgroundDOM, size, this.background);
         const padding = this.background.shape.getPadding(size);
 
         if (ajustX) {
-            content.translation.x += (this.background.shape.minSize.x - content.dimensions.x) / 2;
-            content.updateTraslation();
+            this.content.translationParent.x = (this.background.shape.minSize.x - this.content.dimensions.x) / 2;
+        } else {
+            this.content.translationParent.x = 0;
         }
+        this.content.updateTraslation();
 
-        this.parent.translation.x += padding.x;
-        this.parent.updateTraslation();
+        this.translationSelf.x = padding.x;
+        this.updateTraslation();
 
         this.dimensions = {
             x: size.x + padding.x * 2,
@@ -53,6 +63,7 @@ class ScuffrBackgroundElement extends ScuffrElement {
         }
 
         this.topLeftOffset = this.background.shape.getTopLeftOffset(size);
+        super.update(propagateUp);
     }
 }
 
@@ -90,7 +101,7 @@ abstract class ScuffrBackgroundShape {
         }
 
         public getTopLeftOffset(contentSize: Vec2): Vec2 {
-            return { x: 0, y: contentSize.y / 2 };
+            return { x: 8, y: contentSize.y / 2 };
         }
     }({ x: 60, y: 48 });
 
@@ -128,10 +139,8 @@ abstract class ScuffrBackgroundShape {
     }
 
     public updateElement(element: SVGElement, size: Vec2, background: ScuffrBackground) {
-        let style = '';
-        style += `fill: ${background.fill};`;
-        style += `stroke: ${background.stroke};`;
-        element.setAttribute("style", style);
+        element.style.fill = background.fill;
+        element.style.stroke = background.stroke;
         element.setAttribute("d", this.createPath(size));
     }
 

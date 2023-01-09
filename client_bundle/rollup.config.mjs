@@ -10,6 +10,13 @@ const production = !process.env.ROLLUP_WATCH;
 
 export default {
 	input: 'client_bundle/main.ts',
+
+	onwarn: function (message) {
+		// Make rollup shut up about circular dependency 'issues'.
+		if (message.code === 'CIRCULAR_DEPENDENCY') return;
+		console.warn(message.toString());
+	},
+
 	output: {
 		sourcemap: !production,
 		format: 'iife',

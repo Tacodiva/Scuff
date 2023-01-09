@@ -1,8 +1,7 @@
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import { BlockScript } from "../block/BlockScript";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
-import type { BlockAttachmentPoint } from "../block/BlockAttachmentPoint";
-import { ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
+import { ScuffrAttachmentPointList, ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 import type { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
 
@@ -12,20 +11,23 @@ export class ScuffrRootScriptElement extends ScuffrParentElement implements IScu
     public readonly parent: ScuffrWorkspace;
 
     public readonly script: BlockScript;
-    public readonly attachmentPoints: ScuffrAttachmentPoint[];
+    public readonly attachmentPoints: ScuffrAttachmentPointList;
 
     public constructor(workspace: ScuffrWorkspace, script: BlockScript);
+
     public constructor(workspace: ScuffrWorkspace, block: ScuffrBlockInstanceElement);
 
     public constructor(workspace: ScuffrWorkspace, content: BlockScript | ScuffrBlockInstanceElement) {
-        super(workspace.scriptContainer.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
+        super(workspace.svgScriptContainer.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
+        this.attachmentPoints = new ScuffrAttachmentPointList(this);
         this.parent = workspace;
 
         if (content instanceof BlockScript) {
             this.children = [];
             this.script = content;
-            this.attachmentPoints = [];
-            this.update();
+
+            for (let i = 0; i < this.script.blocks.length; i++)
+                this.children.push(this._renderBlock(i));
         } else {
             this.script = new BlockScript([content.block]);
             const oldRoot = content.root;
@@ -33,49 +35,56 @@ export class ScuffrRootScriptElement extends ScuffrParentElement implements IScu
             this.children = [content];
             this.dimensions = content.dimensions;
             this.script.translation = content.getAbsoluteTranslation();
-            this.updateTransform();
+            this.script.translation.x += content.leftOffset;
+            this.updateTraslation();
 
-            content.setParent(new ScuffrBlockRef(0, this));
             this.dom.appendChild(content.dom);
 
-            content.translation = { x: 0, y: 0 };
+            content.translationParent = { x: 0, y: 0 };
             content.updateTraslation();
 
-            this.attachmentPoints = oldRoot.attachmentPoints.splice(content.attachmentPointStart, content.attachmentPointCount);
-            for (const attachmentPoint of this.attachmentPoints) attachmentPoint.recalculateTranslation();
-            content.attachmentPointStart = 0;
-            content.attachmentPointCount = this.attachmentPoints.length;
-            this.drawDebug();
+            this.update();
+
+            content.setParent(new ScuffrBlockRef(0, this));
         }
     }
 
     public insertScript(index: number, script: ScuffrRootScriptElement) {
         this.script.blocks.splice(index, 0, ...script.script.blocks);
+        for (let i = index; i < index + script.script.blocks.length; i++) {
+            const rendered = this._renderBlock(i);
+            rendered.updateAll();
+            this.children.splice(i, 0, rendered);
+        }
         if (index === 0)
             this.script.translation.y += this.topOffset - script.bottomOffset;
+        this.workspace.deleteRenderedScript(script);
         this.update();
     }
 
-    public override update(element?: ScuffrElement) {
-        this.dom.innerHTML = "";
-        this.children.length = 0;
-        this.attachmentPoints.length = 0;
-        this.updateTransform();
+    private _renderBlock(index: number) {
+        return this.script.blocks[index].render(null, new ScuffrBlockRef(index, this));
+    }
+
+    public override update(propagateUp?: boolean) {
+        this.updateTraslation();
+        this.attachmentPoints.clear();
 
         let x = 0;
         let y = 0;
 
         for (let blockIdx = 0; blockIdx < this.script.blocks.length; blockIdx++) {
-            const block = this.script.blocks[blockIdx];
-            const renderedBlock = block.render(null, new ScuffrBlockRef(blockIdx, this), this);
-            this.children.push(renderedBlock);
+            const renderedBlock = this.children[blockIdx];
+            renderedBlock.parentRef.childKey = blockIdx;
+            const block = renderedBlock.block;
+
             const dimensions = renderedBlock.dimensions;
             const height = dimensions.y;
             if (blockIdx === 0) {
                 y += height / 2;
             } else {
                 const yTrans = y + height / 2;
-                renderedBlock.translation.y += yTrans;
+                renderedBlock.translationParent.y = yTrans;
                 renderedBlock.updateTraslation();
                 y += height;
             }
@@ -94,27 +103,12 @@ export class ScuffrRootScriptElement extends ScuffrParentElement implements IScu
 
         this.topLeftOffset = { x: 0, y: this.children[0].dimensions.y / 2 };
         this.dimensions = { x, y: y + this.topLeftOffset.y };
-
-        this.drawDebug();
     }
 
-    public drawDebug() {
-        for (const connection of this.attachmentPoints) {
-            const pos = connection.translation;
-            const point = this.dom.appendChild(document.createElementNS(SVG_NS, "circle"));
-            point.setAttribute("r", "10");
-            if (connection instanceof ScuffrScriptAttachmentPoint)
-                point.setAttribute("style", "fill: #ff0000a0;");
-            else
-                point.setAttribute("style", "fill: #00ff00a0;");
-            point.setAttribute("transform", `translate(${pos.x}, ${pos.y})`);
-        }
-    }
-
-    public updateTransform() {
-        this.translation.x = this.script.translation.x;
-        this.translation.y = this.script.translation.y;
-        this.dom.setAttribute("transform", `translate(${this.script.translation.x}, ${this.script.translation.y})`);
+    public override updateTraslation() {
+        this.translationSelf.x = this.script.translation.x;
+        this.translationSelf.y = this.script.translation.y;
+        super.updateTraslation();
     }
 
     public onChildDrag?(key: number, event: MouseEvent): boolean {
@@ -125,13 +119,26 @@ export class ScuffrRootScriptElement extends ScuffrParentElement implements IScu
 
         const draggedChild = this.children[key];
         const pos = draggedChild.getAbsoluteTranslation();
+        pos.x += draggedChild.leftOffset;
+
         const newScriptBlocks = this.script.blocks.splice(key);
+        for (let i = key; i < this.children.length; i++) {
+            this.children[i].dom.remove();
+            this.children[i].onAncestryChange(null);
+        }
+        this.children.splice(key);
         this.update();
         const newScript = new BlockScript(newScriptBlocks, pos);
         const newRenderedScript = this.workspace.addScript(newScript);
         this.workspace.dragRenderedScript(newRenderedScript, event);
-
         return true;
+    }
+
+    public remove() {
+        for (const child of this.children)
+            child.onAncestryChange(null);
+        this.dom.remove();
+        this.attachmentPoints.delete();
     }
 
     public getBlock(key: number): ScuffrBlockInstanceElement | null {

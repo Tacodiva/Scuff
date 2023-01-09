@@ -23,6 +23,14 @@ const script = new BlockScript([
 	ScratchBlocks.MOVE_STEPS.createInstance({
 		test: ScratchBlocks.OP_PLUS.createInstance({}),
 	}),
+	ScratchBlocks.MOVE_STEPS.createInstance(),
+	ScratchBlocks.MOVE_STEPS.createInstance({
+		test: ScratchBlocks.OP_PLUS.createInstance({}),
+	}),
+	ScratchBlocks.MOVE_STEPS.createInstance(),
+	ScratchBlocks.MOVE_STEPS.createInstance({
+		test: ScratchBlocks.OP_PLUS.createInstance({}),
+	}),
 ]);
 
 script.translation = { x: 100, y: 100 };

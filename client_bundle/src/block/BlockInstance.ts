@@ -44,7 +44,7 @@ export class BlockInstance implements IBlockInput {
         this._inputs.set(input.id, input.defaultValue);
     }
 
-    public render(parent : ScuffrBlockInstanceElement | null, parentRef: ScuffrBlockRef<unknown>, root: ScuffrRootScriptElement): ScuffrBlockInstanceElement {
-        return new ScuffrBlockInstanceElement(this, parentRef, root);
+    public render(parent : ScuffrBlockInstanceElement | null, parentRef: ScuffrBlockRef<unknown>): ScuffrBlockInstanceElement {
+        return new ScuffrBlockInstanceElement(this, parentRef);
     }
 }

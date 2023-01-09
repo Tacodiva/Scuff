@@ -1,13 +1,12 @@
 import type { IBlockPart } from "./BlockParts";
-import { ScuffrBlockInputAttachmentPoint } from "../scuffr/ScuffrAttachmentPoint";
-import type { ScuffrRootScriptElement } from "../scuffr/ScuffrRootScriptElement";
+import { ScuffrBlockInputAttachmentPoint, type IScuffrPointAttachable } from "../scuffr/ScuffrAttachmentPoint";
 import { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
-import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
+import type { ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
 import { ScuffrLiteralInputElement } from "../scuffr/ScuffrLiteralInputElement";
 import type { BlockType } from "./BlockType";
 
 export interface IBlockInput {
-    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>, root: ScuffrRootScriptElement): IScuffrBlockPartElement;
+    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrPointAttachable;
 }
 
 export abstract class BlockInputType implements IBlockPart {
@@ -22,10 +21,10 @@ export abstract class BlockInputType implements IBlockPart {
         this.block = block;
     }
 
-    public render(block: ScuffrBlockContentElement, root: ScuffrRootScriptElement): IScuffrBlockPartElement {
+    public render(block: ScuffrBlockContentElement): IScuffrPointAttachable {
         const input = block.parent.block.getInput(this.id);
-        const rendered = input.render(block.parent, new ScuffrBlockRef(this, block), root);
-        root.attachmentPoints.push(new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered));
+        const rendered = input.render(block.parent, new ScuffrBlockRef(this, block));
+        new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered);
         return rendered;
     }
 
@@ -43,8 +42,8 @@ export class BlockInputString implements IBlockInput {
         return true;
     }
 
-    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<unknown>, root: ScuffrRootScriptElement): IScuffrBlockPartElement {
-        return new ScuffrLiteralInputElement(parent.content, this._value);
+    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrPointAttachable {
+        return new ScuffrLiteralInputElement(parent.content, parentRef.childKey, this._value);
     }
 }
 

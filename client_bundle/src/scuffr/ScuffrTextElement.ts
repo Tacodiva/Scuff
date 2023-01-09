@@ -1,26 +1,32 @@
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 
-class ScuffrTextElement extends ScuffrElement {
-    public parent: ScuffrParentElement;
+export class ScuffrTextElement extends ScuffrElement {
+    public readonly parent: ScuffrParentElement;
 
-    constructor(parent: ScuffrParentElement, text: string, fill?: string) {
-        super(document.createElementNS(SVG_NS, "text"), parent.workspace);
+    public text: string;
+    private _textNode: Text | null;
+
+    public readonly fill: string | null;
+
+    public constructor(parent: ScuffrParentElement, text: string, fill?: string) {
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.workspace);
         this.parent = parent;
+        this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");
         this.dom.setAttribute("dy", '1');
         this.dom.classList.add("scuff-block-text");
+        this.fill = fill ?? null;
         if (fill)
-            this.dom.setAttribute("style", `fill: ${fill};`);
-        this.dom.appendChild(document.createTextNode(text));
+            this.dom.style.fill = fill;
+        this._textNode = null;
+    }
 
-        parent.workspace.textStagingElement.appendChild(this.dom);
-
-        const bounds = this.dom.getBoundingClientRect();
-        this.dimensions = { x: bounds.width, y: bounds.height };
-        this.topLeftOffset = { x: 0, y: bounds.width / 2 };
-
-        this.parent.dom.appendChild(this.dom);
+    public override update(propagateUp: boolean): void {
+        if (this._textNode) this._textNode.nodeValue = this.text;
+        else this._textNode = document.createTextNode(this.text);
+        this.dimensions = this.workspace.getTextNodeDimensions(this._textNode);
+        this.topLeftOffset = { x: 0, y: this.dimensions.x / 2 };
+        this.dom.appendChild(this._textNode);
+        super.update(propagateUp);
     }
 }
-
-export { ScuffrTextElement }

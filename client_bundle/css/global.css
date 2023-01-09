@@ -8,6 +8,17 @@ body {
     font-family: var(--scuff-block-font), Helvetica, sans-serif;
     font-size: 12pt;
     font-weight: 500;
+    white-space: pre;
+}
+
+.scuff-block-input {
+    padding: 0.1em 0 0.1em 0.1em;
+    border: 0;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    vertical-align: top;
 }
 
 .scuff-workspace-bg-main {
