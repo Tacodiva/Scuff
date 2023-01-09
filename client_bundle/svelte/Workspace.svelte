@@ -44,7 +44,7 @@
     </defs>
     <g bind:this={elementWorkspace} />
     <text style="fill:white;font-family:monospace;" dominant-baseline="hanging">
-        <tspan x="2" y="5">Scuff alpha 3</tspan>
-        <tspan x="2" dy="1.2em">Ignore the debug circles!</tspan>
+        <tspan x="2" y="5">Scuff alpha 4</tspan>
+        <tspan x="2" dy="1.2em">Now with editable inputs!</tspan>
     </text>
 </svg>

@@ -21,6 +21,10 @@ body {
     vertical-align: top;
 }
 
+.scuff-block-input::selection {
+    background-color: var(--scuff-block-input-select);
+}
+
 .scuff-workspace-bg-main {
     fill: var(--scuff-workspace-bg-main);
     background-color: var(--scuff-workspace-bg-main);

@@ -136,12 +136,11 @@ class LiteralInputEditAction extends ScuffrAction {
         if (navigator.userAgent.toLowerCase().indexOf('firefox') !== -1) {
             // If on firefox...
             this.svgForeignObject.setAttribute("y", "-0.6em");
-            this.svgForeignObject.setAttribute("x", "-0.1em");
         } else {
             // Otherwise...
             this.svgForeignObject.setAttribute("y", "-0.7em");
-            this.svgForeignObject.setAttribute("x", "-0.1em");
         }
+        this.svgForeignObject.setAttribute("x", "-0.1em");
         this._updateDOM();
 
         this.htmlInput = this.svgForeignObject.appendChild(document.createElement("input"));
@@ -151,6 +150,7 @@ class LiteralInputEditAction extends ScuffrAction {
         if (this.scuffrInput.content.fill)
             this.htmlInput.style.color = this.scuffrInput.content.fill;
         this.htmlInput.focus();
+        this.htmlInput.select();
     }
 
     private _updateDOM() {
@@ -440,10 +440,11 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         if (this._action) {
             this._action.onMouseUp(event);
         }
-        if (!this._action) {
+        if (!this._action && this._mouseDownPos) {
             if (this._dispatch(event.target, (element) => element.onClick(event)))
                 event.preventDefault();
         }
+        this._mouseDownPos = null;
     }
 
     private readonly eventMouseMoveListener = (event: MouseEvent) => {
@@ -459,6 +460,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
                 if (dx * dx + dy * dy > 16) {
                     if (this._dispatch(event.target, (element) => element.onDrag(event)))
                         event.preventDefault();
+                    this._mouseDownPos = null;
                 }
             }
         }
