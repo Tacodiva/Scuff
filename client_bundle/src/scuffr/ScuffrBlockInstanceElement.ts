@@ -62,10 +62,10 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
     }
 
     public override onAncestryChange(root: ScuffrRootScriptElement | null): void {
-        super.onAncestryChange(root);
         for (const child of this.content.children) {
             if (child.onAncestryChange) child.onAncestryChange(root);
         }
+        super.onAncestryChange(root);
     }
 
     public override onDrag(event: MouseEvent): boolean {
@@ -126,10 +126,15 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
 
     private _renderPart(index: number) {
         const part = this.parent.block.type.parts[index];
-        const renderedPart = part.render(this, this.root);
-        this.children[index] = (renderedPart);
-        if (part instanceof BlockInputType)
+        let renderedPart;
+        if (part instanceof BlockInputType) {
+            renderedPart = part.render(this);
             this.inputs.set(part.id, { element: renderedPart, index });
+            part.createAttachmentPoints(this, renderedPart);
+        } else {
+            renderedPart = part.render(this);
+        }
+        this.children[index] = (renderedPart);
         return renderedPart;
     }
 
@@ -142,6 +147,7 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         block.setParent(new ScuffrBlockRef(key, this));
         this.children[oldInput.index] = block;
         this.inputs.set(key.id, { element: block, index: oldInput.index });
+        key.createAttachmentPoints(this, block);
         this.update(true);
     }
 

@@ -45,16 +45,20 @@
     </defs>
     <g bind:this={elementWorkspace} />
     <text style="fill:var(--scuff-workspace-text);font-family:monospace;" dominant-baseline="hanging">
-        <tspan x="2" y="5">Scuff alpha 5</tspan>
-        <tspan x="2" dy="1.2em">Now with editable inputs!</tspan>
+        <tspan x="2" y="5">Scuff alpha 6</tspan>
+        <tspan x="2" dy="1.2em">C blocks now somewhat functional!</tspan>
         <tspan x="2" dy="2.4em">Scuffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
         <tspan x="2" dy="1.2em">[X] Make block updates more efficient</tspan>
         <tspan x="2" dy="1.2em">[X] Add support for rendering C blocks</tspan>
-        <tspan x="2" dy="1.2em">[ ] Add attachment points to C blocks</tspan>
+        <tspan x="2" dy="1.2em">[X] Add attachment points to C blocks</tspan>
         <tspan x="2" dy="1.2em">[ ] Make dropping C blocks wrap the blocks below it</tspan>
+        <tspan x="2" dy="1.2em">[ ] Make replacing another input not delete it</tspan>
         <tspan x="2" dy="1.2em">[ ] Add boolean inputs and blocks</tspan>
         <tspan x="2" dy="1.2em">[ ] Add head and tail blocks (w/ cute cat ears)</tspan>
+        <tspan x="2" dy="1.2em">[ ] Add input highlighting</tspan>
+        <tspan x="2" dy="1.2em">[ ] Add ghost blocks to preview drag and drop</tspan>
+        <tspan x="2" dy="1.2em">[ ] Actually validate block inputs</tspan>
         <tspan x="2" dy="1.2em">[ ] Add horizontal and vertical scroll bar</tspan>
         <tspan x="2" dy="1.2em">[ ] Add dropdown block inputs</tspan>
         <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>

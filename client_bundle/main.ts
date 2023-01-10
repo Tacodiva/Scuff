@@ -13,7 +13,7 @@ export function main() {
 
 	const script = new BlockScriptRoot([
 
-		ScratchBlocks.CONTROL_IF.createInstance(),
+		// ScratchBlocks.CONTROL_IF.createInstance(),
 	
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
 			test: ScratchBlocks.OPERATOR_PLUS.createInstance({
@@ -27,15 +27,15 @@ export function main() {
 				testII: ScratchBlocks.OPERATOR_PLUS.createInstance(),
 			}),
 		}),
+		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
 		ScratchBlocks.CONTROL_FOREVER.createInstance(),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
-		}),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
-		}),
+		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
+		// 	test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
+		// }),
+		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
+		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
+		// 	test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
+		// }),
 	]);
 
 	script.translation = { x: 100, y: 100 };

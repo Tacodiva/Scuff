@@ -1,13 +1,14 @@
 import type { IBlockPart } from "./BlockParts";
 import { ScuffrBlockInputAttachmentPoint, type IScuffrPointAttachable } from "../scuffr/ScuffrAttachmentPoint";
 import { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
-import type { ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
+import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
 import { ScuffrLiteralInputElement } from "../scuffr/ScuffrLiteralInputElement";
 import type { BlockType } from "./BlockType";
 import { BlockScriptInput } from "./BlockScript";
+import { ScratchBlocks } from "../scratch_blocks/ScratchBlocks";
 
 export interface IBlockInput {
-    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrPointAttachable;
+    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockPartElement & IScuffrPointAttachable;
 }
 
 export abstract class BlockInputType implements IBlockPart {
@@ -22,11 +23,12 @@ export abstract class BlockInputType implements IBlockPart {
         this.block = block;
     }
 
-    public render(block: ScuffrBlockContentElement): IScuffrPointAttachable {
-        const input = block.parent.block.getInput(this.id);
-        const rendered = input.render(block.parent, new ScuffrBlockRef(this, block));
+    public render(block: ScuffrBlockContentElement): IScuffrBlockPartElement & IScuffrPointAttachable {
+        return block.parent.block.getInput(this.id).render(block.parent, new ScuffrBlockRef(this, block));
+    }
+    
+    public createAttachmentPoints(block: ScuffrBlockContentElement, rendered: IScuffrPointAttachable) {
         new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered);
-        return rendered;
     }
 
     public abstract canTakeValue(value: IBlockInput): boolean;
@@ -61,7 +63,7 @@ export class BlockInputTypeString extends BlockInputType {
 
 export class BlockInputTypeSubscript extends BlockInputType {
     public constructor(id: string, block: BlockType) {
-        super(id, block, new BlockScriptInput());
+        super(id, block, new BlockScriptInput([ScratchBlocks.MOTION_MOVE_STEPS.createInstance(), ScratchBlocks.MOTION_MOVE_STEPS.createInstance()]));
     }
 
     public canTakeValue(value: IBlockInput): boolean {

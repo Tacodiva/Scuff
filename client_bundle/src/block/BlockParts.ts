@@ -3,7 +3,7 @@ import type { ScuffrRootScriptElement } from "../scuffr/ScuffrScriptElement";
 import { ScuffrTextElement } from "../scuffr/ScuffrTextElement";
 
 export interface IBlockPart {
-    render(block: ScuffrBlockContentElement, root: ScuffrRootScriptElement): IScuffrBlockPartElement;
+    render(block: ScuffrBlockContentElement): IScuffrBlockPartElement;
 }
 
 export class BlockPartText implements IBlockPart {
@@ -14,7 +14,7 @@ export class BlockPartText implements IBlockPart {
         this.text = text;
     }
 
-    public render(block: ScuffrBlockContentElement, root: ScuffrRootScriptElement): IScuffrBlockPartElement {
+    public render(block: ScuffrBlockContentElement): IScuffrBlockPartElement {
         return new ScuffrTextElement(block, this.text);
     }
 }

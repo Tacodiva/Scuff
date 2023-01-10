@@ -234,7 +234,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         }
     }
 
-    public debugRenderPoints() {
+    public debugRender() {
         this.svgDebug.innerHTML = "";
         this.svgScriptContainer.appendChild(this.svgDebug);
         for (const list of this.attachmentPoints) {
@@ -251,12 +251,12 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         }
     }
 
-    public debugUpdatePoints() {
-        for (const list of this.attachmentPoints) list.onAncestryChange(list.root);
-        this.debugRenderPoints();
-    }
-
-    public debugRerenderScripts() {
+    public debugCheck() {
+        this.svgDebug.remove();
+        let beforeElements = this.svgScriptContainer.getElementsByTagName("*").length;
+        let beforePointLists = this.attachmentPoints.size;
+        let beforePoints = 0;
+        for (const pl of this.attachmentPoints) beforePoints += pl.list.length;
         for (const script of this.children)
             script.dom.remove();
         this.children.length = 0;
@@ -266,6 +266,16 @@ export class ScuffrWorkspace extends ScuffrParentElement {
             rendered.updateAll();
             this.children.push(rendered);
         }
+        let afterElements = this.svgScriptContainer.getElementsByTagName("*").length;
+        let afterPointLists = this.attachmentPoints.size;
+        let afterPoints = 0;
+        for (const pl of this.attachmentPoints) afterPoints += pl.list.length;
+        if (beforeElements === afterElements) console.log(`Elements OK ${beforeElements}`);
+        else console.error(`Elements FAIL ${beforeElements} -> ${afterElements}`);
+        if (beforePointLists === afterPointLists) console.log(`Point List Count OK ${beforePointLists}`);
+        else console.error(`Point List Count FAIL ${beforePointLists} -> ${afterPointLists}`);
+        if (beforePoints === afterPoints) console.log(`Point Count OK ${beforePoints}`);
+        else console.error(`Point Count FAIL ${beforePoints} -> ${afterPoints}`);
     }
 
     public addScript(script: BlockScriptRoot): ScuffrRootScriptElement {
@@ -297,8 +307,11 @@ export class ScuffrWorkspace extends ScuffrParentElement {
     private _deleteScriptAt(idx: number, deleteBlocks: boolean = true): boolean {
         if (idx === -1) return false;
         this.blockScripts.scripts.splice(idx, 1);
-        if (deleteBlocks) this.children.splice(idx, 1)[0].remove();
-        else this.children.splice(idx, 1);
+        const script = this.children.splice(idx, 1)[0];
+        script.attachmentPoints.delete();
+        script.dom.remove();
+        if (deleteBlocks) for (const child of script.children)
+            child.onAncestryChange(null);
         return true;
     }
 
@@ -464,6 +477,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
                 }
             }
         }
+        // this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {

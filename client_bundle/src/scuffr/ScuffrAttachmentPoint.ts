@@ -1,9 +1,10 @@
 import type { ScuffrElement } from "./ScuffrElement";
 import type { IScuffrBlockPartElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
-import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
+import type { ScuffrRootScriptElement, ScuffrScriptElement } from "./ScuffrScriptElement";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInputType } from "../block/BlockInputType";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
+import type { BlockScript } from "../block/BlockScript";
 
 export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = ScuffrAttachmentPoint> {
     public readonly list: TPoint[];
@@ -121,13 +122,13 @@ export class ScuffrBlockInputAttachmentPoint extends ScuffrAttachmentPoint {
 }
 
 export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
-    public readonly parent: ScuffrRootScriptElement;
+    public readonly parent: ScuffrScriptElement<BlockScript>;
     public readonly index: number;
 
     public readonly requireStackUp: boolean;
     public readonly requireStackDown: boolean;
 
-    public constructor(script: ScuffrRootScriptElement, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
+    public constructor(script: ScuffrScriptElement<BlockScript>, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
         super(offset);
         this.parent = script;
         this.index = index;
