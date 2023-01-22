@@ -1,27 +1,27 @@
-import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import type { ScuffrWorkspace } from "./ScuffrWorkspace";
-import { ScuffrAttachmentPointList, ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
-import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
+import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
+import type { ScruffrWorkspace } from "./ScruffrWorkspace";
+import { ScruffrAttachmentPointList, ScruffrScriptAttachmentPoint, type ScruffrAttachmentPoint } from "./ScruffrAttachmentPoint";
+import { ScruffrBlockRef, type IScruffrBlockParent } from "./ScruffrBlockRef";
 import { BlockScript, BlockSubscriptInput, BlockScriptRoot } from "../block/BlockScript";
 import type { BlockInstance } from "../block/BlockInstance";
-import type { IScuffrBackgroundModifier, ScuffrBackground, ScuffrBackgroundContentLine } from "./ScuffrBackground";
+import type { IScruffrBackgroundModifier, ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInputType, BlockInputTypeSubscript, IBlockInput } from "../block/BlockInputType";
-import type { IScuffrBlockInput, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
+import type { IScruffrBlockInput, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
 
-export abstract class ScuffrScriptElement<TScript extends BlockScript> extends ScuffrParentElement implements IScuffrBlockParent<number> {
-    public children: ScuffrBlockInstanceElement[];
+export abstract class ScruffrScriptElement<TScript extends BlockScript> extends ScruffrParentElement implements IScruffrBlockParent<number> {
+    public children: ScruffrBlockInstanceElement[];
     public readonly script: TScript;
-    protected _root: ScuffrRootScriptElement | null;
+    protected _root: ScruffrRootScriptElement | null;
 
-    public readonly attachmentPoints: ScuffrAttachmentPointList;
+    public readonly attachmentPoints: ScruffrAttachmentPointList;
 
-    public constructor(container: SVGElement, root: ScuffrRootScriptElement | null, workspace: ScuffrWorkspace, script: TScript | ScuffrBlockInstanceElement[], typeScript: { new(blocks: BlockInstance[]): TScript; }) {
+    public constructor(container: SVGElement, root: ScruffrRootScriptElement | null, workspace: ScruffrWorkspace, script: TScript | ScruffrBlockInstanceElement[], typeScript: { new(blocks: BlockInstance[]): TScript; }) {
         super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
         if (root) this._root = root;
         else this._root = this.getRoot();
 
-        this.attachmentPoints = new ScuffrAttachmentPointList(this._root);
+        this.attachmentPoints = new ScruffrAttachmentPointList(this._root);
 
         if (script instanceof BlockScript) {
             this.children = [];
@@ -43,41 +43,41 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
             this.update(true);
 
             for (let i = 0; i < script.length; i++)
-                script[i].setParent(new ScuffrBlockRef(i, this));
+                script[i].setParent(new ScruffrBlockRef(i, this));
         }
     }
 
-    public getRoot(): ScuffrRootScriptElement {
+    public getRoot(): ScruffrRootScriptElement {
         if (!this._root) throw new Error("Script has no root!");
         return this._root;
     }
 
-    public getBlock(key: number): ScuffrBlockInstanceElement | null {
+    public getBlock(key: number): ScruffrBlockInstanceElement | null {
         return this.children[key];
     }
 
-    public insertScript(index: number, script: ScuffrRootScriptElement) {
+    public insertScript(index: number, script: ScruffrRootScriptElement) {
         this.script.blocks.splice(index, 0, ...script.script.blocks);
         this.children.splice(index, 0, ...script.children);
         if (index === 0)
             this.translationSelf.y += this.topOffset - script.bottomOffset;
         for (let i = 0; i < script.children.length; i++) {
-            script.children[i].setParent(new ScuffrBlockRef(i + index, this));
+            script.children[i].setParent(new ScruffrBlockRef(i + index, this));
             this.dom.appendChild(script.children[i].dom);
         }
         this.update(true);
         this.workspace.deleteRenderedScript(script, false);
     }
 
-    public wrapScript(index: number, script: ScuffrRootScriptElement, block: ScuffrBlockInstanceElement, input: BlockInputTypeSubscript) {
+    public wrapScript(index: number, script: ScruffrRootScriptElement, block: ScruffrBlockInstanceElement, input: BlockInputTypeSubscript) {
         this.script.blocks.splice(index, Infinity, ...script.script.blocks);
         const newChildren = this.children.splice(index, Infinity, ...script.children);
         for (let i = 0; i < script.children.length; i++) {
-            script.children[i].setParent(new ScuffrBlockRef(i + index, this));
+            script.children[i].setParent(new ScruffrBlockRef(i + index, this));
             this.dom.appendChild(script.children[i].dom);
         }
         if (newChildren.length !== 0) {
-            const newScript = new ScuffrInputSubscriptElement(block, newChildren);
+            const newScript = new ScruffrInputSubscriptElement(block, newChildren);
             block.setInput(input, newScript);
         }
         this.update(true);
@@ -85,7 +85,7 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
     }
 
     private _renderBlock(index: number) {
-        return this.script.blocks[index].render(null, new ScuffrBlockRef(index, this));
+        return this.script.blocks[index].render(null, new ScruffrBlockRef(index, this));
     }
 
     public override update(propagateUp: boolean) {
@@ -116,13 +116,13 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
 
             if (blockIdx === 0) {
                 if (block.type.canStackUp(block))
-                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, false, true, { x: 0, y: - height / 2 }))
+                    this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, 0, false, true, { x: 0, y: - height / 2 }))
             }
             if (block.type.canStackDown(block))
                 if (blockIdx === this.script.blocks.length - 1)
-                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y }))
+                    this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y }))
                 else
-                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
+                    this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
         }
 
         if (this.script.blocks.length !== 0)
@@ -147,32 +147,32 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
 
         this.script.blocks.splice(key);
         const draggedBlocks = this.children.splice(key);
-        const newScript = new ScuffrRootScriptElement(this.workspace, draggedBlocks);
+        const newScript = new ScruffrRootScriptElement(this.workspace, draggedBlocks);
         this.workspace.addRenderedScript(newScript);
         this.workspace.dragRenderedScript(newScript, event);
         this.update(true);
         return true;
     }
 
-    public abstract toRootScript(): ScuffrRootScriptElement;
+    public abstract toRootScript(): ScruffrRootScriptElement;
 }
 
-export class ScuffrRootScriptElement extends ScuffrScriptElement<BlockScriptRoot> {
+export class ScruffrRootScriptElement extends ScruffrScriptElement<BlockScriptRoot> {
 
-    public readonly parent: ScuffrWorkspace;
+    public readonly parent: ScruffrWorkspace;
 
-    public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot);
+    public constructor(workspace: ScruffrWorkspace, script: BlockScriptRoot);
 
-    public constructor(workspace: ScuffrWorkspace, block: ScuffrBlockInstanceElement[]);
+    public constructor(workspace: ScruffrWorkspace, block: ScruffrBlockInstanceElement[]);
 
-    public constructor(workspace: ScuffrWorkspace, content: BlockScriptRoot | ScuffrBlockInstanceElement[]) {
+    public constructor(workspace: ScruffrWorkspace, content: BlockScriptRoot | ScruffrBlockInstanceElement[]) {
         super(workspace.svgScriptContainer, null, workspace, content, BlockScriptRoot);
         this.parent = workspace;
         if (content instanceof BlockScript)
             this.translationSelf = content.translation;
     }
 
-    public override getRoot(): ScuffrRootScriptElement {
+    public override getRoot(): ScruffrRootScriptElement {
         return this;
     }
 
@@ -182,20 +182,20 @@ export class ScuffrRootScriptElement extends ScuffrScriptElement<BlockScriptRoot
         super.updateTraslation();
     }
 
-    public toRootScript(): ScuffrRootScriptElement {
+    public toRootScript(): ScruffrRootScriptElement {
         return this;
     }
 }
 
-export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscriptInput> implements IScuffrBlockInput, IScuffrBackgroundModifier {
-    private _parent: ScuffrBlockContentElement;
-    public get parent(): ScuffrBlockContentElement { return this._parent; }
+export class ScruffrInputSubscriptElement extends ScruffrScriptElement<BlockSubscriptInput> implements IScruffrBlockInput, IScruffrBackgroundModifier {
+    private _parent: ScruffrBlockContentElement;
+    public get parent(): ScruffrBlockContentElement { return this._parent; }
 
-    public constructor(parent: ScuffrBlockInstanceElement, script: BlockSubscriptInput);
+    public constructor(parent: ScruffrBlockInstanceElement, script: BlockSubscriptInput);
 
-    public constructor(parent: ScuffrBlockInstanceElement, block: ScuffrBlockInstanceElement[]);
+    public constructor(parent: ScruffrBlockInstanceElement, block: ScruffrBlockInstanceElement[]);
 
-    public constructor(parent: ScuffrBlockInstanceElement, script: BlockSubscriptInput | ScuffrBlockInstanceElement[]) {
+    public constructor(parent: ScruffrBlockInstanceElement, script: BlockSubscriptInput | ScruffrBlockInstanceElement[]) {
         super(parent.content.dom, parent.root, parent.workspace, script, BlockSubscriptInput);
         this._parent = parent.content;
     }
@@ -207,7 +207,7 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
             this.dimensions.y = 32;
             this.translationSelf.x = 0;
             this.translationSelf.y = 0;
-            this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, true, false, { x: 8, y: -12 }))
+            this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, 0, true, false, { x: 8, y: -12 }))
         } else {
             this.dimensions.x = 144;
             this.dimensions.y += 8;
@@ -220,8 +220,8 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
         if (propagateUp && this.parent) this.parent.update(true);
     }
 
-    public toRootScript(): ScuffrRootScriptElement {
-        const rootScript = new ScuffrRootScriptElement(this.workspace, this.children);
+    public toRootScript(): ScruffrRootScriptElement {
+        const rootScript = new ScruffrRootScriptElement(this.workspace, this.children);
         this.workspace.addRenderedScript(rootScript);
         this.children = [];
         this.script.blocks.length = 0;
@@ -229,15 +229,15 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
         return rootScript;
     }
 
-    public getBackgroundModifier(): IScuffrBackgroundModifier {
+    public getBackgroundModifier(): IScruffrBackgroundModifier {
         return this;
     }
 
-    public getPath(size: Vec2, line: ScuffrBackgroundContentLine): string | null {
+    public getPath(size: Vec2, line: ScruffrBackgroundContentLine): string | null {
         return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
     }
 
-    public onAncestryChange(root: ScuffrRootScriptElement | null): void {
+    public onAncestryChange(root: ScruffrRootScriptElement | null): void {
         this._root = root;
         for (const child of this.children) child.onAncestryChange(root);
         this.attachmentPoints.onAncestryChange(root);
@@ -248,7 +248,7 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
         super.onTranslationUpdate();
     }
 
-    public setParent(parentRef: ScuffrBlockRef<BlockInputType<IBlockInput>, ScuffrBlockContentElement>) {
+    public setParent(parentRef: ScruffrBlockRef<BlockInputType<IBlockInput>, ScruffrBlockContentElement>) {
         this._parent = parentRef.parent;
         this.onAncestryChange(parentRef.parent.getRoot());
     }

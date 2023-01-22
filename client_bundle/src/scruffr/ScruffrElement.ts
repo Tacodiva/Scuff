@@ -1,10 +1,10 @@
 import type { Vec2 } from "../utils/Vec2";
-import type { ScuffrWorkspace } from "./ScuffrWorkspace";
+import type { ScruffrWorkspace } from "./ScruffrWorkspace";
 
-abstract class ScuffrElement {
+abstract class ScruffrElement {
     public static readonly DATA_NAME = "sfs-rendered-element";
 
-    public readonly workspace: ScuffrWorkspace;
+    public readonly workspace: ScruffrWorkspace;
 
     public readonly dom: SVGElement;
     public dimensions: Vec2;
@@ -15,9 +15,9 @@ abstract class ScuffrElement {
     public get translationX() { return this.translationSelf.x + this.translationParent.x; }
     public get translationY() { return this.translationSelf.y + this.translationParent.y; }
 
-    public abstract parent: ScuffrParentElement | null;
+    public abstract parent: ScruffrParentElement | null;
 
-    public constructor(dom: SVGElement, workspace?: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
+    public constructor(dom: SVGElement, workspace?: ScruffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
         this.workspace = workspace ?? this._getWorkspace();
         this.dom = dom;
         this.translationSelf = translation;
@@ -25,7 +25,7 @@ abstract class ScuffrElement {
         this.topLeftOffset = topLeftOffset;
         this.translationParent = translationParent;
 
-        (<any>this.dom)[ScuffrElement.DATA_NAME] = this;
+        (<any>this.dom)[ScruffrElement.DATA_NAME] = this;
     }
 
     public getAbsoluteTranslation(): Vec2 {
@@ -37,7 +37,7 @@ abstract class ScuffrElement {
         }
     }
 
-    protected _getWorkspace(): ScuffrWorkspace {
+    protected _getWorkspace(): ScruffrWorkspace {
         throw new Error("No workspace provided in constructor and element did not override _getWorkspace()!");
     }
 
@@ -85,8 +85,8 @@ abstract class ScuffrElement {
     }
 }
 
-abstract class ScuffrParentElement extends ScuffrElement {
-    public abstract children: readonly ScuffrElement[];
+abstract class ScruffrParentElement extends ScruffrElement {
+    public abstract children: readonly ScruffrElement[];
 
     public override updateAll(): void {
         for (const child of this.children)
@@ -101,4 +101,4 @@ abstract class ScuffrParentElement extends ScuffrElement {
     }
 }
 
-export { ScuffrParentElement, ScuffrElement }
+export { ScruffrParentElement, ScruffrElement }

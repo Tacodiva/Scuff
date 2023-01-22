@@ -1,13 +1,13 @@
 import type { IBlockPart } from "./BlockParts";
-import { ScuffrBlockInputAttachmentPoint, type IScuffrPointAttachable } from "../scuffr/ScuffrAttachmentPoint";
-import { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
-import type { IScuffrBlockInput, IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
-import { ScuffrLiteralInputElement } from "../scuffr/ScuffrLiteralInputElement";
+import { ScruffrBlockInputAttachmentPoint, type IScruffrPointAttachable } from "../scruffr/ScruffrAttachmentPoint";
+import { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
+import type { IScruffrBlockInput, IScruffrBlockPartElement, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
+import { ScruffrLiteralInputElement } from "../scruffr/ScruffrLiteralInputElement";
 import type { BlockType } from "./BlockType";
 import { BlockScript, BlockSubscriptInput } from "./BlockScript";
 
 export interface IBlockInput {
-    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockInput;
+    render(parent: ScruffrBlockInstanceElement, parentRef: ScruffrBlockRef<BlockInputType>): IScruffrBlockInput;
 }
 
 export abstract class BlockInputType<T extends IBlockInput = IBlockInput> implements IBlockPart {
@@ -22,13 +22,13 @@ export abstract class BlockInputType<T extends IBlockInput = IBlockInput> implem
         this.block = block;
     }
 
-    public render(block: ScuffrBlockContentElement): IScuffrBlockInput {
-        return block.parent.block.getInput(this).render(block.parent, new ScuffrBlockRef(this, block));
+    public render(block: ScruffrBlockContentElement): IScruffrBlockInput {
+        return block.parent.block.getInput(this).render(block.parent, new ScruffrBlockRef(this, block));
     }
 
-    public createAttachmentPoints(block: ScuffrBlockContentElement, rendered: IScuffrBlockInput): void {
+    public createAttachmentPoints(block: ScruffrBlockContentElement, rendered: IScruffrBlockInput): void {
         if (this.hasInputAttachmentPoint())
-            new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered);
+            new ScruffrBlockInputAttachmentPoint(block.parent, this, rendered);
     }
 
     public hasInputAttachmentPoint(): boolean {
@@ -45,8 +45,8 @@ export class BlockInputString implements IBlockInput {
         this._value = value;
     }
 
-    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockInput {
-        return new ScuffrLiteralInputElement(parent.content, parentRef.childKey, this._value);
+    public render(parent: ScruffrBlockInstanceElement, parentRef: ScruffrBlockRef<BlockInputType>): IScruffrBlockInput {
+        return new ScruffrLiteralInputElement(parent.content, parentRef.childKey, this._value);
     }
 }
 

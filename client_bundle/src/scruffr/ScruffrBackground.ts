@@ -1,41 +1,41 @@
-import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import type { IScuffrBlockPartElement } from "./ScuffrBlockInstanceElement";
+import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
+import type { IScruffrBlockPartElement } from "./ScruffrBlockInstanceElement";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInstance } from "../block/BlockInstance";
-import { ScuffrAttachmentPointList } from "./ScuffrAttachmentPoint";
-import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
+import { ScruffrAttachmentPointList } from "./ScruffrAttachmentPoint";
+import type { ScruffrRootScriptElement } from "./ScruffrScriptElement";
 
-export class ScuffrBackground {
-    public readonly shape: ScuffrBackgroundShape;
+export class ScruffrBackground {
+    public readonly shape: ScruffrBackgroundShape;
     public readonly fill: string;
     public readonly stroke: string;
 
-    public constructor(shape: ScuffrBackgroundShape, fill: string, stroke: string) {
+    public constructor(shape: ScruffrBackgroundShape, fill: string, stroke: string) {
         this.shape = shape;
         this.fill = fill;
         this.stroke = stroke;
     }
 }
 
-export interface IScuffrBackgroundModifier {
-    getPath(size: Vec2, line: ScuffrBackgroundContentLine): string | null;
+export interface IScruffrBackgroundModifier {
+    getPath(size: Vec2, line: ScruffrBackgroundContentLine): string | null;
 }
 
-export interface ScuffrBackgroundContentLine {
-    elements: readonly ScuffrElement[],
+export interface ScruffrBackgroundContentLine {
+    elements: readonly ScruffrElement[],
     dimensions: Vec2,
-    modifier?: IScuffrBackgroundModifier
+    modifier?: IScruffrBackgroundModifier
 }
 
-export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = ScuffrElement> extends ScuffrParentElement implements IScuffrBlockPartElement {
-    public abstract override parent: ScuffrParentElement;
+export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement = ScruffrElement> extends ScruffrParentElement implements IScruffrBlockPartElement {
+    public abstract override parent: ScruffrParentElement;
     public override children: readonly [TContent];
-    public readonly background: ScuffrBackground;
+    public readonly background: ScruffrBackground;
     public readonly backgroundDOM: SVGElement;
 
     public get content() { return this.children[0]; }
 
-    public constructor(parent: ScuffrParentElement, background: ScuffrBackground) {
+    public constructor(parent: ScruffrParentElement, background: ScruffrBackground) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.backgroundDOM = this.dom.appendChild(background.shape.createElement())
         this.background = background;
@@ -121,16 +121,16 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
         super.update(propagateUp);
     }
 
-    protected getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
-        if (this.content instanceof ScuffrParentElement) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
+    protected getBackgroundContentLines(): ScruffrBackgroundContentLine[] {
+        if (this.content instanceof ScruffrParentElement) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
         else return [{ elements: [this.content], dimensions: { x: 0, y: 0 } }];
     }
 }
 
-export abstract class ScuffrBackgroundShape {
+export abstract class ScruffrBackgroundShape {
 
-    public static readonly ROUND_BLOCK = new class extends ScuffrBackgroundShape {
-        public override createPath(size: Vec2, lines: ScuffrBackgroundContentLine[]): string {
+    public static readonly ROUND_BLOCK = new class extends ScruffrBackgroundShape {
+        public override createPath(size: Vec2, lines: ScruffrBackgroundContentLine[]): string {
             if (lines.length !== 1 || lines[0].modifier)
                 throw new Error("Round shaped blocks do not support multiple lines.");
             let radius = size.y / 2;
@@ -146,8 +146,8 @@ export abstract class ScuffrBackgroundShape {
         }
     }({ x: 20, y: 32 }, 4);
 
-    public static readonly STACK_BODY = new class extends ScuffrBackgroundShape {
-        public override createPath(size: Vec2, lines: ScuffrBackgroundContentLine[]): string {
+    public static readonly STACK_BODY = new class extends ScruffrBackgroundShape {
+        public override createPath(size: Vec2, lines: ScruffrBackgroundContentLine[]): string {
             let path = `m -8 ${-size.y / 2 + 4} a 4 4 0 0 1 4 -4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
             for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
                 const line = lines[lineIdx];
@@ -169,7 +169,7 @@ export abstract class ScuffrBackgroundShape {
             return path;
         }
 
-        public override prePartPadding(partIdx: number, x: number, part: IScuffrBlockPartElement, line: ScuffrBackgroundContentLine): number {
+        public override prePartPadding(partIdx: number, x: number, part: IScruffrBlockPartElement, line: ScruffrBackgroundContentLine): number {
             x = super.prePartPadding(partIdx, x, part, line);
             if (x < 40 && (part.getBackground && part.getBackground()))
                 x = 40;
@@ -184,7 +184,7 @@ export abstract class ScuffrBackgroundShape {
             return { x: 8, y: contentSize.y / 2 };
         }
 
-        public override getMinLineSize(lineIdx: number, lines: ScuffrBackgroundContentLine[]): Vec2 {
+        public override getMinLineSize(lineIdx: number, lines: ScruffrBackgroundContentLine[]): Vec2 {
             if (lineIdx === 0)
                 return { x: 0, y: 44 };
             if (lineIdx === lines.length - 1)
@@ -206,11 +206,11 @@ export abstract class ScuffrBackgroundShape {
     public abstract getTopLeftOffset(contentSize: Vec2): Vec2;
     public abstract getPadding(contentSize: Vec2): Vec2;
 
-    public getMinLineSize(lineIdx: number, lines: ScuffrBackgroundContentLine[]): Vec2 {
+    public getMinLineSize(lineIdx: number, lines: ScruffrBackgroundContentLine[]): Vec2 {
         return { x: 0, y: 0 };
     }
 
-    public prePartPadding(partIdx: number, x: number, part: IScuffrBlockPartElement, line: ScuffrBackgroundContentLine): number {
+    public prePartPadding(partIdx: number, x: number, part: IScruffrBlockPartElement, line: ScruffrBackgroundContentLine): number {
         if (partIdx === 0) {
             if (part.getBackground && part.getBackground()?.shape === this) {
                 x += this.snugglePadding - this.getPadding(part.dimensions).x;
@@ -219,7 +219,7 @@ export abstract class ScuffrBackgroundShape {
         return x;
     }
 
-    public postPartPadding(partIdx: number, x: number, part: IScuffrBlockPartElement, line: ScuffrBackgroundContentLine): number {
+    public postPartPadding(partIdx: number, x: number, part: IScruffrBlockPartElement, line: ScruffrBackgroundContentLine): number {
         if (partIdx === line.elements.length - 1) {
             if (part.getBackground && part.getBackground()?.shape === this)
                 x += this.snugglePadding - this.getPadding(part.dimensions).x;
@@ -231,11 +231,11 @@ export abstract class ScuffrBackgroundShape {
         return document.createElementNS(SVG_NS, "path");
     }
 
-    public updateElement(element: SVGElement, size: Vec2, lines: ScuffrBackgroundContentLine[], background: ScuffrBackground) {
+    public updateElement(element: SVGElement, size: Vec2, lines: ScruffrBackgroundContentLine[], background: ScruffrBackground) {
         element.style.fill = background.fill;
         element.style.stroke = background.stroke;
         element.setAttribute("d", this.createPath(size, lines));
     }
 
-    public abstract createPath(size: Vec2, lines: ScuffrBackgroundContentLine[]): string;
+    public abstract createPath(size: Vec2, lines: ScruffrBackgroundContentLine[]): string;
 }

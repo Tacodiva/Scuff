@@ -1,20 +1,20 @@
-import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
+import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
 
-export class ScuffrTextElement extends ScuffrElement {
-    public readonly parent: ScuffrParentElement;
+export class ScruffrTextElement extends ScruffrElement {
+    public readonly parent: ScruffrParentElement;
 
     public text: string;
     private _textNode: Text | null;
 
     public readonly fill: string | null;
 
-    public constructor(parent: ScuffrParentElement, text: string, fill?: string) {
+    public constructor(parent: ScruffrParentElement, text: string, fill?: string) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.workspace);
         this.parent = parent;
         this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");
         this.dom.setAttribute("dy", '1');
-        this.dom.classList.add("scuff-block-text");
+        this.dom.classList.add("scruff-block-text");
         this.fill = fill ?? null;
         if (fill)
             this.dom.style.fill = fill;

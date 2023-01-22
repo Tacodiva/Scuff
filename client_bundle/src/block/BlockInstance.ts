@@ -1,7 +1,7 @@
-import { ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
+import { ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
 import type { IBlockInput } from "./BlockInputType";
 import type { BlockInputType } from "./BlockInputType";
-import type { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
+import type { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
 import type { BlockType } from "./BlockType";
 
 class BlockInputInstanceInput<T extends IBlockInput = IBlockInput> {
@@ -75,7 +75,7 @@ export class BlockInstance implements IBlockInput {
         this._getInputFromID(inputID).reset();
     }
 
-    public render(parent: ScuffrBlockInstanceElement | null, parentRef: ScuffrBlockRef<unknown>): ScuffrBlockInstanceElement {
-        return new ScuffrBlockInstanceElement(this, parentRef);
+    public render(parent: ScruffrBlockInstanceElement | null, parentRef: ScruffrBlockRef<unknown>): ScruffrBlockInstanceElement {
+        return new ScruffrBlockInstanceElement(this, parentRef);
     }
 }

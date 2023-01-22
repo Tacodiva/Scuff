@@ -3,15 +3,15 @@ body {
     overflow: hidden;
 }
 
-.scuff-block-text {
-    fill: var(--scuff-block-font-fill);
-    font-family: var(--scuff-block-font), Helvetica, sans-serif;
+.scruff-block-text {
+    fill: var(--scruff-block-font-fill);
+    font-family: var(--scruff-block-font), Helvetica, sans-serif;
     font-size: 12pt;
     font-weight: 500;
     white-space: pre;
 }
 
-.scuff-block-input {
+.scruff-block-input {
     padding: 0.1em 0 0.1em 0.1em;
     border: 0;
     background-color: transparent;
@@ -21,15 +21,15 @@ body {
     vertical-align: top;
 }
 
-.scuff-block-input::selection {
-    background-color: var(--scuff-block-input-select);
+.scruff-block-input::selection {
+    background-color: var(--scruff-block-input-select);
 }
 
-.scuff-workspace-bg-main {
-    fill: var(--scuff-workspace-bg-main);
-    background-color: var(--scuff-workspace-bg-main);
+.scruff-workspace-bg-main {
+    fill: var(--scruff-workspace-bg-main);
+    background-color: var(--scruff-workspace-bg-main);
 }
 
-.scuff-workspace-bg-dots {
-    fill: var(--scuff-workspace-bg-dots);
+.scruff-workspace-bg-dots {
+    fill: var(--scruff-workspace-bg-dots);
 }

@@ -1,9 +1,9 @@
-import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
-import type { ScuffrRootScriptElement } from "../scuffr/ScuffrScriptElement";
-import { ScuffrTextElement } from "../scuffr/ScuffrTextElement";
+import type { IScruffrBlockPartElement, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
+import type { ScruffrRootScriptElement } from "../scruffr/ScruffrScriptElement";
+import { ScruffrTextElement } from "../scruffr/ScruffrTextElement";
 
 export interface IBlockPart {
-    render(block: ScuffrBlockContentElement): IScuffrBlockPartElement;
+    render(block: ScruffrBlockContentElement): IScruffrBlockPartElement;
 }
 
 export class BlockPartText implements IBlockPart {
@@ -14,7 +14,7 @@ export class BlockPartText implements IBlockPart {
         this.text = text;
     }
 
-    public render(block: ScuffrBlockContentElement): IScuffrBlockPartElement {
-        return new ScuffrTextElement(block, this.text);
+    public render(block: ScruffrBlockContentElement): IScruffrBlockPartElement {
+        return new ScruffrTextElement(block, this.text);
     }
 }

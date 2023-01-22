@@ -1,37 +1,37 @@
-import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import { ScuffrBackground, ScuffrBackgroundElement, type IScuffrBackgroundModifier, type ScuffrBackgroundContentLine } from "./ScuffrBackground";
+import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
+import { ScruffrBackground, ScruffrBackgroundElement, type IScruffrBackgroundModifier, type ScruffrBackgroundContentLine } from "./ScruffrBackground";
 import { BlockInputType, type IBlockInput } from "../block/BlockInputType";
-import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
-import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
+import type { ScruffrRootScriptElement } from "./ScruffrScriptElement";
+import { ScruffrBlockRef, type IScruffrBlockParent } from "./ScruffrBlockRef";
 import type { BlockInstance } from "../block/BlockInstance";
-import { ScuffrAttachmentPointList, type IScuffrPointAttachable } from "./ScuffrAttachmentPoint";
+import { ScruffrAttachmentPointList, type IScruffrPointAttachable } from "./ScruffrAttachmentPoint";
 
-export interface IScuffrBlockPartElement extends ScuffrElement {
-    getBackground?(): ScuffrBackground | null;
-    onAncestryChange?(root: ScuffrRootScriptElement | null): void;
-    getBackgroundModifier?(): IScuffrBackgroundModifier | null;
+export interface IScruffrBlockPartElement extends ScruffrElement {
+    getBackground?(): ScruffrBackground | null;
+    onAncestryChange?(root: ScruffrRootScriptElement | null): void;
+    getBackgroundModifier?(): IScruffrBackgroundModifier | null;
 }
 
-export interface IScuffrBlockInput extends IScuffrPointAttachable, IScuffrBlockPartElement, ScuffrElement {
+export interface IScruffrBlockInput extends IScruffrPointAttachable, IScruffrBlockPartElement, ScruffrElement {
     asInput() : IBlockInput;
-    setParent(parentRef: ScuffrBlockRef<BlockInputType<IBlockInput>, ScuffrBlockContentElement>) : void;
+    setParent(parentRef: ScruffrBlockRef<BlockInputType<IBlockInput>, ScruffrBlockContentElement>) : void;
 }
 
-export abstract class ScuffrBackgroundedBlockPartElement<TContent extends ScuffrElement> extends ScuffrBackgroundElement<TContent> implements IScuffrBlockPartElement, IScuffrPointAttachable {
-    public readonly attachmentPoints: ScuffrAttachmentPointList;
-    public root: ScuffrRootScriptElement;
+export abstract class ScruffrBackgroundedBlockPartElement<TContent extends ScruffrElement> extends ScruffrBackgroundElement<TContent> implements IScruffrBlockPartElement, IScruffrPointAttachable {
+    public readonly attachmentPoints: ScruffrAttachmentPointList;
+    public root: ScruffrRootScriptElement;
 
-    public constructor(root: ScuffrRootScriptElement, parent: ScuffrParentElement, background: ScuffrBackground) {
+    public constructor(root: ScruffrRootScriptElement, parent: ScruffrParentElement, background: ScruffrBackground) {
         super(parent, background);
         this.root = root;
-        this.attachmentPoints = new ScuffrAttachmentPointList(root);
+        this.attachmentPoints = new ScruffrAttachmentPointList(root);
     }
 
-    public getBackground(): ScuffrBackground {
+    public getBackground(): ScruffrBackground {
         return this.background;
     }
 
-    public onAncestryChange(root: ScuffrRootScriptElement | null) {
+    public onAncestryChange(root: ScruffrRootScriptElement | null) {
         if (root !== null) this.root = root;
         this.attachmentPoints.onAncestryChange(root);
     }
@@ -42,12 +42,12 @@ export abstract class ScuffrBackgroundedBlockPartElement<TContent extends Scuffr
     }
 }
 
-export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartElement<ScuffrBlockContentElement> implements IScuffrBlockInput {
-    public override parent: IScuffrBlockParent;
+export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartElement<ScruffrBlockContentElement> implements IScruffrBlockInput {
+    public override parent: IScruffrBlockParent;
     public readonly block: BlockInstance;
-    public parentRef: ScuffrBlockRef;
+    public parentRef: ScruffrBlockRef;
 
-    public constructor(block: BlockInstance, parentRef: ScuffrBlockRef) {
+    public constructor(block: BlockInstance, parentRef: ScruffrBlockRef) {
         super(parentRef.parent.getRoot(), parentRef.parent, block.type.getBackground(block));
         this.parent = parentRef.parent;
         this.parentRef = parentRef;
@@ -55,18 +55,18 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
         this.content.renderAll();
     }
 
-    protected createContent(): ScuffrBlockContentElement {
-        return new ScuffrBlockContentElement(this);
+    protected createContent(): ScruffrBlockContentElement {
+        return new ScruffrBlockContentElement(this);
     }
 
-    public setParent(parentRef: ScuffrBlockRef) {
+    public setParent(parentRef: ScruffrBlockRef) {
         this.parentRef = parentRef;
         this.parent = parentRef.parent;
         const root = parentRef.parent.getRoot();
         this.onAncestryChange(parentRef.parent.getRoot());
     }
 
-    public override onAncestryChange(root: ScuffrRootScriptElement | null): void {
+    public override onAncestryChange(root: ScruffrRootScriptElement | null): void {
         for (const child of this.content.children) {
             if (child.onAncestryChange) child.onAncestryChange(root);
         }
@@ -77,17 +77,17 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
         return this.parentRef.onDrag(event);
     }
 
-    public getInput(key: BlockInputType): ScuffrBlockContentInput | null {
+    public getInput(key: BlockInputType): ScruffrBlockContentInput | null {
         return this.content.getInput(key);
     }
 
-    public setInput(key: BlockInputType, input: IScuffrBlockInput) {
+    public setInput(key: BlockInputType, input: IScruffrBlockInput) {
         this.content.setInput(key, input);
     }
 
-    protected override getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
-        const lines: ScuffrBackgroundContentLine[] = [];
-        let lineContent: IScuffrBlockPartElement[] | null = null;
+    protected override getBackgroundContentLines(): ScruffrBackgroundContentLine[] {
+        const lines: ScruffrBackgroundContentLine[] = [];
+        let lineContent: IScruffrBlockPartElement[] | null = null;
         for (const part of this.content.children) {
             if (part.getBackgroundModifier) {
                 if (lineContent) {
@@ -109,19 +109,19 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
     }
 }
 
-interface ScuffrBlockContentInput {
-    element: IScuffrBlockPartElement,
+interface ScruffrBlockContentInput {
+    element: IScruffrBlockPartElement,
     index: number
 }
 
-export class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBlockParent<BlockInputType> {
-    public children: IScuffrBlockPartElement[];
-    public parent: ScuffrBlockInstanceElement;
-    public inputs: Map<string, ScuffrBlockContentInput>;
+export class ScruffrBlockContentElement extends ScruffrParentElement implements IScruffrBlockParent<BlockInputType> {
+    public children: IScruffrBlockPartElement[];
+    public parent: ScruffrBlockInstanceElement;
+    public inputs: Map<string, ScruffrBlockContentInput>;
 
     public get root() { return this.parent.root; }
 
-    public constructor(parent: ScuffrBlockInstanceElement) {
+    public constructor(parent: ScruffrBlockInstanceElement) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
@@ -147,33 +147,33 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         return renderedPart;
     }
 
-    public setInput(key: BlockInputType, input: IScuffrBlockInput) {
+    public setInput(key: BlockInputType, input: IScruffrBlockInput) {
         this.parent.block.setInput(key, input.asInput());
         const oldInput = this.getInput(key);
         if (!oldInput) throw new Error(`No input ${key.id} on block ${this.parent.block.type.id}.`);
         this.dom.replaceChild(input.dom, oldInput.element.dom);
         if (oldInput.element.onAncestryChange) oldInput.element.onAncestryChange(null);
-        input.setParent(new ScuffrBlockRef(key, this));
+        input.setParent(new ScruffrBlockRef(key, this));
         this.children[oldInput.index] = input;
         this.inputs.set(key.id, { element: input, index: oldInput.index });
         key.createAttachmentPoints(this, input);
         this.update(true);
     }
 
-    public getInput(key: BlockInputType): ScuffrBlockContentInput | null {
+    public getInput(key: BlockInputType): ScruffrBlockContentInput | null {
         return this.inputs.get(key.id) ?? null;
     }
 
-    public getBlock(key: BlockInputType): ScuffrBlockInstanceElement | null {
+    public getBlock(key: BlockInputType): ScruffrBlockInstanceElement | null {
         const input = this.getInput(key);
-        if (input && input.element instanceof ScuffrBlockInstanceElement)
+        if (input && input.element instanceof ScruffrBlockInstanceElement)
             return input.element;
         return null;
     }
 
     public onChildDrag(key: BlockInputType, event: MouseEvent): boolean {
         const input = this.getInput(key);
-        if (!(input && input.element instanceof ScuffrBlockInstanceElement)) {
+        if (!(input && input.element instanceof ScruffrBlockInstanceElement)) {
             console.warn("Block instance recieved invalid key in onChildDrag.");
             return true;
         }
@@ -185,7 +185,7 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         return true;
     }
 
-    public getRoot(): ScuffrRootScriptElement {
+    public getRoot(): ScruffrRootScriptElement {
         return this.parent.root;
     }
 }

@@ -12,8 +12,8 @@ export class BlockCategory {
     public readonly colorTertiary;
 
     constructor(id: string) {
-        this.colorPrimary = `var(--scuff-block-${id}-bg-primary)`;
-        this.colorSecondary = `var(--scuff-block-${id}-bg-secondary)`;
-        this.colorTertiary = `var(--scuff-block-${id}-bg-tertiary)`;
+        this.colorPrimary = `var(--scruff-block-${id}-bg-primary)`;
+        this.colorSecondary = `var(--scruff-block-${id}-bg-secondary)`;
+        this.colorTertiary = `var(--scruff-block-${id}-bg-tertiary)`;
     }
 }

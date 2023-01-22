@@ -1,7 +1,7 @@
-import type { IScuffrPointAttachable } from "../scuffr/ScuffrAttachmentPoint";
-import type { IScuffrBlockInput, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
-import type { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
-import { ScuffrInputSubscriptElement } from "../scuffr/ScuffrScriptElement";
+import type { IScruffrPointAttachable } from "../scruffr/ScruffrAttachmentPoint";
+import type { IScruffrBlockInput, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
+import type { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
+import { ScruffrInputSubscriptElement } from "../scruffr/ScruffrScriptElement";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInputType, IBlockInput } from "./BlockInputType";
 import type { BlockInstance } from "./BlockInstance";
@@ -26,8 +26,8 @@ export class BlockScriptRoot extends BlockScript {
 
 export class BlockSubscriptInput extends BlockScript {
 
-    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockInput {
-        return new ScuffrInputSubscriptElement(parent, this);
+    public render(parent: ScruffrBlockInstanceElement, parentRef: ScruffrBlockRef<BlockInputType>): IScruffrBlockInput {
+        return new ScruffrInputSubscriptElement(parent, this);
     }
     
 }

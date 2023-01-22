@@ -1,18 +1,18 @@
 import { BlockScript, BlockScriptRoot } from "../block/BlockScript";
 import type { Vec2 } from "../utils/Vec2";
-import { ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint, type ScuffrAttachmentPointList } from "./ScuffrAttachmentPoint";
-import type { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
-import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
-import { ScuffrRootScriptElement } from "./ScuffrScriptElement";
+import { ScruffrScriptAttachmentPoint, type ScruffrAttachmentPoint, type ScruffrAttachmentPointList } from "./ScruffrAttachmentPoint";
+import type { ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
+import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
+import { ScruffrRootScriptElement } from "./ScruffrScriptElement";
 import type { BlockScripts } from "../block/BlockScripts";
 import type { BlockInstance } from "../block/BlockInstance";
-import type { ScuffrLiteralInputElement } from "./ScuffrLiteralInputElement";
+import type { ScruffrLiteralInputElement } from "./ScruffrLiteralInputElement";
 import { BlockInputString } from "../block/BlockInputType";
 
-abstract class ScuffrAction {
-    public readonly workspace: ScuffrWorkspace;
+abstract class ScruffrAction {
+    public readonly workspace: ScruffrWorkspace;
 
-    public constructor(workspace: ScuffrWorkspace) {
+    public constructor(workspace: ScruffrWorkspace) {
         this.workspace = workspace;
     }
 
@@ -40,11 +40,11 @@ abstract class ScuffrAction {
     }
 }
 
-class PanningAction extends ScuffrAction {
+class PanningAction extends ScruffrAction {
     public readonly startTransform: Vec2;
     public readonly startPos: Vec2;
 
-    constructor(workspace: ScuffrWorkspace, startPos: Vec2) {
+    constructor(workspace: ScruffrWorkspace, startPos: Vec2) {
         super(workspace);
         this.startPos = startPos;
         this.startTransform = workspace.blockScripts.transformPosition;
@@ -63,16 +63,16 @@ class PanningAction extends ScuffrAction {
     }
 }
 
-class ScriptDragAction extends ScuffrAction {
+class ScriptDragAction extends ScruffrAction {
     public static readonly ATTACH_RADIUS = 40;
 
-    public readonly script: ScuffrRootScriptElement;
+    public readonly script: ScruffrRootScriptElement;
     public readonly offset: Vec2;
     public readonly startPos: Vec2;
 
-    private _attachmentPoint: ScuffrAttachmentPoint | null;
+    private _attachmentPoint: ScruffrAttachmentPoint | null;
 
-    public constructor(workspace: ScuffrWorkspace, script: ScuffrRootScriptElement, startPos: Vec2) {
+    public constructor(workspace: ScruffrWorkspace, script: ScruffrRootScriptElement, startPos: Vec2) {
         super(workspace);
         this.startPos = startPos;
         this.script = script;
@@ -101,7 +101,7 @@ class ScriptDragAction extends ScuffrAction {
         }
     }
 
-    private _findAttachmentPoint(): ScuffrAttachmentPoint | null {
+    private _findAttachmentPoint(): ScruffrAttachmentPoint | null {
         let closestDist = ScriptDragAction.ATTACH_RADIUS * ScriptDragAction.ATTACH_RADIUS;
         let closest = null;
         for (const pointList of this.workspace.attachmentPoints) {
@@ -120,18 +120,18 @@ class ScriptDragAction extends ScuffrAction {
     }
 }
 
-class LiteralInputEditAction extends ScuffrAction {
-    public readonly scuffrInput: ScuffrLiteralInputElement;
+class LiteralInputEditAction extends ScruffrAction {
+    public readonly scruffrInput: ScruffrLiteralInputElement;
     public readonly svgForeignObject: SVGForeignObjectElement;
     public readonly htmlInput: HTMLInputElement;
 
-    public constructor(workspace: ScuffrWorkspace, input: ScuffrLiteralInputElement) {
+    public constructor(workspace: ScruffrWorkspace, input: ScruffrLiteralInputElement) {
         super(workspace);
-        this.scuffrInput = input;
+        this.scruffrInput = input;
 
-        this.scuffrInput.content.dom.style.display = "none";
+        this.scruffrInput.content.dom.style.display = "none";
 
-        this.svgForeignObject = this.scuffrInput.dom.appendChild(document.createElementNS(SVG_NS, "foreignObject"));
+        this.svgForeignObject = this.scruffrInput.dom.appendChild(document.createElementNS(SVG_NS, "foreignObject"));
         this.svgForeignObject.setAttribute("height", "1.2em");
         if (navigator.userAgent.toLowerCase().indexOf('firefox') !== -1) {
             // If on firefox...
@@ -144,28 +144,28 @@ class LiteralInputEditAction extends ScuffrAction {
         this._updateDOM();
 
         this.htmlInput = this.svgForeignObject.appendChild(document.createElement("input"));
-        this.htmlInput.classList.add("scuff-block-input", "scuff-block-text");
-        this.htmlInput.value = this.scuffrInput.content.text;
+        this.htmlInput.classList.add("scruff-block-input", "scruff-block-text");
+        this.htmlInput.value = this.scruffrInput.content.text;
         this.htmlInput.oninput = this._onInputChange;
-        if (this.scuffrInput.content.fill)
-            this.htmlInput.style.color = this.scuffrInput.content.fill;
+        if (this.scruffrInput.content.fill)
+            this.htmlInput.style.color = this.scruffrInput.content.fill;
         this.htmlInput.focus();
         this.htmlInput.select();
     }
 
     private _updateDOM() {
-        this.svgForeignObject.setAttribute("transform", `translate(${this.scuffrInput.content.translationX}, ${this.scuffrInput.content.translationY})`);
-        this.svgForeignObject.setAttribute("width", (this.scuffrInput.content.dimensions.x + 5) + "px");
+        this.svgForeignObject.setAttribute("transform", `translate(${this.scruffrInput.content.translationX}, ${this.scruffrInput.content.translationY})`);
+        this.svgForeignObject.setAttribute("width", (this.scruffrInput.content.dimensions.x + 5) + "px");
     }
 
     private _onInputChange = () => {
-        this.scuffrInput.setValue(this.htmlInput.value);
+        this.scruffrInput.setValue(this.htmlInput.value);
         this._updateDOM();
     }
 
     public override onEnd(): void {
         this.svgForeignObject.remove();
-        this.scuffrInput.content.dom.style.display = "";
+        this.scruffrInput.content.dom.style.display = "";
     }
 
     public override onMouseMove(event: MouseEvent): void {
@@ -184,11 +184,11 @@ class LiteralInputEditAction extends ScuffrAction {
     }
 }
 
-export class ScuffrWorkspace extends ScuffrParentElement {
+export class ScruffrWorkspace extends ScruffrParentElement {
     public parent: null;
 
     public readonly blockScripts: BlockScripts;
-    public children: ScuffrRootScriptElement[];
+    public children: ScruffrRootScriptElement[];
 
     public readonly svgScriptContainer: SVGElement;
     public readonly svgTextStagingElement: SVGElement;
@@ -196,9 +196,9 @@ export class ScuffrWorkspace extends ScuffrParentElement {
     public readonly svgBackgroundElement: SVGRectElement;
     public readonly svgDebug: SVGElement;
 
-    public readonly attachmentPoints: Set<ScuffrAttachmentPointList>;
+    public readonly attachmentPoints: Set<ScruffrAttachmentPointList>;
 
-    private _action: ScuffrAction | null;
+    private _action: ScruffrAction | null;
     private _mouseDownPos: Vec2 | null;
 
     public constructor(root: SVGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
@@ -220,7 +220,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         this.svgDebug = this.svgScriptContainer.appendChild(document.createElementNS(SVG_NS, "g"));
 
         this.svgTextStagingElement = root.appendChild(document.createElementNS(SVG_NS, "g")).appendChild(document.createElementNS(SVG_NS, "text"));
-        this.svgTextStagingElement.classList.add("scuff-block-text");
+        this.svgTextStagingElement.classList.add("scruff-block-text");
 
         this._action = null;
         this._mouseDownPos = null;
@@ -228,7 +228,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         this.updateGlobalTransform();
 
         for (const script of this.blockScripts.scripts) {
-            const rendered = new ScuffrRootScriptElement(this, script);
+            const rendered = new ScruffrRootScriptElement(this, script);
             rendered.updateAll();
             this.children.push(rendered);
         }
@@ -241,7 +241,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
             for (const point of list.list) {
                 const pointElement = this.svgDebug.appendChild(document.createElementNS(SVG_NS, "circle"));
                 pointElement.setAttribute("r", "10");
-                if (point instanceof ScuffrScriptAttachmentPoint)
+                if (point instanceof ScruffrScriptAttachmentPoint)
                     pointElement.setAttribute("style", "fill: #ff0000a0;");
                 else
                     pointElement.setAttribute("style", "fill: #00ff00a0;");
@@ -262,7 +262,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         this.children.length = 0;
         this.attachmentPoints.clear();
         for (const script of this.blockScripts.scripts) {
-            const rendered = new ScuffrRootScriptElement(this, script);
+            const rendered = new ScruffrRootScriptElement(this, script);
             rendered.updateAll();
             this.children.push(rendered);
         }
@@ -278,14 +278,14 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         else console.error(`Point Count FAIL ${beforePoints} -> ${afterPoints}`);
     }
 
-    public addScript(script: BlockScriptRoot): ScuffrRootScriptElement {
-        const rendered = new ScuffrRootScriptElement(this, script);
+    public addScript(script: BlockScriptRoot): ScruffrRootScriptElement {
+        const rendered = new ScruffrRootScriptElement(this, script);
         rendered.updateAll();
         this.addRenderedScript(rendered);
         return rendered;
     }
 
-    public addRenderedScript(script: ScuffrRootScriptElement) {
+    public addRenderedScript(script: ScruffrRootScriptElement) {
         this.blockScripts.scripts.push(script.script);
         this.children.push(script);
     }
@@ -294,11 +294,11 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         return this._deleteScriptAt(this.blockScripts.scripts.indexOf(script), deleteBlocks);
     }
 
-    public deleteRenderedScript(script: ScuffrRootScriptElement, deleteBlocks?: boolean): boolean {
+    public deleteRenderedScript(script: ScruffrRootScriptElement, deleteBlocks?: boolean): boolean {
         return this._deleteScriptAt(this.children.indexOf(script), deleteBlocks);
     }
 
-    public getRenderedScript(script: BlockScriptRoot): ScuffrRootScriptElement {
+    public getRenderedScript(script: BlockScriptRoot): ScruffrRootScriptElement {
         const rendered = this.children.find(rendered => rendered.script === script);
         if (!rendered) throw new Error("Script not a part of this workspace.");
         return rendered;
@@ -326,8 +326,8 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         this.dragRenderedScript(renderedScript, mousePos);
     }
 
-    public dragRenderedBlock(block: ScuffrBlockInstanceElement, mousePos: Vec2) {
-        const renderedScript = new ScuffrRootScriptElement(this, [block]);
+    public dragRenderedBlock(block: ScruffrBlockInstanceElement, mousePos: Vec2) {
+        const renderedScript = new ScruffrRootScriptElement(this, [block]);
         this.addRenderedScript(renderedScript);
         this.dragRenderedScript(renderedScript, mousePos);
     }
@@ -336,13 +336,13 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         this.dragRenderedScript(this.getRenderedScript(script), mousePos);
     }
 
-    public dragRenderedScript(script: ScuffrRootScriptElement, mousePos: Vec2) {
+    public dragRenderedScript(script: ScruffrRootScriptElement, mousePos: Vec2) {
         this.startAction(new ScriptDragAction(this, script, mousePos));
         // Move the script to the bottom of the container so it renders on top of everything else
         this.svgScriptContainer.appendChild(script.dom);
     }
 
-    public editLiteralInput(input: ScuffrLiteralInputElement) {
+    public editLiteralInput(input: ScruffrLiteralInputElement) {
         this.startAction(new LiteralInputEditAction(this, input));
     }
 
@@ -360,7 +360,7 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         }
     }
 
-    protected override _getWorkspace(): ScuffrWorkspace {
+    protected override _getWorkspace(): ScruffrWorkspace {
         return this;
     }
 
@@ -414,17 +414,17 @@ export class ScuffrWorkspace extends ScuffrParentElement {
         this._action = null;
     }
 
-    public startAction(action: ScuffrAction) {
+    public startAction(action: ScruffrAction) {
         this.endAction();
         this._action = action;
     }
 
-    private _dispatch<T>(element: any, listenerInvoker: (element: ScuffrElement) => boolean): boolean {
+    private _dispatch<T>(element: any, listenerInvoker: (element: ScruffrElement) => boolean): boolean {
         if (!element) return false;
 
-        let renderedElement: ScuffrElement | null;
+        let renderedElement: ScruffrElement | null;
         while (
-            !(renderedElement = element[ScuffrElement.DATA_NAME]) &&
+            !(renderedElement = element[ScruffrElement.DATA_NAME]) &&
             element !== this.dom &&
             (element = element.parentElement)
         );

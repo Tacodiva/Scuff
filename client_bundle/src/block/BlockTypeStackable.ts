@@ -1,5 +1,5 @@
 import { BlockType, type BlockTypeDescription } from "./BlockType";
-import { ScuffrBackground, ScuffrBackgroundShape } from "../scuffr/ScuffrBackground";
+import { ScruffrBackground, ScruffrBackgroundShape } from "../scruffr/ScruffrBackground";
 import type { BlockInstance } from "./BlockInstance";
 
 export enum StackableBlockShape {
@@ -33,11 +33,11 @@ export abstract class BlockTypeStackable extends BlockType {
         return this._shape !== StackableBlockShape.HEAD;
     }
 
-    public getBackground(block: BlockInstance): ScuffrBackground {
-        return new ScuffrBackground(this.getBackgroundShape(block), this.category.colorPrimary, this.category.colorTertiary);
+    public getBackground(block: BlockInstance): ScruffrBackground {
+        return new ScruffrBackground(this.getBackgroundShape(block), this.category.colorPrimary, this.category.colorTertiary);
     }
 
-    public getBackgroundShape(block: BlockInstance): ScuffrBackgroundShape {
-        return ScuffrBackgroundShape.STACK_BODY;
+    public getBackgroundShape(block: BlockInstance): ScruffrBackgroundShape {
+        return ScruffrBackgroundShape.STACK_BODY;
     }
 }
