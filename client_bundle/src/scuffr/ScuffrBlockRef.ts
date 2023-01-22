@@ -8,11 +8,11 @@ export interface IScuffrBlockParent<T = unknown> extends ScuffrParentElement  {
     getRoot(): ScuffrRootScriptElement;
 }
 
-export class ScuffrBlockRef<T = unknown> {
-    public childKey: T;
-    public readonly parent: IScuffrBlockParent<T>;
+export class ScuffrBlockRef<TKey = unknown, TParent extends IScuffrBlockParent<TKey> = IScuffrBlockParent<TKey>> {
+    public childKey: TKey;
+    public readonly parent: TParent;
 
-    public constructor(key: T, container: IScuffrBlockParent<T>) {
+    public constructor(key: TKey, container: TParent) {
         this.childKey = key;
         this.parent = container;
     }

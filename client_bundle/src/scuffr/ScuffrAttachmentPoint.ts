@@ -1,10 +1,10 @@
 import type { ScuffrElement } from "./ScuffrElement";
-import type { IScuffrBlockPartElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
+import type { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 import type { ScuffrRootScriptElement, ScuffrScriptElement } from "./ScuffrScriptElement";
 import type { Vec2 } from "../utils/Vec2";
-import type { BlockInputType } from "../block/BlockInputType";
-import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import type { BlockScript } from "../block/BlockScript";
+import type { BlockInstance } from "../block/BlockInstance";
+import { BlockInputTypeSubscript, type BlockInputType, type IBlockInput } from "../block/BlockInputType";
 
 export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = ScuffrAttachmentPoint> {
     public readonly list: TPoint[];
@@ -77,8 +77,6 @@ export abstract class ScuffrAttachmentPoint {
 
     public abstract get root(): ScuffrRootScriptElement;
 
-    public abstract addHighlight(): void;
-    public abstract removeHighlight(): void;
     public abstract canTakeScript(script: ScuffrRootScriptElement): boolean;
     public abstract takeScript(script: ScuffrRootScriptElement): void;
 }
@@ -89,10 +87,10 @@ export interface IScuffrPointAttachable extends ScuffrElement {
 
 export class ScuffrBlockInputAttachmentPoint extends ScuffrAttachmentPoint {
     public readonly block: ScuffrBlockInstanceElement;
-    public readonly input: BlockInputType;
+    public readonly input: BlockInputType<IBlockInput | BlockInstance>;
     public readonly parent: IScuffrPointAttachable;
 
-    public constructor(block: ScuffrBlockInstanceElement, input: BlockInputType, part: IScuffrPointAttachable) {
+    public constructor(block: ScuffrBlockInstanceElement, input: BlockInputType<IBlockInput | BlockInstance>, part: IScuffrPointAttachable) {
         super();
         this.parent = part;
         this.block = block;
@@ -100,15 +98,9 @@ export class ScuffrBlockInputAttachmentPoint extends ScuffrAttachmentPoint {
         this.parent.attachmentPoints.push(this);
     }
 
-    public addHighlight(): void {
-    }
-
-    public removeHighlight(): void {
-    }
-
     public canTakeScript(script: ScuffrRootScriptElement): boolean {
         if (script.children.length !== 1) return false;
-        return this.input.canTakeValue(script.children[0].block);
+        return this.input.isValidValue(script.children[0].block) !== null;
     }
 
     public takeScript(script: ScuffrRootScriptElement): void {
@@ -136,12 +128,6 @@ export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
         this.requireStackDown = requireStackDown;
     }
 
-    public addHighlight(): void {
-    }
-
-    public removeHighlight(): void {
-    }
-
     public canTakeScript(script: ScuffrRootScriptElement): boolean {
         if (this.requireStackUp) {
             const firstBlock = script.script.blocks[0];
@@ -157,6 +143,18 @@ export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
     }
 
     public takeScript(script: ScuffrRootScriptElement): void {
+        const firstBlock = script.children[0];
+        for (const input of firstBlock.block.type.inputs) {
+            if (input instanceof BlockInputTypeSubscript) {
+                const firstScript = firstBlock.block.getInput(input);
+                if (firstScript.blocks.length === 0) {
+                    // TODO Check distance to see if we should wrap or just place
+                    this.parent.wrapScript(this.index, script, firstBlock, input);
+                    return;
+                }
+                break;
+            }
+        }
         this.parent.insertScript(this.index, script);
     }
 

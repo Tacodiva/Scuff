@@ -1,20 +1,22 @@
-import { BlockInputString, type BlockInputType } from "../block/BlockInputType";
-import { ScuffrBackground, ScuffrBackgroundShape } from "./ScuffrBackground";
-import { type ScuffrBlockContentElement, ScuffrBackgroundedBlockPartElement } from "./ScuffrBlockInstanceElement";
+import { BlockInputString, type BlockInputType, type IBlockInput } from "../block/BlockInputType";
+import { ScuffrBackground, ScuffrBackgroundShape, type IScuffrBackgroundModifier } from "./ScuffrBackground";
+import { type ScuffrBlockContentElement, ScuffrBackgroundedBlockPartElement, type IScuffrBlockInput } from "./ScuffrBlockInstanceElement";
+import type { ScuffrBlockRef } from "./ScuffrBlockRef";
 import { ScuffrTextElement } from "./ScuffrTextElement";
 
-export class ScuffrLiteralInputElement extends ScuffrBackgroundedBlockPartElement<ScuffrTextElement> {
-    public override readonly parent: ScuffrBlockContentElement;
+export class ScuffrLiteralInputElement extends ScuffrBackgroundedBlockPartElement<ScuffrTextElement> implements IScuffrBlockInput {
+    private _parent: ScuffrBlockContentElement;
+    public override get parent(): ScuffrBlockContentElement { return this._parent; }
     public readonly input: BlockInputType;
-    private _value : string;
-    
+    private _value: string;
+
     public constructor(parent: ScuffrBlockContentElement, input: BlockInputType, value: string) {
         super(parent.root, parent, new ScuffrBackground(
             ScuffrBackgroundShape.ROUND_BLOCK,
             "var(--scuff-block-input-bg)",
             parent.parent.block.type.category.colorTertiary
         ));
-        this.parent = parent;
+        this._parent = parent;
         this.input = input;
         this._value = value;
         this.content.text = this._value;
@@ -36,5 +38,14 @@ export class ScuffrLiteralInputElement extends ScuffrBackgroundedBlockPartElemen
         event.preventDefault();
         this.workspace.editLiteralInput(this);
         return true;
+    }
+
+    public asInput(): IBlockInput {
+        return new BlockInputString(this._value);
+    }
+
+    public setParent(parentRef: ScuffrBlockRef<BlockInputType<IBlockInput>, ScuffrBlockContentElement>): void {
+        this._parent = parentRef.parent;
+        this.onAncestryChange(this._parent.root);
     }
 }

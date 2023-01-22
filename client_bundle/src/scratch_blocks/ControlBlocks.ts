@@ -1,6 +1,6 @@
 import { BlockCategory } from "../block/BlockCategory";
 import { BlockInputTypeString, BlockInputTypeSubscript } from "../block/BlockInputType";
-import { BlockScriptInput } from "../block/BlockScript";
+import { BlockSubscriptInput } from "../block/BlockScript";
 import { BlockTypeStackable } from "../block/BlockTypeStackable";
 import { raw } from "../l10n";
 

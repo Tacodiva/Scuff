@@ -1,12 +1,13 @@
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import { ScuffrAttachmentPointList, ScuffrScriptAttachmentPoint, type ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
-import type { IScuffrBlockPartElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
-import { BlockScript, BlockScriptInput, BlockScriptRoot } from "../block/BlockScript";
+import { BlockScript, BlockSubscriptInput, BlockScriptRoot } from "../block/BlockScript";
 import type { BlockInstance } from "../block/BlockInstance";
 import type { IScuffrBackgroundModifier, ScuffrBackground, ScuffrBackgroundContentLine } from "./ScuffrBackground";
 import type { Vec2 } from "../utils/Vec2";
+import type { BlockInputType, BlockInputTypeSubscript, IBlockInput } from "../block/BlockInputType";
+import type { IScuffrBlockInput, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 
 export abstract class ScuffrScriptElement<TScript extends BlockScript> extends ScuffrParentElement implements IScuffrBlockParent<number> {
     public children: ScuffrBlockInstanceElement[];
@@ -60,10 +61,25 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
         this.children.splice(index, 0, ...script.children);
         if (index === 0)
             this.translationSelf.y += this.topOffset - script.bottomOffset;
-        for (const child of script.children)
-            this.dom.appendChild(child.dom);
-        for (let i = 0; i < script.children.length; i++)
+        for (let i = 0; i < script.children.length; i++) {
             script.children[i].setParent(new ScuffrBlockRef(i + index, this));
+            this.dom.appendChild(script.children[i].dom);
+        }
+        this.update(true);
+        this.workspace.deleteRenderedScript(script, false);
+    }
+
+    public wrapScript(index: number, script: ScuffrRootScriptElement, block: ScuffrBlockInstanceElement, input: BlockInputTypeSubscript) {
+        this.script.blocks.splice(index, Infinity, ...script.script.blocks);
+        const newChildren = this.children.splice(index, Infinity, ...script.children);
+        for (let i = 0; i < script.children.length; i++) {
+            script.children[i].setParent(new ScuffrBlockRef(i + index, this));
+            this.dom.appendChild(script.children[i].dom);
+        }
+        if (newChildren.length !== 0) {
+            const newScript = new ScuffrInputSubscriptElement(block, newChildren);
+            block.setInput(input, newScript);
+        }
         this.update(true);
         this.workspace.deleteRenderedScript(script, false);
     }
@@ -171,16 +187,17 @@ export class ScuffrRootScriptElement extends ScuffrScriptElement<BlockScriptRoot
     }
 }
 
-export class ScuffrInputScriptElement extends ScuffrScriptElement<BlockScriptInput> implements IScuffrBlockPartElement, IScuffrBackgroundModifier {
-    public readonly parent: ScuffrBlockInstanceElement;
+export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscriptInput> implements IScuffrBlockInput, IScuffrBackgroundModifier {
+    private _parent: ScuffrBlockContentElement;
+    public get parent(): ScuffrBlockContentElement { return this._parent; }
 
-    public constructor(parent: ScuffrBlockInstanceElement, script: BlockScriptInput);
+    public constructor(parent: ScuffrBlockInstanceElement, script: BlockSubscriptInput);
 
     public constructor(parent: ScuffrBlockInstanceElement, block: ScuffrBlockInstanceElement[]);
 
-    public constructor(parent: ScuffrBlockInstanceElement, script: BlockScriptInput | ScuffrBlockInstanceElement[]) {
-        super(parent.dom, parent.root, parent.workspace, script, BlockScriptInput);
-        this.parent = parent;
+    public constructor(parent: ScuffrBlockInstanceElement, script: BlockSubscriptInput | ScuffrBlockInstanceElement[]) {
+        super(parent.content.dom, parent.root, parent.workspace, script, BlockSubscriptInput);
+        this._parent = parent.content;
     }
 
     public override update(propagateUp: boolean): void {
@@ -200,7 +217,7 @@ export class ScuffrInputScriptElement extends ScuffrScriptElement<BlockScriptInp
             this.updateTraslation();
         }
 
-        if (propagateUp) this.parent.update(true);
+        if (propagateUp && this.parent) this.parent.update(true);
     }
 
     public toRootScript(): ScuffrRootScriptElement {
@@ -229,5 +246,14 @@ export class ScuffrInputScriptElement extends ScuffrScriptElement<BlockScriptInp
     public override onTranslationUpdate(): void {
         this.attachmentPoints.recalculateTranslation();
         super.onTranslationUpdate();
+    }
+
+    public setParent(parentRef: ScuffrBlockRef<BlockInputType<IBlockInput>, ScuffrBlockContentElement>) {
+        this._parent = parentRef.parent;
+        this.onAncestryChange(parentRef.parent.getRoot());
+    }
+
+    public asInput(): IBlockInput {
+        return this.script;
     }
 }

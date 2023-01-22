@@ -4,7 +4,7 @@ import Target from './src/Target';
 import App from './svelte/App.svelte';
 import './css';
 
-export function load(callback : () => void) {
+export function load(callback: () => void) {
 	callback();
 }
 
@@ -14,7 +14,8 @@ export function main() {
 	const script = new BlockScriptRoot([
 
 		// ScratchBlocks.CONTROL_IF.createInstance(),
-	
+		ScratchBlocks.CONTROL_IF.createInstance(),
+
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
 			test: ScratchBlocks.OPERATOR_PLUS.createInstance({
 				test: ScratchBlocks.OPERATOR_PLUS.createInstance({
@@ -29,9 +30,11 @@ export function main() {
 		}),
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
 		ScratchBlocks.CONTROL_FOREVER.createInstance(),
-		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-		// 	test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
-		// }),
+		ScratchBlocks.CONTROL_FOREVER.createInstance(),
+		ScratchBlocks.CONTROL_FOREVER.createInstance(),
+		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
+			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
+		}),
 		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
 		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
 		// 	test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),

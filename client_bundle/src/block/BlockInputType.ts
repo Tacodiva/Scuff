@@ -1,37 +1,41 @@
 import type { IBlockPart } from "./BlockParts";
 import { ScuffrBlockInputAttachmentPoint, type IScuffrPointAttachable } from "../scuffr/ScuffrAttachmentPoint";
 import { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
-import type { IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
+import type { IScuffrBlockInput, IScuffrBlockPartElement, ScuffrBlockContentElement, ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
 import { ScuffrLiteralInputElement } from "../scuffr/ScuffrLiteralInputElement";
 import type { BlockType } from "./BlockType";
-import { BlockScriptInput } from "./BlockScript";
-import { ScratchBlocks } from "../scratch_blocks/ScratchBlocks";
+import { BlockScript, BlockSubscriptInput } from "./BlockScript";
 
 export interface IBlockInput {
-    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockPartElement & IScuffrPointAttachable;
+    render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockInput;
 }
 
-export abstract class BlockInputType implements IBlockPart {
+export abstract class BlockInputType<T extends IBlockInput = IBlockInput> implements IBlockPart {
     public readonly id: string;
-    public readonly defaultValue: IBlockInput;
+    public readonly defaultValueFactory: () => T;
 
     public readonly block: BlockType;
 
-    public constructor(id: string, block: BlockType, defaultValue: IBlockInput) {
+    public constructor(id: string, block: BlockType, defaultValueFactory: () => T) {
         this.id = id;
-        this.defaultValue = defaultValue;
+        this.defaultValueFactory = defaultValueFactory;
         this.block = block;
     }
 
-    public render(block: ScuffrBlockContentElement): IScuffrBlockPartElement & IScuffrPointAttachable {
-        return block.parent.block.getInput(this.id).render(block.parent, new ScuffrBlockRef(this, block));
-    }
-    
-    public createAttachmentPoints(block: ScuffrBlockContentElement, rendered: IScuffrPointAttachable) {
-        new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered);
+    public render(block: ScuffrBlockContentElement): IScuffrBlockInput {
+        return block.parent.block.getInput(this).render(block.parent, new ScuffrBlockRef(this, block));
     }
 
-    public abstract canTakeValue(value: IBlockInput): boolean;
+    public createAttachmentPoints(block: ScuffrBlockContentElement, rendered: IScuffrBlockInput): void {
+        if (this.hasInputAttachmentPoint())
+            new ScuffrBlockInputAttachmentPoint(block.parent, this, rendered);
+    }
+
+    public hasInputAttachmentPoint(): boolean {
+        return false;
+    }
+
+    public abstract isValidValue(value: IBlockInput): T | null;
 }
 
 export class BlockInputString implements IBlockInput {
@@ -41,32 +45,32 @@ export class BlockInputString implements IBlockInput {
         this._value = value;
     }
 
-    public hasAttachmentPoint(): boolean {
-        return true;
-    }
-
-    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrPointAttachable {
+    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockInput {
         return new ScuffrLiteralInputElement(parent.content, parentRef.childKey, this._value);
     }
 }
 
 export class BlockInputTypeString extends BlockInputType {
-
     public constructor(id: string, block: BlockType, defaultValue: string = "") {
-        super(id, block, new BlockInputString(defaultValue));
+        super(id, block, () => new BlockInputString(defaultValue));
     }
 
-    public canTakeValue(value: IBlockInput): boolean {
+    public isValidValue(value: IBlockInput): IBlockInput | null {
+        return value;
+    }
+
+    public override hasInputAttachmentPoint(): boolean {
         return true;
     }
 }
 
-export class BlockInputTypeSubscript extends BlockInputType {
+export class BlockInputTypeSubscript extends BlockInputType<BlockSubscriptInput> {
     public constructor(id: string, block: BlockType) {
-        super(id, block, new BlockScriptInput([ScratchBlocks.MOTION_MOVE_STEPS.createInstance(), ScratchBlocks.MOTION_MOVE_STEPS.createInstance()]));
+        super(id, block, () => new BlockSubscriptInput());
     }
 
-    public canTakeValue(value: IBlockInput): boolean {
-        return true;
+    public isValidValue(value: IBlockInput): BlockSubscriptInput | null {
+        if (value instanceof BlockSubscriptInput) return value;
+        return null;
     }
 }

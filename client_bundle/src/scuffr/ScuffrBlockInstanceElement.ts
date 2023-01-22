@@ -1,6 +1,6 @@
 import { ScuffrElement, ScuffrParentElement } from "./ScuffrElement";
 import { ScuffrBackground, ScuffrBackgroundElement, type IScuffrBackgroundModifier, type ScuffrBackgroundContentLine } from "./ScuffrBackground";
-import { BlockInputType } from "../block/BlockInputType";
+import { BlockInputType, type IBlockInput } from "../block/BlockInputType";
 import type { ScuffrRootScriptElement } from "./ScuffrScriptElement";
 import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
 import type { BlockInstance } from "../block/BlockInstance";
@@ -10,6 +10,11 @@ export interface IScuffrBlockPartElement extends ScuffrElement {
     getBackground?(): ScuffrBackground | null;
     onAncestryChange?(root: ScuffrRootScriptElement | null): void;
     getBackgroundModifier?(): IScuffrBackgroundModifier | null;
+}
+
+export interface IScuffrBlockInput extends IScuffrPointAttachable, IScuffrBlockPartElement, ScuffrElement {
+    asInput() : IBlockInput;
+    setParent(parentRef: ScuffrBlockRef<BlockInputType<IBlockInput>, ScuffrBlockContentElement>) : void;
 }
 
 export abstract class ScuffrBackgroundedBlockPartElement<TContent extends ScuffrElement> extends ScuffrBackgroundElement<TContent> implements IScuffrBlockPartElement, IScuffrPointAttachable {
@@ -37,7 +42,7 @@ export abstract class ScuffrBackgroundedBlockPartElement<TContent extends Scuffr
     }
 }
 
-export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartElement<ScuffrBlockContentElement> {
+export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartElement<ScuffrBlockContentElement> implements IScuffrBlockInput {
     public override parent: IScuffrBlockParent;
     public readonly block: BlockInstance;
     public parentRef: ScuffrBlockRef;
@@ -76,8 +81,8 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
         return this.content.getInput(key);
     }
 
-    public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {
-        this.content.setInput(key, block);
+    public setInput(key: BlockInputType, input: IScuffrBlockInput) {
+        this.content.setInput(key, input);
     }
 
     protected override getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
@@ -97,6 +102,10 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
         }
         if (lineContent) lines.push({ elements: lineContent, dimensions: { x: 0, y: 0 } });
         return lines;
+    }
+
+    public asInput(): IBlockInput {
+        return this.block;
     }
 }
 
@@ -138,16 +147,16 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         return renderedPart;
     }
 
-    public setInput(key: BlockInputType, block: ScuffrBlockInstanceElement) {
-        this.parent.block.setInput(key, block.block);
+    public setInput(key: BlockInputType, input: IScuffrBlockInput) {
+        this.parent.block.setInput(key, input.asInput());
         const oldInput = this.getInput(key);
         if (!oldInput) throw new Error(`No input ${key.id} on block ${this.parent.block.type.id}.`);
-        this.dom.replaceChild(block.dom, oldInput.element.dom);
+        this.dom.replaceChild(input.dom, oldInput.element.dom);
         if (oldInput.element.onAncestryChange) oldInput.element.onAncestryChange(null);
-        block.setParent(new ScuffrBlockRef(key, this));
-        this.children[oldInput.index] = block;
-        this.inputs.set(key.id, { element: block, index: oldInput.index });
-        key.createAttachmentPoints(this, block);
+        input.setParent(new ScuffrBlockRef(key, this));
+        this.children[oldInput.index] = input;
+        this.inputs.set(key.id, { element: input, index: oldInput.index });
+        key.createAttachmentPoints(this, input);
         this.update(true);
     }
 
@@ -170,7 +179,7 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         }
         input.element.attachmentPoints.clear();
         this.workspace.dragRenderedBlock(input.element, event);
-        this.parent.block.resetInput(key);
+        this.parent.block.resetInput(key.id);
         this._renderPart(input.index).updateAll();
         this.update(true);
         return true;
