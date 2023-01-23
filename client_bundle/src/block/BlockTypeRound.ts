@@ -1,6 +1,7 @@
 import { BlockType } from "./BlockType";
-import { ScruffrBackground, ScruffrBackgroundShape } from "../scruffr/ScruffrBackground";
+import { ScruffrBackgroundShape } from "../scruffr/background/ScruffrBackgroundShape";
 import type { BlockInstance } from "./BlockInstance";
+import { ScruffrBackground } from "../scruffr/background";
 
 export abstract class BlockTypeRound extends BlockType {
 

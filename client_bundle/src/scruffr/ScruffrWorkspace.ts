@@ -1,13 +1,13 @@
-import { BlockScript, BlockScriptRoot } from "../block/BlockScript";
+import { BlockScriptRoot } from "../block/BlockScript";
 import type { Vec2 } from "../utils/Vec2";
-import { ScruffrScriptAttachmentPoint, type ScruffrAttachmentPoint, type ScruffrAttachmentPointList } from "./ScruffrAttachmentPoint";
 import type { ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
 import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
 import { ScruffrRootScriptElement } from "./ScruffrScriptElement";
 import type { BlockScripts } from "../block/BlockScripts";
 import type { BlockInstance } from "../block/BlockInstance";
 import type { ScruffrLiteralInputElement } from "./ScruffrLiteralInputElement";
-import { BlockInputString } from "../block/BlockInputType";
+import { ScruffrScriptAttachmentPoint } from "./attachment_points/ScruffrScriptAttachmentPoint";
+import type { ScruffrAttachmentPoint, ScruffrAttachmentPointList } from "./attachment_points";
 
 abstract class ScruffrAction {
     public readonly workspace: ScruffrWorkspace;

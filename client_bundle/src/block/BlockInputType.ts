@@ -1,10 +1,10 @@
 import type { IBlockPart } from "./BlockParts";
-import { ScruffrBlockInputAttachmentPoint, type IScruffrPointAttachable } from "../scruffr/ScruffrAttachmentPoint";
 import { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
 import type { IScruffrBlockInput, IScruffrBlockPartElement, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
 import { ScruffrLiteralInputElement } from "../scruffr/ScruffrLiteralInputElement";
 import type { BlockType } from "./BlockType";
-import { BlockScript, BlockSubscriptInput } from "./BlockScript";
+import { BlockSubscriptInput } from "./BlockScript";
+import { ScruffrBlockInputAttachmentPoint } from "../scruffr/attachment_points/ScruffrBlockInputAttachmentPoint";
 
 export interface IBlockInput {
     render(parent: ScruffrBlockInstanceElement, parentRef: ScruffrBlockRef<BlockInputType>): IScruffrBlockInput;

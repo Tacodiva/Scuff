@@ -1,10 +1,11 @@
 import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
-import { ScruffrBackground, ScruffrBackgroundElement, type IScruffrBackgroundModifier, type ScruffrBackgroundContentLine } from "./ScruffrBackground";
 import { BlockInputType, type IBlockInput } from "../block/BlockInputType";
 import type { ScruffrRootScriptElement } from "./ScruffrScriptElement";
 import { ScruffrBlockRef, type IScruffrBlockParent } from "./ScruffrBlockRef";
 import type { BlockInstance } from "../block/BlockInstance";
-import { ScruffrAttachmentPointList, type IScruffrPointAttachable } from "./ScruffrAttachmentPoint";
+import { ScruffrAttachmentPointList, type IScruffrPointAttachable } from "./attachment_points";
+import type { IScruffrBackgroundModifier, ScruffrBackground, ScruffrBackgroundContentLine } from "./background";
+import { ScruffrBackgroundElement } from "./background/ScruffrBackgroundElement";
 
 export interface IScruffrBlockPartElement extends ScruffrElement {
     getBackground?(): ScruffrBackground | null;
@@ -13,8 +14,8 @@ export interface IScruffrBlockPartElement extends ScruffrElement {
 }
 
 export interface IScruffrBlockInput extends IScruffrPointAttachable, IScruffrBlockPartElement, ScruffrElement {
-    asInput() : IBlockInput;
-    setParent(parentRef: ScruffrBlockRef<BlockInputType<IBlockInput>, ScruffrBlockContentElement>) : void;
+    asInput(): IBlockInput;
+    setParent(parentRef: ScruffrBlockRef<BlockInputType<IBlockInput>, ScruffrBlockContentElement>): void;
 }
 
 export abstract class ScruffrBackgroundedBlockPartElement<TContent extends ScruffrElement> extends ScruffrBackgroundElement<TContent> implements IScruffrBlockPartElement, IScruffrPointAttachable {
@@ -43,13 +44,12 @@ export abstract class ScruffrBackgroundedBlockPartElement<TContent extends Scruf
 }
 
 export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartElement<ScruffrBlockContentElement> implements IScruffrBlockInput {
-    public override parent: IScruffrBlockParent;
     public readonly block: BlockInstance;
     public parentRef: ScruffrBlockRef;
+    public get parent(): IScruffrBlockParent { return this.parentRef.parent; }
 
     public constructor(block: BlockInstance, parentRef: ScruffrBlockRef) {
         super(parentRef.parent.getRoot(), parentRef.parent, block.type.getBackground(block));
-        this.parent = parentRef.parent;
         this.parentRef = parentRef;
         this.block = block;
         this.content.renderAll();
@@ -61,24 +61,22 @@ export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartEle
 
     public setParent(parentRef: ScruffrBlockRef) {
         this.parentRef = parentRef;
-        this.parent = parentRef.parent;
-        const root = parentRef.parent.getRoot();
         this.onAncestryChange(parentRef.parent.getRoot());
     }
 
     public override onAncestryChange(root: ScruffrRootScriptElement | null): void {
+        super.onAncestryChange(root);
         for (const child of this.content.children) {
             if (child.onAncestryChange) child.onAncestryChange(root);
         }
-        super.onAncestryChange(root);
     }
 
     public override onDrag(event: MouseEvent): boolean {
         return this.parentRef.onDrag(event);
     }
 
-    public getInput(key: BlockInputType): ScruffrBlockContentInput | null {
-        return this.content.getInput(key);
+    public getInput(key: BlockInputType): IScruffrBlockInput | null {
+        return this.content.getInput(key)?.element ?? null;
     }
 
     public setInput(key: BlockInputType, input: IScruffrBlockInput) {
@@ -110,7 +108,7 @@ export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartEle
 }
 
 interface ScruffrBlockContentInput {
-    element: IScruffrBlockPartElement,
+    element: IScruffrBlockInput,
     index: number
 }
 

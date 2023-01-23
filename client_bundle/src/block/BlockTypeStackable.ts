@@ -1,6 +1,7 @@
 import { BlockType, type BlockTypeDescription } from "./BlockType";
-import { ScruffrBackground, ScruffrBackgroundShape } from "../scruffr/ScruffrBackground";
+import { ScruffrBackgroundShape } from "../scruffr/background/ScruffrBackgroundShape";
 import type { BlockInstance } from "./BlockInstance";
+import { ScruffrBackground } from "../scruffr/background";
 
 export enum StackableBlockShape {
     HEAD,

@@ -1,13 +1,14 @@
-import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
+import { ScruffrParentElement } from "./ScruffrElement";
 import type { ScruffrWorkspace } from "./ScruffrWorkspace";
-import { ScruffrAttachmentPointList, ScruffrScriptAttachmentPoint, type ScruffrAttachmentPoint } from "./ScruffrAttachmentPoint";
+import { ScruffrAttachmentPointList } from "./attachment_points";
 import { ScruffrBlockRef, type IScruffrBlockParent } from "./ScruffrBlockRef";
 import { BlockScript, BlockSubscriptInput, BlockScriptRoot } from "../block/BlockScript";
 import type { BlockInstance } from "../block/BlockInstance";
-import type { IScruffrBackgroundModifier, ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockInputType, BlockInputTypeSubscript, IBlockInput } from "../block/BlockInputType";
 import type { IScruffrBlockInput, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
+import { ScruffrScriptAttachmentPoint } from "./attachment_points/ScruffrScriptAttachmentPoint";
+import type { IScruffrBackgroundModifier, ScruffrBackgroundContentLine } from "./background";
 
 export abstract class ScruffrScriptElement<TScript extends BlockScript> extends ScruffrParentElement implements IScruffrBlockParent<number> {
     public children: ScruffrBlockInstanceElement[];

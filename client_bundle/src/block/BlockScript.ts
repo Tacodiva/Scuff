@@ -1,9 +1,8 @@
-import type { IScruffrPointAttachable } from "../scruffr/ScruffrAttachmentPoint";
 import type { IScruffrBlockInput, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
 import type { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
 import { ScruffrInputSubscriptElement } from "../scruffr/ScruffrScriptElement";
 import type { Vec2 } from "../utils/Vec2";
-import type { BlockInputType, IBlockInput } from "./BlockInputType";
+import type { BlockInputType } from "./BlockInputType";
 import type { BlockInstance } from "./BlockInstance";
 
 export abstract class BlockScript {

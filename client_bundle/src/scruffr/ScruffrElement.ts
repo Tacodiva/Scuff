@@ -1,7 +1,7 @@
 import type { Vec2 } from "../utils/Vec2";
 import type { ScruffrWorkspace } from "./ScruffrWorkspace";
 
-abstract class ScruffrElement {
+export abstract class ScruffrElement {
     public static readonly DATA_NAME = "sfs-rendered-element";
 
     public readonly workspace: ScruffrWorkspace;
@@ -85,7 +85,7 @@ abstract class ScruffrElement {
     }
 }
 
-abstract class ScruffrParentElement extends ScruffrElement {
+export abstract class ScruffrParentElement extends ScruffrElement {
     public abstract children: readonly ScruffrElement[];
 
     public override updateAll(): void {
@@ -100,5 +100,3 @@ abstract class ScruffrParentElement extends ScruffrElement {
             child.onTranslationUpdate();
     }
 }
-
-export { ScruffrParentElement, ScruffrElement }

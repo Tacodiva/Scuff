@@ -1,5 +1,4 @@
-import type { IScruffrBlockPartElement, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
-import type { ScruffrRootScriptElement } from "../scruffr/ScruffrScriptElement";
+import type { IScruffrBlockPartElement, ScruffrBlockContentElement } from "../scruffr/ScruffrBlockInstanceElement";
 import { ScruffrTextElement } from "../scruffr/ScruffrTextElement";
 
 export interface IBlockPart {
