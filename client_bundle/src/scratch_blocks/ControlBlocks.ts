@@ -1,5 +1,5 @@
 import { BlockCategory } from "../block/BlockCategory";
-import { BlockInputTypeString, BlockInputTypeSubscript } from "../block/BlockInputType";
+import { BlockInputTypeBoolean, BlockInputTypeString, BlockInputTypeSubscript } from "../block/BlockInputType";
 import { BlockSubscriptInput } from "../block/BlockScript";
 import { BlockTypeStackable } from "../block/BlockTypeStackable";
 import { raw } from "../l10n";
@@ -7,15 +7,15 @@ import { raw } from "../l10n";
 export class ControlBlockIf extends BlockTypeStackable {
 
     public readonly inputOne: BlockInputTypeString;
-    public readonly inputTwo: BlockInputTypeString;
+    public readonly inputTwo: BlockInputTypeBoolean;
 
     constructor() {
         super("control_if")
         this.init({
-            text: raw("if then % else % "),
+            text: raw("if % then %"),
             inputs: [
-                this.inputOne = new BlockInputTypeSubscript("testI", this),
-                this.inputTwo = new BlockInputTypeSubscript("testII", this),
+                this.inputTwo = new BlockInputTypeBoolean("idk", this),
+                this.inputOne = new BlockInputTypeSubscript("testI", this)
             ],
             category: BlockCategory.CONTROL
         });

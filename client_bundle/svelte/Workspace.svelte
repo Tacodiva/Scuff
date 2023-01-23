@@ -45,7 +45,7 @@
     </defs>
     <g bind:this={elementWorkspace} />
     <text style="fill:var(--scruff-workspace-text);font-family:monospace;" dominant-baseline="hanging">
-        <tspan x="2" y="5">Scruff alpha 7</tspan>
+        <tspan x="2" y="5">Scruff alpha 8</tspan>
         <tspan x="2" dy="1.2em">C blocks now somewhat functional!</tspan>
         <tspan x="2" dy="2.4em">Scruffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
@@ -53,8 +53,8 @@
         <tspan x="2" dy="1.2em">[X] Add support for rendering C blocks</tspan>
         <tspan x="2" dy="1.2em">[X] Add attachment points to C blocks</tspan>
         <tspan x="2" dy="1.2em">[X] Make dropping C blocks wrap the blocks below it</tspan>
-        <tspan x="2" dy="1.2em">[ ] Make replacing another input not delete it</tspan>
-        <tspan x="2" dy="1.2em">[ ] Add boolean inputs and blocks</tspan>
+        <tspan x="2" dy="1.2em">[X] Make replacing another input not delete it</tspan>
+        <tspan x="2" dy="1.2em">[X] Add boolean inputs and blocks</tspan>
         <tspan x="2" dy="1.2em">[ ] Add head and tail blocks (w/ cute cat ears)</tspan>
         <tspan x="2" dy="1.2em">[ ] Add input highlighting</tspan>
         <tspan x="2" dy="1.2em">[ ] Add ghost blocks to preview drag and drop</tspan>

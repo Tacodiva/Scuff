@@ -21,6 +21,23 @@ export abstract class ScruffrBackgroundShape {
         }
     }({ x: 20, y: 32 }, 4);
 
+    public static readonly TRIANGLE_BLOCK = new class extends ScruffrBackgroundShape {
+        public override createPath(size: Vec2, lines: ScruffrBackgroundContentLine[]): string {
+            if (lines.length !== 1 || lines[0].modifier)
+                throw new Error("Round shaped blocks do not support multiple lines.");
+            let radius = size.y / 2;
+            return `m 0 ${-radius} h ${size.x} l ${radius} ${radius} l ${-radius} ${radius} H 0 l ${-radius} ${-radius} z`;
+        }
+
+        public getPadding(contentSize: Vec2): Vec2 {
+            return { x: contentSize.y / 2, y: 4 };
+        }
+
+        public getTopLeftOffset(contentSize: Vec2): Vec2 {
+            return { x: contentSize.y / 2 - 6, y: contentSize.y / 2 };
+        }
+    }({ x: 16, y: 32 }, 8);
+
     public static readonly STACK_BODY = new class extends ScruffrBackgroundShape {
         public override createPath(size: Vec2, lines: ScruffrBackgroundContentLine[]): string {
             let path = `m -8 ${-size.y / 2 + 4} a 4 4 0 0 1 4 -4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;

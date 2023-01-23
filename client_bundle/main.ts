@@ -1,8 +1,8 @@
-import { BlockScriptRoot } from './src/block/BlockScript';
+import './css';
+import { BlockScriptRoot, BlockSubscriptInput } from './src/block/BlockScript';
 import { ScratchBlocks } from './src/scratch_blocks/ScratchBlocks';
 import Target from './src/Target';
 import App from './svelte/App.svelte';
-import './css';
 
 export function load(callback: () => void) {
 	callback();
@@ -13,15 +13,21 @@ export function main() {
 
 	const script = new BlockScriptRoot([
 
-		// ScratchBlocks.CONTROL_IF.createInstance(),
-		ScratchBlocks.CONTROL_IF.createInstance(),
+		ScratchBlocks.CONTROL_IF.createInstance({
+			idk: ScratchBlocks.OPERATOR_EQUALS.createInstance({
+				test: ScratchBlocks.OPERATOR_PLUS.createInstance()
+			}),
+			testI: new BlockSubscriptInput([
+				ScratchBlocks.CONTROL_FOREVER.createInstance()
+			])
+		}),
 
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
 			test: ScratchBlocks.OPERATOR_PLUS.createInstance({
 				test: ScratchBlocks.OPERATOR_PLUS.createInstance({
 					test: ScratchBlocks.OPERATOR_PLUS.createInstance({
 						test: ScratchBlocks.OPERATOR_PLUS.createInstance({
-							testII: ScratchBlocks.OPERATOR_PLUS.createInstance(),
+							testII: ScratchBlocks.OPERATOR_EQUALS.createInstance(),
 						}),
 					}),
 				}),
@@ -29,7 +35,6 @@ export function main() {
 			}),
 		}),
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.CONTROL_FOREVER.createInstance(),
 		ScratchBlocks.CONTROL_FOREVER.createInstance(),
 		ScratchBlocks.CONTROL_FOREVER.createInstance(),
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({

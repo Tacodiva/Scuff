@@ -1,7 +1,7 @@
 import type { BlockType } from "../block/BlockType";
 import { ControlBlockForever, ControlBlockIf } from "./ControlBlocks";
 import { MotionBlockMoveSteps } from "./MotionBlocks";
-import { OperatorBlockPlus } from "./OperatorBlocks";
+import { OperatorBlockEquals, OperatorBlockPlus } from "./OperatorBlocks";
 
 export class ScratchBlocks {
 
@@ -15,7 +15,10 @@ export class ScratchBlocks {
     }
 
     public static readonly MOTION_MOVE_STEPS = ScratchBlocks._register(new MotionBlockMoveSteps());
+    
     public static readonly OPERATOR_PLUS = ScratchBlocks._register(new OperatorBlockPlus());
+    public static readonly OPERATOR_EQUALS = ScratchBlocks._register(new OperatorBlockEquals());
+
     public static readonly CONTROL_IF = ScratchBlocks._register(new ControlBlockIf());
     public static readonly CONTROL_FOREVER = ScratchBlocks._register(new ControlBlockForever());
 }
