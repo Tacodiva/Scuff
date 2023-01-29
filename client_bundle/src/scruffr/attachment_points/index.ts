@@ -55,7 +55,6 @@ export abstract class ScruffrAttachmentPoint {
     }
 
     public calculateDelta(source: ScruffrRootScriptElement): Vec2 {
-        const translation = this.translation;
         return {
             x: this.translation.x + this.root.translationX - source.translationX,
             y: this.translation.y + this.root.translationY - source.translationY
@@ -70,7 +69,7 @@ export abstract class ScruffrAttachmentPoint {
     public recalculateTranslation() {
         const absTrans = this.parent.getAbsoluteTranslation();
         return this._translation = {
-            x: absTrans.x - this.root.translationX + this.offset.x + this.parent.leftOffset,
+            x: absTrans.x - this.root.translationX + this.offset.x,
             y: absTrans.y - this.root.translationY + this.offset.y
         };
     }

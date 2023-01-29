@@ -12,12 +12,16 @@ export function main() {
 	const target = new Target();
 
 	const script = new BlockScriptRoot([
+		ScratchBlocks.EVENT_GREEN_FLAG.createInstance(),
 
 		ScratchBlocks.CONTROL_IF.createInstance({
+
 			idk: ScratchBlocks.OPERATOR_EQUALS.createInstance({
 				test: ScratchBlocks.OPERATOR_PLUS.createInstance()
 			}),
 			testI: new BlockSubscriptInput([
+				ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
+
 				ScratchBlocks.CONTROL_FOREVER.createInstance()
 			])
 		}),
@@ -35,15 +39,14 @@ export function main() {
 			}),
 		}),
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.CONTROL_FOREVER.createInstance(),
-		ScratchBlocks.CONTROL_FOREVER.createInstance(),
+		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
 		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
 			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
 		}),
-		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		// ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-		// 	test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
-		// }),
+		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
+		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
+			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
+		}),
 	]);
 
 	script.translation = { x: 100, y: 100 };

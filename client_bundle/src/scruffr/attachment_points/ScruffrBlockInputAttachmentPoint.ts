@@ -37,7 +37,6 @@ export class ScruffrBlockInputAttachmentPoint extends ScruffrAttachmentPoint {
             replacedInput.attachmentPoints.clear();
             const renderedScript = new ScruffrRootScriptElement(replacedInput.workspace, [replacedInput]);
             replacedInput.workspace.addRenderedScript(renderedScript);
-            console.log(this.block.getAbsoluteTranslation().y);
         }
 
         script.workspace.deleteRenderedScript(script, false);

@@ -45,8 +45,8 @@
     </defs>
     <g bind:this={elementWorkspace} />
     <text style="fill:var(--scruff-workspace-text);font-family:monospace;" dominant-baseline="hanging">
-        <tspan x="2" y="5">Scruff alpha 8</tspan>
-        <tspan x="2" dy="1.2em">C blocks now somewhat functional!</tspan>
+        <tspan x="2" y="5">Scruff alpha 9</tspan>
+        <tspan x="2" dy="1.2em">Now with 99.8% more cat ears</tspan>
         <tspan x="2" dy="2.4em">Scruffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
         <tspan x="2" dy="1.2em">[X] Make block updates more efficient</tspan>
@@ -55,12 +55,13 @@
         <tspan x="2" dy="1.2em">[X] Make dropping C blocks wrap the blocks below it</tspan>
         <tspan x="2" dy="1.2em">[X] Make replacing another input not delete it</tspan>
         <tspan x="2" dy="1.2em">[X] Add boolean inputs and blocks</tspan>
-        <tspan x="2" dy="1.2em">[ ] Add head and tail blocks (w/ cute cat ears)</tspan>
+        <tspan x="2" dy="1.2em">[X] Add head and tail blocks (w/ cute cat ears)</tspan>
         <tspan x="2" dy="1.2em">[ ] Add input highlighting</tspan>
         <tspan x="2" dy="1.2em">[ ] Add ghost blocks to preview drag and drop</tspan>
         <tspan x="2" dy="1.2em">[ ] Actually validate block inputs</tspan>
         <tspan x="2" dy="1.2em">[ ] Add horizontal and vertical scroll bar</tspan>
         <tspan x="2" dy="1.2em">[ ] Add dropdown block inputs</tspan>
+        <tspan x="2" dy="1.2em">[ ] Add support for icons in blocks</tspan>
         <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>
         <tspan x="2" dy="1.2em">[ ] Investigate touchscreen support</tspan>
         <tspan x="2" dy="1.2em">[ ] Come up with more TODOs</tspan>

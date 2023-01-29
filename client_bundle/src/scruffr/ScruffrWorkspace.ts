@@ -249,6 +249,13 @@ export class ScruffrWorkspace extends ScruffrParentElement {
                 pointElement.setAttribute("transform", `translate(${point.root.translationX + pointPos.x}, ${point.root.translationY + pointPos.y})`);
             }
         }
+        for (const script of this.children) {
+            const pointElement = this.svgDebug.appendChild(document.createElementNS(SVG_NS, "circle"));
+            pointElement.setAttribute("r", "10");
+            pointElement.setAttribute("style", "fill: #0000ffa0;");
+            const pointPos = script.getAbsoluteTranslation();
+            pointElement.setAttribute("transform", `translate(${pointPos.x}, ${pointPos.y})`);
+        }
     }
 
     public debugCheck() {

@@ -48,7 +48,10 @@ export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement =
             height += lineHeight;
         }
 
-        let y = -height / 2;
+        this.content.dimensions = { x: width, y: height };
+        this.content.topLeftOffset = { x: 0, y: -lines[0].dimensions.y / 2 };
+
+        let y = this.content.topLeftOffset.y;
         for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
             const line = lines[lineIdx];
             y += line.dimensions.y / 2;
@@ -60,21 +63,18 @@ export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement =
             y += line.dimensions.y / 2;
         }
 
-        this.content.dimensions = { x: width, y: height };
-        this.content.topLeftOffset = { x: 0, y: height / 2 };
-
         const size = { x: width, y: height }
 
         const ajustX = size.x < this.background.shape.minSize.x;
         if (ajustX) size.x = this.background.shape.minSize.x;
+
+        let verticalPadding = 0;
         if (size.y < this.background.shape.minSize.y) {
-            const dy = this.background.shape.minSize.y - size.y;
+            verticalPadding = (this.background.shape.minSize.y - size.y) / 2;
             size.y = this.background.shape.minSize.y;
-            lines[0].dimensions.y += dy / 2;
-            lines[lines.length - 1].dimensions.y += dy / 2;
         }
 
-        this.background.shape.updateElement(this.backgroundDOM, size, lines, this.background);
+        this.background.shape.updateElement(this.backgroundDOM, size, lines, verticalPadding, this.background);
         const padding = this.background.shape.getPadding(size);
 
         if (ajustX) {
@@ -85,14 +85,19 @@ export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement =
         this.content.updateTraslation();
 
         this.translationSelf.x = padding.x;
+        this.translationSelf.y = 0;
         this.updateTraslation();
 
         this.dimensions = {
             x: size.x + padding.x * 2,
             y: size.y + padding.y * 2
         }
+        // console.log(lines[0].dimensions.y + ", " + verticalPadding);
 
-        this.topLeftOffset = this.background.shape.getTopLeftOffset(size);
+        this.topLeftOffset = {
+            x: padding.x,
+            y: lines[0].dimensions.y / 2 + verticalPadding
+        };
         super.update(propagateUp);
     }
 

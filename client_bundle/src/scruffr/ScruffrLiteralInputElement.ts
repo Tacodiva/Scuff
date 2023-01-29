@@ -1,7 +1,7 @@
 import { BlockInputString, type BlockInputType, type IBlockInput } from "../block/BlockInputType";
 import { ScruffrBackground } from "./background";
-import { ScruffrBackgroundShape } from "./background/ScruffrBackgroundShape";
-import { type ScruffrBlockContentElement, ScruffrBackgroundedBlockPartElement, type IScruffrBlockInput } from "./ScruffrBlockInstanceElement";
+import { BackgroundShapes } from "./background/BackgroundShapes";
+import { ScruffrBackgroundedBlockPartElement, type IScruffrBlockInput, type ScruffrBlockContentElement } from "./ScruffrBlockInstanceElement";
 import type { ScruffrBlockRef } from "./ScruffrBlockRef";
 import { ScruffrTextElement } from "./ScruffrTextElement";
 
@@ -13,7 +13,7 @@ export class ScruffrLiteralInputElement extends ScruffrBackgroundedBlockPartElem
 
     public constructor(parent: ScruffrBlockContentElement, input: BlockInputType, value: string) {
         super(parent.root, parent, new ScruffrBackground(
-            ScruffrBackgroundShape.ROUND_BLOCK,
+            BackgroundShapes.InputRound,
             "var(--scruff-block-input-bg)",
             parent.parent.block.type.category.colorTertiary
         ));

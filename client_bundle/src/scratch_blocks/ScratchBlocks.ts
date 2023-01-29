@@ -1,5 +1,6 @@
 import type { BlockType } from "../block/BlockType";
 import { ControlBlockForever, ControlBlockIf } from "./ControlBlocks";
+import { EventGreenFlagClicked } from "./EventBlocks";
 import { MotionBlockMoveSteps } from "./MotionBlocks";
 import { OperatorBlockEquals, OperatorBlockPlus } from "./OperatorBlocks";
 
@@ -15,6 +16,8 @@ export class ScratchBlocks {
     }
 
     public static readonly MOTION_MOVE_STEPS = ScratchBlocks._register(new MotionBlockMoveSteps());
+
+    public static readonly EVENT_GREEN_FLAG = ScratchBlocks._register(new EventGreenFlagClicked())
     
     public static readonly OPERATOR_PLUS = ScratchBlocks._register(new OperatorBlockPlus());
     public static readonly OPERATOR_EQUALS = ScratchBlocks._register(new OperatorBlockEquals());

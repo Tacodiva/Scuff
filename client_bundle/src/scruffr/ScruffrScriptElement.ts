@@ -9,6 +9,7 @@ import type { BlockInputType, BlockInputTypeSubscript, IBlockInput } from "../bl
 import type { IScruffrBlockInput, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
 import { ScruffrScriptAttachmentPoint } from "./attachment_points/ScruffrScriptAttachmentPoint";
 import type { IScruffrBackgroundModifier, ScruffrBackgroundContentLine } from "./background";
+import { BackgroundShapes } from "./background/BackgroundShapes";
 
 export abstract class ScruffrScriptElement<TScript extends BlockScript> extends ScruffrParentElement implements IScruffrBlockParent<number> {
     public children: ScruffrBlockInstanceElement[];
@@ -60,8 +61,9 @@ export abstract class ScruffrScriptElement<TScript extends BlockScript> extends 
     public insertScript(index: number, script: ScruffrRootScriptElement) {
         this.script.blocks.splice(index, 0, ...script.script.blocks);
         this.children.splice(index, 0, ...script.children);
-        if (index === 0)
-            this.translationSelf.y += this.topOffset - script.bottomOffset;
+        if (index === 0) {
+            this.translationSelf.y = this.translationSelf.y + this.topOffset - script.bottomOffset;
+        }
         for (let i = 0; i < script.children.length; i++) {
             script.children[i].setParent(new ScruffrBlockRef(i + index, this));
             this.dom.appendChild(script.children[i].dom);
@@ -73,6 +75,7 @@ export abstract class ScruffrScriptElement<TScript extends BlockScript> extends 
     public wrapScript(index: number, script: ScruffrRootScriptElement, block: ScruffrBlockInstanceElement, input: BlockInputTypeSubscript) {
         this.script.blocks.splice(index, Infinity, ...script.script.blocks);
         const newChildren = this.children.splice(index, Infinity, ...script.children);
+        block.getInput(input)?.translationParent
         for (let i = 0; i < script.children.length; i++) {
             script.children[i].setParent(new ScruffrBlockRef(i + index, this));
             this.dom.appendChild(script.children[i].dom);
@@ -93,45 +96,40 @@ export abstract class ScruffrScriptElement<TScript extends BlockScript> extends 
         this.updateTraslation();
         this.attachmentPoints.clear();
 
-        let x = 0;
-        let y = 0;
+        if (this.script.blocks.length !== 0) {
+            this.topLeftOffset = { x: 0, y: -this.children[0].topOffset };
 
-        for (let blockIdx = 0; blockIdx < this.script.blocks.length; blockIdx++) {
-            const renderedBlock = this.children[blockIdx];
-            renderedBlock.parentRef.childKey = blockIdx;
-            const block = renderedBlock.block;
+            let x = 0;
+            let y = this.topOffset;
 
-            const dimensions = renderedBlock.dimensions;
-            const height = dimensions.y;
-            renderedBlock.translationParent.x = 0;
-            if (blockIdx === 0) {
-                renderedBlock.translationParent.y = 0;
-                y += height / 2;
-            } else {
-                const yTrans = y + height / 2;
-                renderedBlock.translationParent.y = yTrans;
-                y += height;
+            for (let blockIdx = 0; blockIdx < this.script.blocks.length; blockIdx++) {
+                const renderedBlock = this.children[blockIdx];
+                renderedBlock.parentRef.childKey = blockIdx;
+                const block = renderedBlock.block;
+
+                renderedBlock.translationParent.x = 0;
+                renderedBlock.translationParent.y = y - renderedBlock.topOffset;
+                y += renderedBlock.dimensions.y;
+                renderedBlock.updateTraslation();
+                if (renderedBlock.dimensions.x > x) x = renderedBlock.dimensions.x
+
+                if (blockIdx === 0) {
+                    if (block.type.canStackUp(block))
+                        this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, 0, false, true, { x: 0, y: this.topOffset }))
+                }
+                if (block.type.canStackDown(block))
+                    if (blockIdx === this.script.blocks.length - 1)
+                        this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y: y }))
+                    else
+                        this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
             }
-            renderedBlock.updateTraslation();
-            if (dimensions.x > x) x = dimensions.x
 
-            if (blockIdx === 0) {
-                if (block.type.canStackUp(block))
-                    this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, 0, false, true, { x: 0, y: - height / 2 }))
-            }
-            if (block.type.canStackDown(block))
-                if (blockIdx === this.script.blocks.length - 1)
-                    this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y }))
-                else
-                    this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
+            this.dimensions = { x, y: y - this.topOffset };
+        } else {
+            this.topLeftOffset = { x: 0, y: 0 };
+            this.dimensions = { x: 0, y: 0 };
         }
 
-        if (this.script.blocks.length !== 0)
-            this.topLeftOffset = { x: 0, y: this.children[0].dimensions.y / 2 };
-        else
-            this.topLeftOffset = { x: 0, y: 0 };
-
-        this.dimensions = { x, y: y + this.topLeftOffset.y };
         super.update(propagateUp);
     }
 
@@ -210,11 +208,10 @@ export class ScruffrInputSubscriptElement extends ScruffrScriptElement<BlockSubs
             this.translationSelf.y = 0;
             this.attachmentPoints.push(new ScruffrScriptAttachmentPoint(this, 0, true, false, { x: 8, y: -12 }))
         } else {
+            this.translationSelf.x = 8;
+            this.translationSelf.y = -this.topOffset - this.dimensions.y / 2;
             this.dimensions.x = 144;
             this.dimensions.y += 8;
-
-            this.translationSelf.x = 8;
-            this.translationSelf.y = -this.dimensions.y / 2 - this.topOffset + 4;
             this.updateTraslation();
         }
 
@@ -235,7 +232,10 @@ export class ScruffrInputSubscriptElement extends ScruffrScriptElement<BlockSubs
     }
 
     public getPath(size: Vec2, line: ScruffrBackgroundContentLine): string | null {
-        return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
+        if (this.children.length !== 0 && this.children[this.children.length - 1].background.shape === BackgroundShapes.StackTail)
+            return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
+        else
+            return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
     }
 
     public onAncestryChange(root: ScruffrRootScriptElement | null): void {

@@ -1,6 +1,6 @@
 import { BlockInputBooleanBlank, type BlockInputType, type IBlockInput } from "../block/BlockInputType";
 import { ScruffrBackground } from "./background";
-import { ScruffrBackgroundShape } from "./background/ScruffrBackgroundShape";
+import { BackgroundShapes } from "./background/BackgroundShapes";
 import { type ScruffrBlockContentElement, ScruffrBackgroundedBlockPartElement, type IScruffrBlockInput } from "./ScruffrBlockInstanceElement";
 import type { ScruffrBlockRef } from "./ScruffrBlockRef";
 import { ScruffrDummyElement } from "./ScruffrElement";
@@ -12,7 +12,7 @@ export class ScruffrBlankInputElement extends ScruffrBackgroundedBlockPartElemen
 
     public constructor(parent: ScruffrBlockContentElement, input: BlockInputType) {
         super(parent.root, parent, new ScruffrBackground(
-            ScruffrBackgroundShape.TRIANGLE_BLOCK,
+            BackgroundShapes.InputTriangle,
             parent.parent.block.type.category.colorTertiary,
             parent.parent.block.type.category.colorTertiary
         ));

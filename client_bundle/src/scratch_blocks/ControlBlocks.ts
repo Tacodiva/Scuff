@@ -1,7 +1,7 @@
 import { BlockCategory } from "../block/BlockCategory";
 import { BlockInputTypeBoolean, BlockInputTypeString, BlockInputTypeSubscript } from "../block/BlockInputType";
 import { BlockSubscriptInput } from "../block/BlockScript";
-import { BlockTypeStackable } from "../block/BlockTypeStackable";
+import { BlockTypeStackable, StackableBlockShape } from "../block/BlockTypeStackable";
 import { raw } from "../l10n";
 
 export class ControlBlockIf extends BlockTypeStackable {
@@ -28,13 +28,14 @@ export class ControlBlockForever extends BlockTypeStackable {
     public readonly inputOne: BlockInputTypeString;
 
     constructor() {
-        super("control_if")
+        super("control_forever")
         this.init({
             text: raw("forever %"),
             inputs: [
                 this.inputOne = new BlockInputTypeSubscript("testI", this),
             ],
-            category: BlockCategory.CONTROL
+            category: BlockCategory.CONTROL,
+            shape: StackableBlockShape.TAIL
         });
     }
 }

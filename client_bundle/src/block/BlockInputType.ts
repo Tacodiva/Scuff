@@ -2,7 +2,7 @@ import { ScruffrBlockInputAttachmentPoint } from "../scruffr/attachment_points/S
 import type { IScruffrBlockInput, ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
 import { ScruffrBlockRef, type IScruffrBlockParent } from "../scruffr/ScruffrBlockRef";
 import { ScruffrLiteralInputElement } from "../scruffr/ScruffrLiteralInputElement";
-import { ScruffrBlankInputElement } from "../scruffr/ScuffrBlankInputElement";
+import { ScruffrBlankInputElement } from "../scruffr/ScruffrBlankInputElement";
 import type { IBlockPart } from "./BlockParts";
 import { BlockSubscriptInput } from "./BlockScript";
 import type { BlockType } from "./BlockType";

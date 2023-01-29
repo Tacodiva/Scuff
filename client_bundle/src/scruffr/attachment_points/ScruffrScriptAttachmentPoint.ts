@@ -52,11 +52,9 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
     public override calculateDelta(source: ScruffrRootScriptElement): Vec2 {
         const delta = super.calculateDelta(source);
         if (delta.y < 0) {
-            let newY = delta.y - source.topOffset;
-            if (newY < -delta.y) delta.y = newY;
+            delta.y -= source.topOffset;
         } else {
-            let newY = delta.y - source.bottomOffset;
-            if (-newY < delta.y) delta.y = newY;
+            delta.y -= source.bottomOffset;
         }
         return delta;
     }

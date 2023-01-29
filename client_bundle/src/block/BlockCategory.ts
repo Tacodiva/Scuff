@@ -6,6 +6,7 @@ export class BlockCategory {
     public static readonly DATA = new BlockCategory("data");
     public static readonly SOUNDS = new BlockCategory("sounds");
     public static readonly CONTROL = new BlockCategory("control");
+    public static readonly EVENTS = new BlockCategory("events");
 
     public readonly colorPrimary;
     public readonly colorSecondary;
