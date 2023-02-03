@@ -1,3 +1,4 @@
+import './scratch';
 import './css';
 import { BlockScriptRoot, BlockSubscriptInput } from './src/block/BlockScript';
 import { ScratchBlocks } from './src/scratch_blocks/ScratchBlocks';

@@ -14,8 +14,8 @@ export class ScruffrLiteralInputElement extends ScruffrBackgroundedBlockPartElem
     public constructor(parent: ScruffrBlockContentElement, input: BlockInputType, value: string) {
         super(parent.root, parent, new ScruffrBackground(
             BackgroundShapes.InputRound,
-            "var(--scruff-block-input-bg)",
-            parent.parent.block.type.category.colorTertiary
+            null,
+            "scruff-input"
         ));
         this._parent = parent;
         this.input = input;
@@ -24,7 +24,7 @@ export class ScruffrLiteralInputElement extends ScruffrBackgroundedBlockPartElem
     }
 
     protected createContent(): ScruffrTextElement {
-        return new ScruffrTextElement(this, "", "var(--scruff-block-input-font-fill)");
+        return new ScruffrTextElement(this, "");
     }
 
     public setValue(value: string) {

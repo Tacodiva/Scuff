@@ -1,0 +1,59 @@
+.scruffr-block-text {
+    fill: var(--scruff-block-font-fill);
+    color: var(--scruff-block-font-fill);
+    font-family: var(--scruff-block-font), Helvetica, sans-serif;
+    font-size: 12pt;
+    font-weight: 500;
+    white-space: pre;
+}
+
+.scruff-block-empty-boolean {
+    --scruff-bg-path-fill: var(--scruff-block-category-tertiary);
+    --scruff-bg-path-stroke: none;
+}
+
+.scruff-block {
+    --scruff-bg-path-fill: var(--scruff-block-category-primary);
+    --scruff-bg-path-stroke: var(--scruff-block-category-tertiary);
+}
+
+.scruff-block-dragging {
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+}
+
+.scruff-block-bg-path {
+    fill: var(--scruff-bg-path-fill);
+    stroke: var(--scruff-bg-path-stroke);
+}
+
+.scruff-input {
+    --scruff-bg-path-fill: var(--scruff-block-input-bg);
+    --scruff-block-font-fill: var(--scruff-block-input-font-fill);
+}
+
+.scruff-input-highlight {
+    filter: url(#scruff-input-highlight);
+}
+
+input.scruff-input {
+    padding: 0.1em 0 0.1em 0.1em;
+    border: 0;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    vertical-align: top;
+}
+
+.scruff-input::selection {
+    background-color: var(--scruff-block-input-select);
+}
+
+.scruff-workspace-bg-main {
+    fill: var(--scruff-workspace-bg-main);
+    background-color: var(--scruff-workspace-bg-main);
+}
+
+.scruff-workspace-bg-dots {
+    fill: var(--scruff-workspace-bg-dots);
+}

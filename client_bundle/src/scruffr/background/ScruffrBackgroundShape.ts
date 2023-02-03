@@ -36,12 +36,12 @@ export abstract class ScruffrBackgroundShape {
     }
 
     public createElement(): SVGElement {
-        return document.createElementNS(SVG_NS, "path");
+        const element = document.createElementNS(SVG_NS, "path");
+        element.classList.add("scruff-block-bg-path");
+        return element;
     }
 
     public updateElement(element: SVGElement, size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding: number, background: ScruffrBackground) {
-        element.style.fill = background.fill;
-        element.style.stroke = background.stroke;
         element.setAttribute("d", this.createPath(size, lines, verticalPadding));
     }
 

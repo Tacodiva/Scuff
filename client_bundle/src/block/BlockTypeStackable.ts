@@ -36,7 +36,7 @@ export abstract class BlockTypeStackable extends BlockType {
     }
 
     public getBackground(block: BlockInstance): ScruffrBackground {
-        return new ScruffrBackground(this.getBackgroundShape(block), this.category.colorPrimary, this.category.colorTertiary);
+        return new ScruffrBackground(this.getBackgroundShape(block), this.category.cssClass, "scruff-block");
     }
 
     public getBackgroundShape(block: BlockInstance): ScruffrBackgroundShape {

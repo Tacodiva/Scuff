@@ -1,15 +1,15 @@
 import type { BlockInputType, IBlockInput } from "../../block/BlockInputType";
 import type { BlockInstance } from "../../block/BlockInstance";
 import { ScruffrAttachmentPoint, type IScruffrPointAttachable } from ".";
-import { ScruffrBlockContentElement, ScruffrBlockInstanceElement } from "../ScruffrBlockInstanceElement";
+import { ScruffrBlockContentElement, ScruffrBlockInstanceElement, type IScruffrBlockInput } from "../ScruffrBlockInstanceElement";
 import { ScruffrRootScriptElement } from "../ScruffrScriptElement";
 
 export class ScruffrBlockInputAttachmentPoint extends ScruffrAttachmentPoint {
     public readonly block: ScruffrBlockInstanceElement;
-    public readonly input: BlockInputType<IBlockInput | BlockInstance>;
-    public readonly parent: IScruffrPointAttachable;
+    public readonly input: BlockInputType;
+    public readonly parent: IScruffrBlockInput;
 
-    public constructor(block: ScruffrBlockInstanceElement, input: BlockInputType<IBlockInput | BlockInstance>, part: IScruffrPointAttachable) {
+    public constructor(block: ScruffrBlockInstanceElement, input: BlockInputType, part: IScruffrBlockInput) {
         super();
         this.parent = part;
         this.block = block;
@@ -45,4 +45,13 @@ export class ScruffrBlockInputAttachmentPoint extends ScruffrAttachmentPoint {
     public get root() {
         return this.block.root;
     }
+
+    public highlight(): void {
+        this.parent.dom.classList.add("scruff-input-highlight");
+    }
+
+    public unhighlight(): void {
+        this.parent.dom.classList.remove("scruff-input-highlight");
+    }
+
 }

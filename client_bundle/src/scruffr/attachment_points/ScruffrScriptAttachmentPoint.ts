@@ -62,4 +62,10 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
     public get root(): ScruffrRootScriptElement {
         return this.parent.getRoot();
     }
+
+    public highlight(): void {
+    }
+
+    public unhighlight(): void {
+    }
 }

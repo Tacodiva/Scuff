@@ -4,13 +4,13 @@ import type { ScruffrElement } from "../ScruffrElement";
 
 export class ScruffrBackground {
     public readonly shape: ScruffrBackgroundShape;
-    public readonly fill: string;
-    public readonly stroke: string;
+    public readonly categoryClass: string | null;
+    public readonly styleClass: string | null;
 
-    public constructor(shape: ScruffrBackgroundShape, fill: string, stroke: string) {
+    public constructor(shape: ScruffrBackgroundShape, cssClass: string | null, styleClass: string | null) {
         this.shape = shape;
-        this.fill = fill;
-        this.stroke = stroke;
+        this.categoryClass = cssClass;
+        this.styleClass = styleClass;
     }
 }
 

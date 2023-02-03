@@ -8,13 +8,9 @@ export class BlockCategory {
     public static readonly CONTROL = new BlockCategory("control");
     public static readonly EVENTS = new BlockCategory("events");
 
-    public readonly colorPrimary;
-    public readonly colorSecondary;
-    public readonly colorTertiary;
+    public readonly cssClass : string;
 
     constructor(id: string) {
-        this.colorPrimary = `var(--scruff-block-${id}-bg-primary)`;
-        this.colorSecondary = `var(--scruff-block-${id}-bg-secondary)`;
-        this.colorTertiary = `var(--scruff-block-${id}-bg-tertiary)`;
+        this.cssClass = `scruff-block-category-${id}`;
     }
 }

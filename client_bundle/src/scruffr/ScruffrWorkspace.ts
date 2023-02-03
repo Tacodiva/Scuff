@@ -82,6 +82,7 @@ class ScriptDragAction extends ScruffrAction {
             y: script.translationY - startPosWorkspace.y,
         };
         this._attachmentPoint = null;
+        this.script.dom.classList.add("scruff-block-dragging");
     }
 
     public override onMouseMove(event: MouseEvent): void {
@@ -92,12 +93,20 @@ class ScriptDragAction extends ScruffrAction {
         this.script.translationSelf = scriptCoords;
         this.script.updateTraslation();
 
-        this._attachmentPoint = this._findAttachmentPoint();
+        let newPoint = this._findAttachmentPoint();
+
+        if (this._attachmentPoint && this._attachmentPoint !== newPoint)
+            this._attachmentPoint.unhighlight();
+        this._attachmentPoint = newPoint;
+        if (this._attachmentPoint)
+            this._attachmentPoint.highlight();
     }
 
     public override onEnd(): void {
+        this.script.dom.classList.remove("scruff-block-dragging");
         if (this._attachmentPoint) {
             this._attachmentPoint.takeScript(this.script);
+            this._attachmentPoint.unhighlight();
         }
     }
 
@@ -144,13 +153,13 @@ class LiteralInputEditAction extends ScruffrAction {
         this._updateDOM();
 
         this.htmlInput = this.svgForeignObject.appendChild(document.createElement("input"));
-        this.htmlInput.classList.add("scruff-block-input", "scruff-block-text");
+        this.htmlInput.classList.add("scruff-input", "scruffr-block-text");
         this.htmlInput.value = this.scruffrInput.content.text;
         this.htmlInput.oninput = this._onInputChange;
-        if (this.scruffrInput.content.fill)
-            this.htmlInput.style.color = this.scruffrInput.content.fill;
         this.htmlInput.focus();
         this.htmlInput.select();
+
+        this.scruffrInput.backgroundDOM.classList.add("scruff-input-highlighted");
     }
 
     private _updateDOM() {
@@ -166,6 +175,7 @@ class LiteralInputEditAction extends ScruffrAction {
     public override onEnd(): void {
         this.svgForeignObject.remove();
         this.scruffrInput.content.dom.style.display = "";
+        this.scruffrInput.backgroundDOM.classList.remove("scruff-input-highlighted");
     }
 
     public override onMouseMove(event: MouseEvent): void {
@@ -220,7 +230,7 @@ export class ScruffrWorkspace extends ScruffrParentElement {
         this.svgDebug = this.svgScriptContainer.appendChild(document.createElementNS(SVG_NS, "g"));
 
         this.svgTextStagingElement = root.appendChild(document.createElementNS(SVG_NS, "g")).appendChild(document.createElementNS(SVG_NS, "text"));
-        this.svgTextStagingElement.classList.add("scruff-block-text");
+        this.svgTextStagingElement.classList.add("scruffr-block-text");
 
         this._action = null;
         this._mouseDownPos = null;

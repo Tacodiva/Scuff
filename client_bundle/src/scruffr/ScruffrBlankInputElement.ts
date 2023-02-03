@@ -13,8 +13,8 @@ export class ScruffrBlankInputElement extends ScruffrBackgroundedBlockPartElemen
     public constructor(parent: ScruffrBlockContentElement, input: BlockInputType) {
         super(parent.root, parent, new ScruffrBackground(
             BackgroundShapes.InputTriangle,
-            parent.parent.block.type.category.colorTertiary,
-            parent.parent.block.type.category.colorTertiary
+            null,
+            "scruff-block-empty-boolean"
         ));
         this._parent = parent;
         this.input = input;

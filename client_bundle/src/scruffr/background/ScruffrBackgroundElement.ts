@@ -12,6 +12,7 @@ export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement =
 
     public constructor(parent: ScruffrParentElement, background: ScruffrBackground) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
+        this.dom.classList.add(...background.categoryClass?.split(" ") ?? [], ...background.styleClass?.split(" ") ?? []);
         this.backgroundDOM = this.dom.appendChild(background.shape.createElement())
         this.background = background;
         this.children = [this.createContent()];

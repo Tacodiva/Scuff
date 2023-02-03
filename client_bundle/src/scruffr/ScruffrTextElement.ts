@@ -6,18 +6,13 @@ export class ScruffrTextElement extends ScruffrElement {
     public text: string;
     private _textNode: Text | null;
 
-    public readonly fill: string | null;
-
-    public constructor(parent: ScruffrParentElement, text: string, fill?: string) {
+    public constructor(parent: ScruffrParentElement, text: string) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.workspace);
         this.parent = parent;
         this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");
         this.dom.setAttribute("dy", '1');
-        this.dom.classList.add("scruff-block-text");
-        this.fill = fill ?? null;
-        if (fill)
-            this.dom.style.fill = fill;
+        this.dom.classList.add("scruffr-block-text");
         this._textNode = null;
     }
 

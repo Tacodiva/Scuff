@@ -97,7 +97,7 @@ export const BackgroundShapes = {
 
         public override createElement(): SVGElement {
             const root = document.createElementNS(SVG_NS, "g");
-            root.appendChild(document.createElementNS(SVG_NS, "path"));
+            root.appendChild(super.createElement());
             const owo = root.appendChild(document.createElementNS(SVG_NS, "path"));
             owo.setAttribute("d", "M 21.1 -27.3 a 3.4 3.4 0 1 1 -6.8 0 a 3.4 3.4 0 1 1 6.8 0 z M 51.2 -27.3 a 3.4 3.4 0 1 1 -6.8 0 a 3.4 3.4 0 1 1 6.8 0 z M 35.6 -24.1 c -0.9 0 -1.7 -0.3 -2.3 -0.9 c -0.6 0.6 -1.3 0.9 -2.2 0.9 c -0.9 0 -1.8 -0.3 -2.3 -0.9 c -1 -1.1 -1.1 -2.6 -1.1 -2.8 c 0 -0.5 0.5 -1 1 -1 l 0 0 c 0.6 0 1 0.5 1 1 c 0 0.4 0.1 1.7 1.4 1.7 c 0.5 0 0.7 -0.2 0.8 -0.3 c 0.3 -0.3 0.4 -1 0.4 -1.3 c 0 -0.1 0 -0.1 0 -0.2 c 0 -0.5 0.5 -1 1 -1 l 0 0 c 0.5 0 1 0.4 1 1 c 0 0 0 0.1 0 0.2 c 0 0.3 0.1 0.9 0.4 1.2 c 0.1 0.1 0.3 0.3 0.8 0.3 s 0.7 -0.2 0.8 -0.3 c 0.3 -0.4 0.4 -1.1 0.3 -1.3 c 0 -0.5 0.4 -1 0.9 -1.1 c 0.5 0 1 0.4 1.1 0.9 c 0 0.2 0.1 1.8 -0.8 2.8 c -0.3 0.6 -1 1.1 -2.2 1.1 z");
             owo.setAttribute("fill", "#000000");

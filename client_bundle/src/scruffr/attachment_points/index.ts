@@ -78,6 +78,9 @@ export abstract class ScruffrAttachmentPoint {
 
     public abstract canTakeScript(script: ScruffrRootScriptElement): boolean;
     public abstract takeScript(script: ScruffrRootScriptElement): void;
+
+    public abstract highlight() : void;
+    public abstract unhighlight() : void;
 }
 
 export interface IScruffrPointAttachable extends ScruffrElement {

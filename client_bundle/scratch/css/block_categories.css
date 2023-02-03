@@ -1,0 +1,66 @@
+.scruff-block-category-motion {
+    --scruff-block-category-primary: var(--scruff-block-category-motion-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-motion-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-motion-tertiary);
+}
+
+.scruff-block-category-looks {
+    --scruff-block-category-primary: var(--scruff-block-category-looks-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-looks-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-looks-tertiary);
+}
+
+.scruff-block-category-sounds {
+    --scruff-block-category-primary: var(--scruff-block-category-sounds-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-sounds-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-sounds-tertiary);
+}
+
+.scruff-block-category-events {
+    --scruff-block-category-primary: var(--scruff-block-category-events-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-events-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-events-tertiary);
+}
+
+.scruff-block-category-control {
+    --scruff-block-category-primary: var(--scruff-block-category-control-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-control-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-control-tertiary);
+}
+
+.scruff-block-category-sensing {
+    --scruff-block-category-primary: var(--scruff-block-category-sensing-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-sensing-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-sensing-tertiary);
+}
+
+.scruff-block-category-operators {
+    --scruff-block-category-primary: var(--scruff-block-category-operators-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-operators-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-operators-tertiary);
+}
+
+
+.scruff-block-category-data {
+    --scruff-block-category-primary: var(--scruff-block-category-data-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-data-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-data-tertiary);
+}
+
+.scruff-block-category-list {
+    --scruff-block-category-primary: var(--scruff-block-category-list-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-list-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-list-tertiary);
+}
+
+.scruff-block-category-more {
+    --scruff-block-category-primary: var(--scruff-block-category-more-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-more-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-more-tertiary);
+}
+
+.scruff-block-category-extension {
+    --scruff-block-category-primary: var(--scruff-block-category-extension-primary);
+    --scruff-block-category-secondary: var(--scruff-block-category-extension-secondary);
+    --scruff-block-category-tertiary: var(--scruff-block-category-extension-tertiary);
+}
