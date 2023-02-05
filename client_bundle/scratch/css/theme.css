@@ -1,45 +1,45 @@
-.scruff-theme-default {
-    --scruff-block-category-motion-primary: #4c97ff;
-    --scruff-block-category-motion-secondary: #4280d7;
-    --scruff-block-category-motion-tertiary: #3373cc;
+.scuff-theme-default {
+    --scuff-block-category-motion-primary: #4c97ff;
+    --scuff-block-category-motion-secondary: #4280d7;
+    --scuff-block-category-motion-tertiary: #3373cc;
 
-    --scruff-block-category-looks-primary: #9966ff;
-    --scruff-block-category-looks-secondary: #855cd6;
-    --scruff-block-category-looks-tertiary: #774dcb;
+    --scuff-block-category-looks-primary: #9966ff;
+    --scuff-block-category-looks-secondary: #855cd6;
+    --scuff-block-category-looks-tertiary: #774dcb;
 
-    --scruff-block-category-sounds-primary: #cf63cf;
-    --scruff-block-category-sounds-secondary: #c94fc9;
-    --scruff-block-category-sounds-tertiary: #bd42bd;
+    --scuff-block-category-sounds-primary: #cf63cf;
+    --scuff-block-category-sounds-secondary: #c94fc9;
+    --scuff-block-category-sounds-tertiary: #bd42bd;
 
-    --scruff-block-category-events-primary: #ffbf00;
-    --scruff-block-category-events-secondary: #e6ac00;
-    --scruff-block-category-events-tertiary: #cc9900;
+    --scuff-block-category-events-primary: #ffbf00;
+    --scuff-block-category-events-secondary: #e6ac00;
+    --scuff-block-category-events-tertiary: #cc9900;
 
-    --scruff-block-category-control-primary: #ffab19;
-    --scruff-block-category-control-secondary: #ec9c13;
-    --scruff-block-category-control-tertiary: #cf8b17;
+    --scuff-block-category-control-primary: #ffab19;
+    --scuff-block-category-control-secondary: #ec9c13;
+    --scuff-block-category-control-tertiary: #cf8b17;
 
-    --scruff-block-category-sensing-primary: #5cb1d6;
-    --scruff-block-category-sensing-secondary: #47a8d1;
-    --scruff-block-category-sensing-tertiary: #2e8eb8;
+    --scuff-block-category-sensing-primary: #5cb1d6;
+    --scuff-block-category-sensing-secondary: #47a8d1;
+    --scuff-block-category-sensing-tertiary: #2e8eb8;
 
-    --scruff-block-category-operators-primary: #59c059;
-    --scruff-block-category-operators-secondary: #46b946;
-    --scruff-block-category-operators-tertiary: #389438;
+    --scuff-block-category-operators-primary: #59c059;
+    --scuff-block-category-operators-secondary: #46b946;
+    --scuff-block-category-operators-tertiary: #389438;
 
-    --scruff-block-category-data-primary: #ff8c1a;
-    --scruff-block-category-data-secondary: #ff8000;
-    --scruff-block-category-data-tertiary: #db6e00;
+    --scuff-block-category-data-primary: #ff8c1a;
+    --scuff-block-category-data-secondary: #ff8000;
+    --scuff-block-category-data-tertiary: #db6e00;
 
-    --scruff-block-category-list-primary: #ff661a;
-    --scruff-block-category-list-secondary: #ff5500;
-    --scruff-block-category-list-tertiary: #e64d00;
+    --scuff-block-category-list-primary: #ff661a;
+    --scuff-block-category-list-secondary: #ff5500;
+    --scuff-block-category-list-tertiary: #e64d00;
 
-    --scruff-block-category-more-primary: #ff6680;
-    --scruff-block-category-more-secondary: #ff4d6a;
-    --scruff-block-category-more-tertiary: #ff3355;
+    --scuff-block-category-more-primary: #ff6680;
+    --scuff-block-category-more-secondary: #ff4d6a;
+    --scuff-block-category-more-tertiary: #ff3355;
 
-    --scruff-block-category-extension-primary: #0fbd8c;
-    --scruff-block-category-extension-secondary: #0da57a;
-    --scruff-block-category-extension-tertiary: #0b8e69;
+    --scuff-block-category-extension-primary: #0fbd8c;
+    --scuff-block-category-extension-secondary: #0da57a;
+    --scuff-block-category-extension-tertiary: #0b8e69;
 }

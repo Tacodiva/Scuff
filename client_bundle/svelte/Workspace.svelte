@@ -1,17 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import type { BlockScripts } from "../src/block/BlockScripts";
-    import { ScruffrWorkspace } from "../src/scruffr/ScruffrWorkspace";
+    import { ScuffrWorkspace } from "../src/scuffr/ScuffrWorkspace";
 
     export var scripts: BlockScripts;
 
     var elementSVGRoot: SVGSVGElement;
     var elementBackgroundPattern: SVGPatternElement;
     var elementWorkspace: SVGGElement;
-    var worksapce: ScruffrWorkspace;
+    var worksapce: ScuffrWorkspace;
 
     onMount(() => {
-        worksapce = new ScruffrWorkspace(
+        worksapce = new ScuffrWorkspace(
             elementWorkspace,
             elementBackgroundPattern,
             scripts
@@ -29,22 +29,22 @@
     version="1.1"
     style="width: 100vw; height: 100vh;"
     bind:this={elementSVGRoot}
-    class="scruff-theme-default"
+    class="scuff-theme-default"
 >
     <defs>
         <pattern
-            id="scruff-workspace-bg-pattern"
+            id="scuff-workspace-bg-pattern"
             width="50"
             height="50"
             patternUnits="userSpaceOnUse"
             bind:this={elementBackgroundPattern}
         >
-            <rect width="100%" height="100%" class="scruff-workspace-bg-main" />
-            <circle cx="1" cy="1" r="1" class="scruff-workspace-bg-dots" />
+            <rect width="100%" height="100%" class="scuff-workspace-bg-main" />
+            <circle cx="1" cy="1" r="1" class="scuff-workspace-bg-dots" />
         </pattern>
 
         <filter
-            id="scruff-input-highlight"
+            id="scuff-input-highlight"
             height="160%"
             width="180%"
             y="-30%"
@@ -72,12 +72,12 @@
     </defs>
     <g bind:this={elementWorkspace} />
     <text
-        style="fill:var(--scruff-workspace-text);font-family:monospace;"
+        style="fill:var(--scuff-workspace-text);font-family:monospace;"
         dominant-baseline="hanging"
     >
-        <tspan x="2" y="5">Scruff alpha 10</tspan>
+        <tspan x="2" y="5">Scuff alpha 10</tspan>
         <tspan x="2" dy="1.2em">Now with 99.8% more cat ears</tspan>
-        <tspan x="2" dy="2.4em">Scruffr TODO List:</tspan>
+        <tspan x="2" dy="2.4em">Scuffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
         <tspan x="2" dy="1.2em">[X] Make block updates more efficient</tspan>
         <tspan x="2" dy="1.2em">[X] Add support for rendering C blocks</tspan>

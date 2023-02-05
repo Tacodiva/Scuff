@@ -1,25 +1,25 @@
 import type { BlockInputType } from "../block/BlockInputType";
 import type { IBlockInput } from "../block/IBlockInput";
 import { BlockInputString } from "../block/BlockInputString";
-import { ScruffrBackground } from "./background/ScruffrBackground";
+import { ScuffrBackground } from "./background/ScuffrBackground";
 import { BackgroundShapes } from "./background/BackgroundShapes";
-import type { IScruffrBlockInput } from "./IScruffrBlockInput";
-import { ScruffrBackgroundedBlockPartElement } from "./ScruffrBackgroundedBlockPartElement";
-import type { ScruffrBlockContentElement } from "./ScruffrBlockContentElement";
-import type { ScruffrBlockRef } from "./ScruffrBlockRef";
-import { ScruffrTextElement } from "./ScruffrTextElement";
+import type { IScuffrBlockInput } from "./IScuffrBlockInput";
+import { ScuffrBackgroundedBlockPartElement } from "./ScuffrBackgroundedBlockPartElement";
+import type { ScuffrBlockContentElement } from "./ScuffrBlockContentElement";
+import type { ScuffrBlockRef } from "./ScuffrBlockRef";
+import { ScuffrTextElement } from "./ScuffrTextElement";
 
-export class ScruffrLiteralInputElement extends ScruffrBackgroundedBlockPartElement<ScruffrTextElement> implements IScruffrBlockInput {
-    private _parent: ScruffrBlockContentElement;
-    public override get parent(): ScruffrBlockContentElement { return this._parent; }
+export class ScuffrLiteralInputElement extends ScuffrBackgroundedBlockPartElement<ScuffrTextElement> implements IScuffrBlockInput {
+    private _parent: ScuffrBlockContentElement;
+    public override get parent(): ScuffrBlockContentElement { return this._parent; }
     public readonly input: BlockInputType;
     private _value: string;
 
-    public constructor(parent: ScruffrBlockContentElement, input: BlockInputType, value: string) {
-        super(parent.root, parent, new ScruffrBackground(
+    public constructor(parent: ScuffrBlockContentElement, input: BlockInputType, value: string) {
+        super(parent.root, parent, new ScuffrBackground(
             BackgroundShapes.InputRound,
             null,
-            "scruff-input"
+            "scuff-input"
         ));
         this._parent = parent;
         this.input = input;
@@ -27,8 +27,8 @@ export class ScruffrLiteralInputElement extends ScruffrBackgroundedBlockPartElem
         this.content.text = this._value;
     }
 
-    protected createContent(): ScruffrTextElement {
-        return new ScruffrTextElement(this, "");
+    protected createContent(): ScuffrTextElement {
+        return new ScuffrTextElement(this, "");
     }
 
     public setValue(value: string) {
@@ -49,7 +49,7 @@ export class ScruffrLiteralInputElement extends ScruffrBackgroundedBlockPartElem
         return new BlockInputString(this._value);
     }
 
-    public setParent(parentRef: ScruffrBlockRef<BlockInputType<IBlockInput>, ScruffrBlockContentElement>): void {
+    public setParent(parentRef: ScuffrBlockRef<BlockInputType<IBlockInput>, ScuffrBlockContentElement>): void {
         this._parent = parentRef.parent;
         this.onAncestryChange(this._parent.root);
     }

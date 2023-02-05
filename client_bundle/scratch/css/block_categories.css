@@ -1,66 +1,66 @@
-.scruff-block-category-motion {
-    --scruff-block-category-primary: var(--scruff-block-category-motion-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-motion-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-motion-tertiary);
+.scuff-block-category-motion {
+    --scuff-block-category-primary: var(--scuff-block-category-motion-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-motion-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-motion-tertiary);
 }
 
-.scruff-block-category-looks {
-    --scruff-block-category-primary: var(--scruff-block-category-looks-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-looks-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-looks-tertiary);
+.scuff-block-category-looks {
+    --scuff-block-category-primary: var(--scuff-block-category-looks-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-looks-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-looks-tertiary);
 }
 
-.scruff-block-category-sounds {
-    --scruff-block-category-primary: var(--scruff-block-category-sounds-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-sounds-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-sounds-tertiary);
+.scuff-block-category-sounds {
+    --scuff-block-category-primary: var(--scuff-block-category-sounds-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-sounds-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-sounds-tertiary);
 }
 
-.scruff-block-category-events {
-    --scruff-block-category-primary: var(--scruff-block-category-events-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-events-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-events-tertiary);
+.scuff-block-category-events {
+    --scuff-block-category-primary: var(--scuff-block-category-events-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-events-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-events-tertiary);
 }
 
-.scruff-block-category-control {
-    --scruff-block-category-primary: var(--scruff-block-category-control-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-control-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-control-tertiary);
+.scuff-block-category-control {
+    --scuff-block-category-primary: var(--scuff-block-category-control-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-control-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-control-tertiary);
 }
 
-.scruff-block-category-sensing {
-    --scruff-block-category-primary: var(--scruff-block-category-sensing-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-sensing-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-sensing-tertiary);
+.scuff-block-category-sensing {
+    --scuff-block-category-primary: var(--scuff-block-category-sensing-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-sensing-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-sensing-tertiary);
 }
 
-.scruff-block-category-operators {
-    --scruff-block-category-primary: var(--scruff-block-category-operators-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-operators-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-operators-tertiary);
+.scuff-block-category-operators {
+    --scuff-block-category-primary: var(--scuff-block-category-operators-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-operators-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-operators-tertiary);
 }
 
 
-.scruff-block-category-data {
-    --scruff-block-category-primary: var(--scruff-block-category-data-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-data-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-data-tertiary);
+.scuff-block-category-data {
+    --scuff-block-category-primary: var(--scuff-block-category-data-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-data-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-data-tertiary);
 }
 
-.scruff-block-category-list {
-    --scruff-block-category-primary: var(--scruff-block-category-list-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-list-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-list-tertiary);
+.scuff-block-category-list {
+    --scuff-block-category-primary: var(--scuff-block-category-list-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-list-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-list-tertiary);
 }
 
-.scruff-block-category-more {
-    --scruff-block-category-primary: var(--scruff-block-category-more-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-more-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-more-tertiary);
+.scuff-block-category-more {
+    --scuff-block-category-primary: var(--scuff-block-category-more-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-more-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-more-tertiary);
 }
 
-.scruff-block-category-extension {
-    --scruff-block-category-primary: var(--scruff-block-category-extension-primary);
-    --scruff-block-category-secondary: var(--scruff-block-category-extension-secondary);
-    --scruff-block-category-tertiary: var(--scruff-block-category-extension-tertiary);
+.scuff-block-category-extension {
+    --scuff-block-category-primary: var(--scuff-block-category-extension-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-extension-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-extension-tertiary);
 }

@@ -1,10 +1,10 @@
-import type { ScruffrElement } from "../ScruffrElement";
+import type { ScuffrElement } from "../ScuffrElement";
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScruffrRootScriptElement } from "../ScruffrRootScriptElement";
-import type { ScruffrAttachmentPointList } from "./ScruffrAttachmentPointList";
+import type { ScuffrRootScriptElement } from "../ScuffrRootScriptElement";
+import type { ScuffrAttachmentPointList } from "./ScuffrAttachmentPointList";
 
-export abstract class ScruffrAttachmentPoint {
-    public abstract readonly parent: ScruffrElement;
+export abstract class ScuffrAttachmentPoint {
+    public abstract readonly parent: ScuffrElement;
     public readonly offset: Vec2;
 
     private _translation: Vec2 | null;
@@ -14,7 +14,7 @@ export abstract class ScruffrAttachmentPoint {
         this._translation = null;
     }
 
-    public calculateDelta(source: ScruffrRootScriptElement): Vec2 {
+    public calculateDelta(source: ScuffrRootScriptElement): Vec2 {
         return {
             x: this.translation.x + this.root.translationX - source.translationX,
             y: this.translation.y + this.root.translationY - source.translationY
@@ -34,16 +34,16 @@ export abstract class ScruffrAttachmentPoint {
         };
     }
 
-    public abstract get root(): ScruffrRootScriptElement;
+    public abstract get root(): ScuffrRootScriptElement;
 
-    public abstract canTakeScript(script: ScruffrRootScriptElement): boolean;
-    public abstract takeScript(script: ScruffrRootScriptElement): void;
+    public abstract canTakeScript(script: ScuffrRootScriptElement): boolean;
+    public abstract takeScript(script: ScuffrRootScriptElement): void;
 
     public abstract highlight() : void;
     public abstract unhighlight() : void;
 }
 
-export interface IScruffrPointAttachable extends ScruffrElement {
-    attachmentPoints: ScruffrAttachmentPointList;
+export interface IScuffrPointAttachable extends ScuffrElement {
+    attachmentPoints: ScuffrAttachmentPointList;
 }
 

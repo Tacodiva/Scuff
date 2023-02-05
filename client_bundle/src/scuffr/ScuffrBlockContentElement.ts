@@ -1,24 +1,24 @@
 import { BlockInputType } from "../block/BlockInputType";
-import type { IScruffrBlockInput } from "./IScruffrBlockInput";
-import type { IScruffrBlockPartElement } from "./IScruffrBlockPartElement";
-import { ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
-import { ScruffrBlockRef, type IScruffrBlockParent } from "./ScruffrBlockRef";
-import { ScruffrParentElement } from "./ScruffrParentElement";
-import type { ScruffrRootScriptElement } from "./ScruffrRootScriptElement";
+import type { IScuffrBlockInput } from "./IScuffrBlockInput";
+import type { IScuffrBlockPartElement } from "./IScuffrBlockPartElement";
+import { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
+import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
+import { ScuffrParentElement } from "./ScuffrParentElement";
+import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 
-interface ScruffrBlockContentInput {
-    element: IScruffrBlockInput,
+interface ScuffrBlockContentInput {
+    element: IScuffrBlockInput,
     index: number
 }
 
-export class ScruffrBlockContentElement extends ScruffrParentElement implements IScruffrBlockParent<BlockInputType> {
-    public children: IScruffrBlockPartElement[];
-    public parent: ScruffrBlockInstanceElement;
-    public inputs: Map<string, ScruffrBlockContentInput>;
+export class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBlockParent<BlockInputType> {
+    public children: IScuffrBlockPartElement[];
+    public parent: ScuffrBlockInstanceElement;
+    public inputs: Map<string, ScuffrBlockContentInput>;
 
     public get root() { return this.parent.root; }
 
-    public constructor(parent: ScruffrBlockInstanceElement) {
+    public constructor(parent: ScuffrBlockInstanceElement) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
@@ -44,33 +44,33 @@ export class ScruffrBlockContentElement extends ScruffrParentElement implements 
         return renderedPart;
     }
 
-    public setInput(key: BlockInputType, input: IScruffrBlockInput) {
+    public setInput(key: BlockInputType, input: IScuffrBlockInput) {
         this.parent.block.setInput(key, input.asInput());
         const oldInput = this.getInput(key);
         if (!oldInput) throw new Error(`No input ${key.id} on block ${this.parent.block.type.id}.`);
         this.dom.replaceChild(input.dom, oldInput.element.dom);
         if (oldInput.element.onAncestryChange) oldInput.element.onAncestryChange(null);
-        input.setParent(new ScruffrBlockRef(key, this));
+        input.setParent(new ScuffrBlockRef(key, this));
         this.children[oldInput.index] = input;
         this.inputs.set(key.id, { element: input, index: oldInput.index });
         key.createAttachmentPoints(this, input);
         this.update(true);
     }
 
-    public getInput(key: BlockInputType): ScruffrBlockContentInput | null {
+    public getInput(key: BlockInputType): ScuffrBlockContentInput | null {
         return this.inputs.get(key.id) ?? null;
     }
 
-    public getBlockInstanceElement(key: BlockInputType): ScruffrBlockInstanceElement | null {
+    public getBlockInstanceElement(key: BlockInputType): ScuffrBlockInstanceElement | null {
         const input = this.getInput(key);
-        if (input && input.element instanceof ScruffrBlockInstanceElement)
+        if (input && input.element instanceof ScuffrBlockInstanceElement)
             return input.element;
         return null;
     }
 
     public onChildDrag(key: BlockInputType, event: MouseEvent): boolean {
         const input = this.getInput(key);
-        if (!(input && input.element instanceof ScruffrBlockInstanceElement)) {
+        if (!(input && input.element instanceof ScuffrBlockInstanceElement)) {
             console.warn("Block instance recieved invalid key in onChildDrag.");
             return true;
         }
@@ -82,7 +82,7 @@ export class ScruffrBlockContentElement extends ScruffrParentElement implements 
         return true;
     }
 
-    public getRoot(): ScruffrRootScriptElement {
+    public getRoot(): ScuffrRootScriptElement {
         return this.parent.root;
     }
 }

@@ -1,6 +1,6 @@
-import type { IScruffrBlockPartElement } from "../scruffr/IScruffrBlockPartElement";
-import type { ScruffrBlockContentElement } from "../scruffr/ScruffrBlockContentElement";
-import { ScruffrTextElement } from "../scruffr/ScruffrTextElement";
+import type { IScuffrBlockPartElement } from "../scuffr/IScuffrBlockPartElement";
+import type { ScuffrBlockContentElement } from "../scuffr/ScuffrBlockContentElement";
+import { ScuffrTextElement } from "../scuffr/ScuffrTextElement";
 import type { IBlockPart } from "./IBlockPart";
 
 
@@ -12,7 +12,7 @@ export class BlockPartText implements IBlockPart {
         this.text = text;
     }
 
-    public render(block: ScruffrBlockContentElement): IScruffrBlockPartElement {
-        return new ScruffrTextElement(block, this.text);
+    public render(block: ScuffrBlockContentElement): IScuffrBlockPartElement {
+        return new ScuffrTextElement(block, this.text);
     }
 }

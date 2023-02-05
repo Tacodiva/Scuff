@@ -1,19 +1,19 @@
-import { ScruffrElement } from "./ScruffrElement";
-import type { ScruffrParentElement } from "./ScruffrParentElement";
+import { ScuffrElement } from "./ScuffrElement";
+import type { ScuffrParentElement } from "./ScuffrParentElement";
 
-export class ScruffrTextElement extends ScruffrElement {
-    public readonly parent: ScruffrParentElement;
+export class ScuffrTextElement extends ScuffrElement {
+    public readonly parent: ScuffrParentElement;
 
     public text: string;
     private _textNode: Text | null;
 
-    public constructor(parent: ScruffrParentElement, text: string) {
+    public constructor(parent: ScuffrParentElement, text: string) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.workspace);
         this.parent = parent;
         this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");
         this.dom.setAttribute("dy", '1');
-        this.dom.classList.add("scruffr-block-text");
+        this.dom.classList.add("scuffr-block-text");
         this._textNode = null;
     }
 

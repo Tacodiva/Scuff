@@ -1,8 +1,8 @@
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
-import type { IScruffrBlockPartElement } from "../IScruffrBlockPartElement";
+import type { ScuffrBackground, ScuffrBackgroundContentLine } from "./ScuffrBackground";
+import type { IScuffrBlockPartElement } from "../IScuffrBlockPartElement";
 
-export abstract class ScruffrBackgroundShape {
+export abstract class ScuffrBackgroundShape {
     public readonly minSize: Vec2;
 
     public readonly snugglePadding: number;
@@ -14,11 +14,11 @@ export abstract class ScruffrBackgroundShape {
 
     public abstract getPadding(contentSize: Vec2): Vec2;
 
-    public getMinLineSize(lineIdx: number, lines: ScruffrBackgroundContentLine[]): Vec2 {
+    public getMinLineSize(lineIdx: number, lines: ScuffrBackgroundContentLine[]): Vec2 {
         return { x: 0, y: 0 };
     }
 
-    public prePartPadding(partIdx: number, x: number, part: IScruffrBlockPartElement, line: ScruffrBackgroundContentLine): number {
+    public prePartPadding(partIdx: number, x: number, part: IScuffrBlockPartElement, line: ScuffrBackgroundContentLine): number {
         if (partIdx === 0) {
             if (part.getBackground && part.getBackground()?.shape === this) {
                 x += this.snugglePadding - this.getPadding(part.dimensions).x;
@@ -27,7 +27,7 @@ export abstract class ScruffrBackgroundShape {
         return x;
     }
 
-    public postPartPadding(partIdx: number, x: number, part: IScruffrBlockPartElement, line: ScruffrBackgroundContentLine): number {
+    public postPartPadding(partIdx: number, x: number, part: IScuffrBlockPartElement, line: ScuffrBackgroundContentLine): number {
         if (partIdx === line.elements.length - 1) {
             if (part.getBackground && part.getBackground()?.shape === this)
                 x += this.snugglePadding - this.getPadding(part.dimensions).x;
@@ -37,13 +37,13 @@ export abstract class ScruffrBackgroundShape {
 
     public createElement(): SVGElement {
         const element = document.createElementNS(SVG_NS, "path");
-        element.classList.add("scruff-block-bg-path");
+        element.classList.add("scuff-block-bg-path");
         return element;
     }
 
-    public updateElement(element: SVGElement, size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding: number, background: ScruffrBackground) {
+    public updateElement(element: SVGElement, size: Vec2, lines: ScuffrBackgroundContentLine[], verticalPadding: number, background: ScuffrBackground) {
         element.setAttribute("d", this.createPath(size, lines, verticalPadding));
     }
 
-    public abstract createPath(size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding: number): string;
+    public abstract createPath(size: Vec2, lines: ScuffrBackgroundContentLine[], verticalPadding: number): string;
 }

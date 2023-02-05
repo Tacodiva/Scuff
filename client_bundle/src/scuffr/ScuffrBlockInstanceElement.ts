@@ -1,37 +1,37 @@
 import type { BlockInstance } from "../block/BlockInstance";
-import type { ScruffrBackgroundContentLine } from "./background/ScruffrBackground";
-import { ScruffrBackgroundedBlockPartElement } from "./ScruffrBackgroundedBlockPartElement";
-import type { IScruffrBlock } from "./IScruffrBlock";
-import type { IScruffrBlockInput } from "./IScruffrBlockInput";
-import type { IScruffrBlockPartElement } from "./IScruffrBlockPartElement";
-import { ScruffrBlockContentElement } from "./ScruffrBlockContentElement";
-import type { IScruffrBlockParent, ScruffrBlockRef } from "./ScruffrBlockRef";
+import type { ScuffrBackgroundContentLine } from "./background/ScuffrBackground";
+import { ScuffrBackgroundedBlockPartElement } from "./ScuffrBackgroundedBlockPartElement";
+import type { IScuffrBlock } from "./IScuffrBlock";
+import type { IScuffrBlockInput } from "./IScuffrBlockInput";
+import type { IScuffrBlockPartElement } from "./IScuffrBlockPartElement";
+import { ScuffrBlockContentElement } from "./ScuffrBlockContentElement";
+import type { IScuffrBlockParent, ScuffrBlockRef } from "./ScuffrBlockRef";
 import type { BlockInputType } from "../block/BlockInputType";
 import type { IBlockInput } from "../block/IBlockInput";
-import type { ScruffrRootScriptElement } from "./ScruffrRootScriptElement";
+import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 
-export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartElement<ScruffrBlockContentElement> implements IScruffrBlock, IScruffrBlockInput {
+export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartElement<ScuffrBlockContentElement> implements IScuffrBlock, IScuffrBlockInput {
     public readonly block: BlockInstance;
-    public parentRef: ScruffrBlockRef;
-    public get parent(): IScruffrBlockParent { return this.parentRef.parent; }
+    public parentRef: ScuffrBlockRef;
+    public get parent(): IScuffrBlockParent { return this.parentRef.parent; }
 
-    public constructor(block: BlockInstance, parentRef: ScruffrBlockRef) {
+    public constructor(block: BlockInstance, parentRef: ScuffrBlockRef) {
         super(parentRef.parent.getRoot(), parentRef.parent, block.type.getBackground(block));
         this.parentRef = parentRef;
         this.block = block;
         this.content.renderAll();
     }
 
-    protected createContent(): ScruffrBlockContentElement {
-        return new ScruffrBlockContentElement(this);
+    protected createContent(): ScuffrBlockContentElement {
+        return new ScuffrBlockContentElement(this);
     }
 
-    public setParent(parentRef: ScruffrBlockRef) {
+    public setParent(parentRef: ScuffrBlockRef) {
         this.parentRef = parentRef;
         this.onAncestryChange(parentRef.parent.getRoot());
     }
 
-    public override onAncestryChange(root: ScruffrRootScriptElement | null): void {
+    public override onAncestryChange(root: ScuffrRootScriptElement | null): void {
         super.onAncestryChange(root);
         for (const child of this.content.children) {
             if (child.onAncestryChange) child.onAncestryChange(root);
@@ -42,17 +42,17 @@ export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartEle
         return this.parentRef.onDrag(event);
     }
 
-    public getInput(key: BlockInputType): IScruffrBlockInput | null {
+    public getInput(key: BlockInputType): IScuffrBlockInput | null {
         return this.content.getInput(key)?.element ?? null;
     }
 
-    public setInput(key: BlockInputType, input: IScruffrBlockInput) {
+    public setInput(key: BlockInputType, input: IScuffrBlockInput) {
         this.content.setInput(key, input);
     }
 
-    protected override getBackgroundContentLines(): ScruffrBackgroundContentLine[] {
-        const lines: ScruffrBackgroundContentLine[] = [];
-        let lineContent: IScruffrBlockPartElement[] | null = null;
+    protected override getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
+        const lines: ScuffrBackgroundContentLine[] = [];
+        let lineContent: IScuffrBlockPartElement[] | null = null;
         for (const part of this.content.children) {
             if (part.getBackgroundModifier) {
                 if (lineContent) {

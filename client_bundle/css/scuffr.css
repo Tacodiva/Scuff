@@ -1,0 +1,59 @@
+.scuffr-block-text {
+    fill: var(--scuff-block-font-fill);
+    color: var(--scuff-block-font-fill);
+    font-family: var(--scuff-block-font), Helvetica, sans-serif;
+    font-size: 12pt;
+    font-weight: 500;
+    white-space: pre;
+}
+
+.scuff-block-empty-boolean {
+    --scuff-bg-path-fill: var(--scuff-block-category-tertiary);
+    --scuff-bg-path-stroke: none;
+}
+
+.scuff-block {
+    --scuff-bg-path-fill: var(--scuff-block-category-primary);
+    --scuff-bg-path-stroke: var(--scuff-block-category-tertiary);
+}
+
+.scuff-block-dragging {
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+}
+
+.scuff-block-bg-path {
+    fill: var(--scuff-bg-path-fill);
+    stroke: var(--scuff-bg-path-stroke);
+}
+
+.scuff-input {
+    --scuff-bg-path-fill: var(--scuff-block-input-bg);
+    --scuff-block-font-fill: var(--scuff-block-input-font-fill);
+}
+
+.scuff-input-highlight {
+    filter: url(#scuff-input-highlight);
+}
+
+input.scuff-input {
+    padding: 0.1em 0 0.1em 0.1em;
+    border: 0;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    vertical-align: top;
+}
+
+.scuff-input::selection {
+    background-color: var(--scuff-block-input-select);
+}
+
+.scuff-workspace-bg-main {
+    fill: var(--scuff-workspace-bg-main);
+    background-color: var(--scuff-workspace-bg-main);
+}
+
+.scuff-workspace-bg-dots {
+    fill: var(--scuff-workspace-bg-dots);
+}

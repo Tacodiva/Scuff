@@ -1,7 +1,7 @@
-import { ScruffrElement } from "./ScruffrElement";
+import { ScuffrElement } from "./ScuffrElement";
 
-export abstract class ScruffrParentElement extends ScruffrElement {
-    public abstract children: readonly ScruffrElement[];
+export abstract class ScuffrParentElement extends ScuffrElement {
+    public abstract children: readonly ScuffrElement[];
 
     public override updateAll(): void {
         for (const child of this.children)

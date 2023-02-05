@@ -1,18 +1,18 @@
 import { BlockInputTypeSubscript } from "../../block/BlockInputTypeSubscript";
 import type { BlockScript } from "../../block/BlockScript";
 import type { Vec2 } from "../../utils/Vec2";
-import { ScruffrAttachmentPoint } from "./ScruffrAttachmentPoint";
-import type { ScruffrScriptElement } from "../ScruffrScriptElement";
-import type { ScruffrRootScriptElement } from "../ScruffrRootScriptElement";
+import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
+import type { ScuffrScriptElement } from "../ScuffrScriptElement";
+import type { ScuffrRootScriptElement } from "../ScuffrRootScriptElement";
 
-export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
-    public readonly parent: ScruffrScriptElement<BlockScript>;
+export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
+    public readonly parent: ScuffrScriptElement<BlockScript>;
     public readonly index: number;
 
     public readonly requireStackUp: boolean;
     public readonly requireStackDown: boolean;
 
-    public constructor(script: ScruffrScriptElement<BlockScript>, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
+    public constructor(script: ScuffrScriptElement<BlockScript>, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
         super(offset);
         this.parent = script;
         this.index = index;
@@ -20,7 +20,7 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
         this.requireStackDown = requireStackDown;
     }
 
-    public canTakeScript(script: ScruffrRootScriptElement): boolean {
+    public canTakeScript(script: ScuffrRootScriptElement): boolean {
         if (this.requireStackUp) {
             const firstBlock = script.script.blocks[0];
             if (!firstBlock.type.canStackUp(firstBlock))
@@ -34,7 +34,7 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
         return true;
     }
 
-    public takeScript(script: ScruffrRootScriptElement): void {
+    public takeScript(script: ScuffrRootScriptElement): void {
         const firstBlock = script.getBlockInstanceElement(0);
         if (firstBlock)
             for (const input of firstBlock.block.type.inputs) {
@@ -51,7 +51,7 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
         this.parent.insertScript(this.index, script);
     }
 
-    public override calculateDelta(source: ScruffrRootScriptElement): Vec2 {
+    public override calculateDelta(source: ScuffrRootScriptElement): Vec2 {
         const delta = super.calculateDelta(source);
         if (delta.y < 0) {
             delta.y -= source.topOffset;
@@ -61,7 +61,7 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
         return delta;
     }
 
-    public get root(): ScruffrRootScriptElement {
+    public get root(): ScuffrRootScriptElement {
         return this.parent.getRoot();
     }
 

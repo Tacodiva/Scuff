@@ -1,17 +1,17 @@
-import type { ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
-import type { IScruffrBlockPartElement } from "../IScruffrBlockPartElement";
-import type { ScruffrElement } from "../ScruffrElement";
-import { ScruffrParentElement } from "../ScruffrParentElement";
+import type { ScuffrBackground, ScuffrBackgroundContentLine } from "./ScuffrBackground";
+import type { IScuffrBlockPartElement } from "../IScuffrBlockPartElement";
+import type { ScuffrElement } from "../ScuffrElement";
+import { ScuffrParentElement } from "../ScuffrParentElement";
 
-export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement = ScruffrElement> extends ScruffrParentElement implements IScruffrBlockPartElement {
-    public abstract override parent: ScruffrParentElement;
+export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = ScuffrElement> extends ScuffrParentElement implements IScuffrBlockPartElement {
+    public abstract override parent: ScuffrParentElement;
     public override children: readonly [TContent];
-    public readonly background: ScruffrBackground;
+    public readonly background: ScuffrBackground;
     public readonly backgroundDOM: SVGElement;
 
     public get content() { return this.children[0]; }
 
-    public constructor(parent: ScruffrParentElement, background: ScruffrBackground) {
+    public constructor(parent: ScuffrParentElement, background: ScuffrBackground) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.dom.classList.add(...background.categoryClass?.split(" ") ?? [], ...background.styleClass?.split(" ") ?? []);
         this.backgroundDOM = this.dom.appendChild(background.shape.createElement())
@@ -103,8 +103,8 @@ export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement =
         super.update(propagateUp);
     }
 
-    protected getBackgroundContentLines(): ScruffrBackgroundContentLine[] {
-        if (this.content instanceof ScruffrParentElement) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
+    protected getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
+        if (this.content instanceof ScuffrParentElement) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
         else return [{ elements: [this.content], dimensions: { x: 0, y: 0 } }];
     }
 }

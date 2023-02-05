@@ -1,19 +1,19 @@
 
-.scruff-theme-default {
-	--scruff-workspace-bg-main: #111;
-	--scruff-workspace-bg-dots: #333;
-	--scruff-workspace-text: #f9f9f9;
+.scuff-theme-default {
+	--scuff-workspace-bg-main: #111;
+	--scuff-workspace-bg-dots: #333;
+	--scuff-workspace-text: #f9f9f9;
 	
-	--scruff-block-font: "Helvetica Neue";
-	--scruff-block-font-fill: #ffffff;
+	--scuff-block-font: "Helvetica Neue";
+	--scuff-block-font-fill: #ffffff;
 	
-	--scruff-block-input-bg: #ffffff;
-	--scruff-block-input-font-fill: #575E75;
-	--scruff-block-input-select: #4d97ff40;
+	--scuff-block-input-bg: #ffffff;
+	--scuff-block-input-font-fill: #575E75;
+	--scuff-block-input-select: #4d97ff40;
 }
 
-.scruff-theme-light {
-	--scruff-workspace-bg-main: #f9f9f9;
-	--scruff-workspace-bg-dots: #ddd;
-	--scruff-workspace-text: #111;
+.scuff-theme-light {
+	--scuff-workspace-bg-main: #f9f9f9;
+	--scuff-workspace-bg-dots: #ddd;
+	--scuff-workspace-text: #111;
 }

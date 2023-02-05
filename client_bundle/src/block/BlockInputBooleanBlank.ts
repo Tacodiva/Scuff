@@ -1,7 +1,7 @@
-import type { ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
-import type { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
-import type { IScruffrBlockInput } from "../scruffr/IScruffrBlockInput";
-import { ScruffrBlankInputElement } from "../scruffr/ScruffrBlankInputElement";
+import type { ScuffrBlockInstanceElement } from "../scuffr/ScuffrBlockInstanceElement";
+import type { ScuffrBlockRef } from "../scuffr/ScuffrBlockRef";
+import type { IScuffrBlockInput } from "../scuffr/IScuffrBlockInput";
+import { ScuffrBlankInputElement } from "../scuffr/ScuffrBlankInputElement";
 import type { BlockInputType } from "./BlockInputType";
 import type { IBlockInput } from "./IBlockInput";
 
@@ -13,7 +13,7 @@ export class BlockInputBooleanBlank implements IBlockInput {
     private BlockInputBooleanBlank() {
     }
 
-    public render(parent: ScruffrBlockInstanceElement, parentRef: ScruffrBlockRef<BlockInputType>): IScruffrBlockInput {
-        return new ScruffrBlankInputElement(parent.content, parentRef.childKey);
+    public render(parent: ScuffrBlockInstanceElement, parentRef: ScuffrBlockRef<BlockInputType>): IScuffrBlockInput {
+        return new ScuffrBlankInputElement(parent.content, parentRef.childKey);
     }
 }

@@ -3,7 +3,7 @@ import type { BlockInputType } from "./BlockInputType";
 import { BlockInstance } from "./BlockInstance";
 import type l10nString from "../l10n";
 import type { BlockCategory } from "./BlockCategory";
-import type { ScruffrBackground } from "../scruffr/background/ScruffrBackground";
+import type { ScuffrBackground } from "../scuffr/background/ScuffrBackground";
 import { BlockPartText } from "./BlockPartText";
 
 export interface BlockTypeDescription {
@@ -102,6 +102,6 @@ export abstract class BlockType {
         return false;
     }
 
-    public abstract getBackground(block: BlockInstance): ScruffrBackground;
+    public abstract getBackground(block: BlockInstance): ScuffrBackground;
 
 }

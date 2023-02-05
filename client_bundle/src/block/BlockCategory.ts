@@ -11,6 +11,6 @@ export class BlockCategory {
     public readonly cssClass : string;
 
     constructor(id: string) {
-        this.cssClass = `scruff-block-category-${id}`;
+        this.cssClass = `scuff-block-category-${id}`;
     }
 }

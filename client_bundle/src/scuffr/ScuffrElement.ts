@@ -1,11 +1,11 @@
 import type { Vec2 } from "../utils/Vec2";
-import type { ScruffrParentElement } from "./ScruffrParentElement";
-import type { ScruffrWorkspace } from "./ScruffrWorkspace";
+import type { ScuffrParentElement } from "./ScuffrParentElement";
+import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 
-export abstract class ScruffrElement {
+export abstract class ScuffrElement {
     public static readonly DATA_NAME = "sfs-rendered-element";
 
-    public readonly workspace: ScruffrWorkspace;
+    public readonly workspace: ScuffrWorkspace;
 
     public readonly dom: SVGElement;
     public dimensions: Vec2;
@@ -16,9 +16,9 @@ export abstract class ScruffrElement {
     public get translationX() { return this.translationSelf.x + this.translationParent.x; }
     public get translationY() { return this.translationSelf.y + this.translationParent.y; }
 
-    public abstract parent: ScruffrParentElement | null;
+    public abstract parent: ScuffrParentElement | null;
 
-    public constructor(dom: SVGElement, workspace?: ScruffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
+    public constructor(dom: SVGElement, workspace?: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
         this.workspace = workspace ?? this._getWorkspace();
         this.dom = dom;
         this.translationSelf = translation;
@@ -26,7 +26,7 @@ export abstract class ScruffrElement {
         this.topLeftOffset = topLeftOffset;
         this.translationParent = translationParent;
 
-        (<any>this.dom)[ScruffrElement.DATA_NAME] = this;
+        (<any>this.dom)[ScuffrElement.DATA_NAME] = this;
     }
 
     public getAbsoluteTranslation(): Vec2 {
@@ -38,7 +38,7 @@ export abstract class ScruffrElement {
         }
     }
 
-    protected _getWorkspace(): ScruffrWorkspace {
+    protected _getWorkspace(): ScuffrWorkspace {
         throw new Error("No workspace provided in constructor and element did not override _getWorkspace()!");
     }
 

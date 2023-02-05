@@ -1,7 +1,7 @@
-# [Scruff](https://tacodiva.github.io/Scruff/) <sub><sup>_(todo: create 'scruffy', a cute vector dog logo)_</sup></sub>
+# [Scuff](https://tacodiva.github.io/Scuff/) <sub><sup>_(todo: create 'scuffy', a cute vector dog logo)_</sup></sub>
 
 
-### Scruff is a <ins>very</ins> work in progress rewrite of the scratch editor.
+### Scuff is a <ins>very</ins> work in progress rewrite of the scratch editor.
 Click the link above to see whatever I've gotten done as of right now. 
 
 

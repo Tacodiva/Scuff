@@ -1,8 +1,8 @@
 import { BlockType, type BlockTypeDescription } from "./BlockType";
 import type { BlockInstance } from "./BlockInstance";
-import { ScruffrBackground } from "../scruffr/background/ScruffrBackground";
-import { BackgroundShapes } from "../scruffr/background/BackgroundShapes";
-import type { ScruffrBackgroundShape } from "../scruffr/background/ScruffrBackgroundShape";
+import { ScuffrBackground } from "../scuffr/background/ScuffrBackground";
+import { BackgroundShapes } from "../scuffr/background/BackgroundShapes";
+import type { ScuffrBackgroundShape } from "../scuffr/background/ScuffrBackgroundShape";
 
 export enum StackableBlockShape {
     HEAD,
@@ -35,11 +35,11 @@ export abstract class BlockTypeStackable extends BlockType {
         return this._shape !== StackableBlockShape.HEAD;
     }
 
-    public getBackground(block: BlockInstance): ScruffrBackground {
-        return new ScruffrBackground(this.getBackgroundShape(block), this.category.cssClass, "scruff-block");
+    public getBackground(block: BlockInstance): ScuffrBackground {
+        return new ScuffrBackground(this.getBackgroundShape(block), this.category.cssClass, "scuff-block");
     }
 
-    public getBackgroundShape(block: BlockInstance): ScruffrBackgroundShape {
+    public getBackgroundShape(block: BlockInstance): ScuffrBackgroundShape {
         switch (this._shape) {
             case StackableBlockShape.BODY:
                 return BackgroundShapes.StackBody;

@@ -5,10 +5,10 @@
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
 
-	<title>Scruff</title>
+	<title>Scuff</title>
 
 	<style>
-		#scruff-loading {
+		#scuff-loading {
 			width: 100vw;
 			height: 100vh;
 
@@ -18,7 +18,7 @@
 			justify-content: center;
 		}
 
-		#scruff-loading>div {
+		#scuff-loading>div {
 			width: min(50px, 5vw);
 			height: min(50px, 5vw);
 			border-radius: 50%;
@@ -42,14 +42,14 @@
 		const SVG_NS = "http://www.w3.org/2000/svg";
 
 		requirejs(["bundle/bundle.js"], (bundle) => bundle.load(() => {
-			document.getElementById("scruff-loading").remove();
+			document.getElementById("scuff-loading").remove();
 			bundle.main();
 		}));
 	</script>
 </head>
 
 <body>
-	<div id="scruff-loading">
+	<div id="scuff-loading">
 		<div></div>
 	</div>
 </body>
