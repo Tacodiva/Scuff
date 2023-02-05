@@ -1,5 +1,5 @@
 import type { Vec2 } from "../utils/Vec2";
-import type { BlockScript, BlockScriptRoot } from "./BlockScript";
+import type { BlockScriptRoot } from "./BlockScriptRoot";
 
 export class BlockScripts {
 

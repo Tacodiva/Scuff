@@ -1,49 +1,16 @@
-import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
-import { BlockInputType, type IBlockInput } from "../block/BlockInputType";
-import type { ScruffrRootScriptElement } from "./ScruffrScriptElement";
-import { ScruffrBlockRef, type IScruffrBlockParent } from "./ScruffrBlockRef";
 import type { BlockInstance } from "../block/BlockInstance";
-import { ScruffrAttachmentPointList, type IScruffrPointAttachable } from "./attachment_points";
-import type { IScruffrBackgroundModifier, ScruffrBackground, ScruffrBackgroundContentLine } from "./background";
-import { ScruffrBackgroundElement } from "./background/ScruffrBackgroundElement";
+import type { ScruffrBackgroundContentLine } from "./background/ScruffrBackground";
+import { ScruffrBackgroundedBlockPartElement } from "./ScruffrBackgroundedBlockPartElement";
+import type { IScruffrBlock } from "./IScruffrBlock";
+import type { IScruffrBlockInput } from "./IScruffrBlockInput";
+import type { IScruffrBlockPartElement } from "./IScruffrBlockPartElement";
+import { ScruffrBlockContentElement } from "./ScruffrBlockContentElement";
+import type { IScruffrBlockParent, ScruffrBlockRef } from "./ScruffrBlockRef";
+import type { BlockInputType } from "../block/BlockInputType";
+import type { IBlockInput } from "../block/IBlockInput";
+import type { ScruffrRootScriptElement } from "./ScruffrRootScriptElement";
 
-export interface IScruffrBlockPartElement extends ScruffrElement {
-    getBackground?(): ScruffrBackground | null;
-    onAncestryChange?(root: ScruffrRootScriptElement | null): void;
-    getBackgroundModifier?(): IScruffrBackgroundModifier | null;
-}
-
-export interface IScruffrBlockInput extends IScruffrPointAttachable, IScruffrBlockPartElement, ScruffrElement {
-    asInput(): IBlockInput;
-    setParent(parentRef: ScruffrBlockRef<BlockInputType<IBlockInput>, ScruffrBlockContentElement>): void;
-}
-
-export abstract class ScruffrBackgroundedBlockPartElement<TContent extends ScruffrElement> extends ScruffrBackgroundElement<TContent> implements IScruffrBlockPartElement, IScruffrPointAttachable {
-    public readonly attachmentPoints: ScruffrAttachmentPointList;
-    public root: ScruffrRootScriptElement;
-
-    public constructor(root: ScruffrRootScriptElement, parent: ScruffrParentElement, background: ScruffrBackground) {
-        super(parent, background);
-        this.root = root;
-        this.attachmentPoints = new ScruffrAttachmentPointList(root);
-    }
-
-    public getBackground(): ScruffrBackground {
-        return this.background;
-    }
-
-    public onAncestryChange(root: ScruffrRootScriptElement | null) {
-        if (root !== null) this.root = root;
-        this.attachmentPoints.onAncestryChange(root);
-    }
-
-    public override onTranslationUpdate(): void {
-        this.attachmentPoints.recalculateTranslation();
-        super.onTranslationUpdate();
-    }
-}
-
-export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartElement<ScruffrBlockContentElement> implements IScruffrBlockInput {
+export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartElement<ScruffrBlockContentElement> implements IScruffrBlock, IScruffrBlockInput {
     public readonly block: BlockInstance;
     public parentRef: ScruffrBlockRef;
     public get parent(): IScruffrBlockParent { return this.parentRef.parent; }
@@ -105,85 +72,12 @@ export class ScruffrBlockInstanceElement extends ScruffrBackgroundedBlockPartEle
     public asInput(): IBlockInput {
         return this.block;
     }
-}
 
-interface ScruffrBlockContentInput {
-    element: IScruffrBlockInput,
-    index: number
-}
-
-export class ScruffrBlockContentElement extends ScruffrParentElement implements IScruffrBlockParent<BlockInputType> {
-    public children: IScruffrBlockPartElement[];
-    public parent: ScruffrBlockInstanceElement;
-    public inputs: Map<string, ScruffrBlockContentInput>;
-
-    public get root() { return this.parent.root; }
-
-    public constructor(parent: ScruffrBlockInstanceElement) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
-        this.parent = parent;
-        this.children = [];
-        this.inputs = new Map();
+    public shouldAttachUp(): boolean {
+        return this.block.type.canStackUp(this.block);
     }
 
-    public renderAll() {
-        for (let partIdx = 0; partIdx < this.parent.block.type.parts.length; partIdx++)
-            this._renderPart(partIdx);
-    }
-
-    private _renderPart(index: number) {
-        const part = this.parent.block.type.parts[index];
-        let renderedPart;
-        if (part instanceof BlockInputType) {
-            renderedPart = part.render(this);
-            this.inputs.set(part.id, { element: renderedPart, index });
-            part.createAttachmentPoints(this, renderedPart);
-        } else {
-            renderedPart = part.render(this);
-        }
-        this.children[index] = (renderedPart);
-        return renderedPart;
-    }
-
-    public setInput(key: BlockInputType, input: IScruffrBlockInput) {
-        this.parent.block.setInput(key, input.asInput());
-        const oldInput = this.getInput(key);
-        if (!oldInput) throw new Error(`No input ${key.id} on block ${this.parent.block.type.id}.`);
-        this.dom.replaceChild(input.dom, oldInput.element.dom);
-        if (oldInput.element.onAncestryChange) oldInput.element.onAncestryChange(null);
-        input.setParent(new ScruffrBlockRef(key, this));
-        this.children[oldInput.index] = input;
-        this.inputs.set(key.id, { element: input, index: oldInput.index });
-        key.createAttachmentPoints(this, input);
-        this.update(true);
-    }
-
-    public getInput(key: BlockInputType): ScruffrBlockContentInput | null {
-        return this.inputs.get(key.id) ?? null;
-    }
-
-    public getBlock(key: BlockInputType): ScruffrBlockInstanceElement | null {
-        const input = this.getInput(key);
-        if (input && input.element instanceof ScruffrBlockInstanceElement)
-            return input.element;
-        return null;
-    }
-
-    public onChildDrag(key: BlockInputType, event: MouseEvent): boolean {
-        const input = this.getInput(key);
-        if (!(input && input.element instanceof ScruffrBlockInstanceElement)) {
-            console.warn("Block instance recieved invalid key in onChildDrag.");
-            return true;
-        }
-        input.element.attachmentPoints.clear();
-        this.workspace.dragRenderedBlock(input.element, event);
-        this.parent.block.resetInput(key.id);
-        this._renderPart(input.index).updateAll();
-        this.update(true);
-        return true;
-    }
-
-    public getRoot(): ScruffrRootScriptElement {
-        return this.parent.root;
+    public shouldAttachDown(): boolean {
+        return this.block.type.canStackDown(this.block);
     }
 }

@@ -1,6 +1,7 @@
 import './scratch';
 import './css';
-import { BlockScriptRoot, BlockSubscriptInput } from './src/block/BlockScript';
+import { BlockSubscriptInput } from "./src/block/BlockSubscriptInput";
+import { BlockScriptRoot } from "./src/block/BlockScriptRoot";
 import { ScratchBlocks } from './src/scratch_blocks/ScratchBlocks';
 import Target from './src/Target';
 import App from './svelte/App.svelte';

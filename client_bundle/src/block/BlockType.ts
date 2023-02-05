@@ -1,10 +1,10 @@
-import type { IBlockPart } from "./BlockParts";
+import type { IBlockPart } from "./IBlockPart";
 import type { BlockInputType } from "./BlockInputType";
-import { BlockPartText } from "./BlockParts";
 import { BlockInstance } from "./BlockInstance";
 import type l10nString from "../l10n";
 import type { BlockCategory } from "./BlockCategory";
-import type { ScruffrBackground } from "../scruffr/background";
+import type { ScruffrBackground } from "../scruffr/background/ScruffrBackground";
+import { BlockPartText } from "./BlockPartText";
 
 export interface BlockTypeDescription {
     text: l10nString;

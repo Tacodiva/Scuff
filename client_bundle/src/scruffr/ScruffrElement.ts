@@ -1,4 +1,5 @@
 import type { Vec2 } from "../utils/Vec2";
+import type { ScruffrParentElement } from "./ScruffrParentElement";
 import type { ScruffrWorkspace } from "./ScruffrWorkspace";
 
 export abstract class ScruffrElement {
@@ -85,27 +86,4 @@ export abstract class ScruffrElement {
     }
 }
 
-export abstract class ScruffrParentElement extends ScruffrElement {
-    public abstract children: readonly ScruffrElement[];
 
-    public override updateAll(): void {
-        for (const child of this.children)
-            child.updateAll();
-        super.updateAll();
-    }
-
-    public override onTranslationUpdate(): void {
-        super.onTranslationUpdate();
-        for (const child of this.children)
-            child.onTranslationUpdate();
-    }
-}
-
-export class ScruffrDummyElement extends ScruffrElement {
-    public parent: ScruffrParentElement | null;
-
-    public constructor(parent: ScruffrParentElement) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 });
-        this.parent = parent;
-    }
-}

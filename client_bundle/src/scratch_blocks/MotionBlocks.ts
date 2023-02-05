@@ -1,5 +1,5 @@
 import { BlockCategory } from "../block/BlockCategory";
-import { BlockInputTypeString } from "../block/BlockInputType";
+import { BlockInputTypeString } from "../block/BlockInputTypeString";
 import { BlockTypeStackable } from "../block/BlockTypeStackable";
 import { raw } from "../l10n";
 

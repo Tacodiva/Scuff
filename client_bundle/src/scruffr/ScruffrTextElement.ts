@@ -1,4 +1,5 @@
-import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
+import { ScruffrElement } from "./ScruffrElement";
+import type { ScruffrParentElement } from "./ScruffrParentElement";
 
 export class ScruffrTextElement extends ScruffrElement {
     public readonly parent: ScruffrParentElement;

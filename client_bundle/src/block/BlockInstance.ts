@@ -1,5 +1,5 @@
 import { ScruffrBlockInstanceElement } from "../scruffr/ScruffrBlockInstanceElement";
-import type { IBlockInput } from "./BlockInputType";
+import type { IBlockInput } from "./IBlockInput";
 import type { BlockInputType } from "./BlockInputType";
 import type { ScruffrBlockRef } from "../scruffr/ScruffrBlockRef";
 import type { BlockType } from "./BlockType";

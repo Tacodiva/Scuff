@@ -1,5 +1,5 @@
 import { BlockCategory } from "../block/BlockCategory";
-import { BlockInputTypeString } from "../block/BlockInputType";
+import { BlockInputTypeString } from "../block/BlockInputTypeString";
 import { BlockTypeBoolean } from "../block/BlockTypeBoolean";
 import { BlockTypeRound } from "../block/BlockTypeRound";
 import { raw } from "../l10n";

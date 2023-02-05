@@ -1,8 +1,9 @@
-import type { BlockInputType, IBlockInput } from "../../block/BlockInputType";
-import type { BlockInstance } from "../../block/BlockInstance";
-import { ScruffrAttachmentPoint, type IScruffrPointAttachable } from ".";
-import { ScruffrBlockContentElement, ScruffrBlockInstanceElement, type IScruffrBlockInput } from "../ScruffrBlockInstanceElement";
-import { ScruffrRootScriptElement } from "../ScruffrScriptElement";
+import type { BlockInputType } from "../../block/BlockInputType";
+import { ScruffrAttachmentPoint } from "./ScruffrAttachmentPoint";
+import type { IScruffrBlockInput } from "../IScruffrBlockInput";
+import { ScruffrBlockInstanceElement } from "../ScruffrBlockInstanceElement";
+import { ScruffrRootScriptElement } from "../ScruffrRootScriptElement";
+import { ScruffrBlockContentElement } from "../ScruffrBlockContentElement";
 
 export class ScruffrBlockInputAttachmentPoint extends ScruffrAttachmentPoint {
     public readonly block: ScruffrBlockInstanceElement;
@@ -19,12 +20,12 @@ export class ScruffrBlockInputAttachmentPoint extends ScruffrAttachmentPoint {
 
     public canTakeScript(script: ScruffrRootScriptElement): boolean {
         if (script.children.length !== 1) return false;
-        return this.input.isValidValue(script.children[0].block) !== null;
+        return this.input.isValidValue(script.script.blocks[0]) !== null;
     }
 
     public takeScript(script: ScruffrRootScriptElement): void {
         const replacedInput = this.block.getInput(this.input);
-        this.block.setInput(this.input, script.children[0]);
+        this.block.setInput(this.input, script.children[0] as ScruffrBlockInstanceElement);
 
         if (replacedInput instanceof ScruffrBlockInstanceElement) {
             let rootBlock = this.block;
@@ -35,7 +36,7 @@ export class ScruffrBlockInputAttachmentPoint extends ScruffrAttachmentPoint {
                 y: 0
             }
             replacedInput.attachmentPoints.clear();
-            const renderedScript = new ScruffrRootScriptElement(replacedInput.workspace, [replacedInput]);
+            const renderedScript = new ScruffrRootScriptElement(replacedInput.workspace, null, [replacedInput]);
             replacedInput.workspace.addRenderedScript(renderedScript);
         }
 

@@ -1,9 +1,13 @@
-import { BlockInputBooleanBlank, type BlockInputType, type IBlockInput } from "../block/BlockInputType";
-import { ScruffrBackground } from "./background";
+import type { BlockInputType } from "../block/BlockInputType";
+import type { IBlockInput } from "../block/IBlockInput";
+import { BlockInputBooleanBlank } from "../block/BlockInputBooleanBlank";
+import { ScruffrBackground } from "./background/ScruffrBackground";
 import { BackgroundShapes } from "./background/BackgroundShapes";
-import { type ScruffrBlockContentElement, ScruffrBackgroundedBlockPartElement, type IScruffrBlockInput } from "./ScruffrBlockInstanceElement";
+import type { IScruffrBlockInput } from "./IScruffrBlockInput";
+import { ScruffrBackgroundedBlockPartElement } from "./ScruffrBackgroundedBlockPartElement";
+import type { ScruffrBlockContentElement } from "./ScruffrBlockContentElement";
 import type { ScruffrBlockRef } from "./ScruffrBlockRef";
-import { ScruffrDummyElement } from "./ScruffrElement";
+import { ScruffrDummyElement } from "./ScruffrDummyElement";
 
 export class ScruffrBlankInputElement extends ScruffrBackgroundedBlockPartElement<ScruffrDummyElement> implements IScruffrBlockInput {
     private _parent: ScruffrBlockContentElement;

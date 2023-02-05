@@ -1,10 +1,10 @@
-import type { ScruffrParentElement } from "./ScruffrElement";
+import type { ScruffrParentElement } from "./ScruffrParentElement";
 import type { ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
-import type { ScruffrRootScriptElement } from "./ScruffrScriptElement";
+import type { ScruffrRootScriptElement } from "./ScruffrRootScriptElement";
 
 export interface IScruffrBlockParent<T = unknown> extends ScruffrParentElement  {
     onChildDrag?(key: T, event: MouseEvent): boolean;
-    getBlock(key: T): ScruffrBlockInstanceElement | null;
+    getBlockInstanceElement(key: T): ScruffrBlockInstanceElement | null;
     getRoot(): ScruffrRootScriptElement;
 }
 
@@ -22,7 +22,7 @@ export class ScruffrBlockRef<TKey = unknown, TParent extends IScruffrBlockParent
     }
 
     public get(): ScruffrBlockInstanceElement {
-        const block = this.parent.getBlock(this.childKey);
+        const block = this.parent.getBlockInstanceElement(this.childKey);
         if (!block)
             throw new Error("Invalid parent reference, couldn't find child with key on parent.");
         return block;

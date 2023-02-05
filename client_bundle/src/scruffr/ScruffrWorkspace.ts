@@ -1,13 +1,15 @@
-import { BlockScriptRoot } from "../block/BlockScript";
+import { BlockScriptRoot } from "../block/BlockScriptRoot";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScruffrBlockInstanceElement } from "./ScruffrBlockInstanceElement";
-import { ScruffrElement, ScruffrParentElement } from "./ScruffrElement";
-import { ScruffrRootScriptElement } from "./ScruffrScriptElement";
+import { ScruffrElement } from "./ScruffrElement";
+import { ScruffrParentElement } from "./ScruffrParentElement";
 import type { BlockScripts } from "../block/BlockScripts";
 import type { BlockInstance } from "../block/BlockInstance";
 import type { ScruffrLiteralInputElement } from "./ScruffrLiteralInputElement";
 import { ScruffrScriptAttachmentPoint } from "./attachment_points/ScruffrScriptAttachmentPoint";
-import type { ScruffrAttachmentPoint, ScruffrAttachmentPointList } from "./attachment_points";
+import type { ScruffrAttachmentPoint } from "./attachment_points/ScruffrAttachmentPoint";
+import { ScruffrRootScriptElement } from "./ScruffrRootScriptElement";
+import type { ScruffrAttachmentPointList } from "./attachment_points/ScruffrAttachmentPointList";
 
 abstract class ScruffrAction {
     public readonly workspace: ScruffrWorkspace;
@@ -344,7 +346,7 @@ export class ScruffrWorkspace extends ScruffrParentElement {
     }
 
     public dragRenderedBlock(block: ScruffrBlockInstanceElement, mousePos: Vec2) {
-        const renderedScript = new ScruffrRootScriptElement(this, [block]);
+        const renderedScript = new ScruffrRootScriptElement(this, null, [block]);
         this.addRenderedScript(renderedScript);
         this.dragRenderedScript(renderedScript, mousePos);
     }

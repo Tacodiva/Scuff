@@ -9,7 +9,7 @@ import css from 'rollup-plugin-css-only';
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-	input: 'client_bundle/main.ts',
+	input: 'client_bundle/index.ts',
 
 	onwarn: function (message) {
 		// Make rollup shut up about circular dependency 'issues'.

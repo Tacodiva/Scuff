@@ -1,6 +1,6 @@
-import type { ScruffrBackground, ScruffrBackgroundContentLine } from ".";
+import type { ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
 import type { Vec2 } from "../../utils/Vec2";
-import type { IScruffrBlockPartElement } from "../ScruffrBlockInstanceElement";
+import type { IScruffrBlockPartElement } from "../IScruffrBlockPartElement";
 import { ScruffrBackgroundShape } from "./ScruffrBackgroundShape";
 
 class ScruffrStackableBackgroundShape extends ScruffrBackgroundShape {
@@ -14,7 +14,7 @@ class ScruffrStackableBackgroundShape extends ScruffrBackgroundShape {
     }
 
     public override createPath(size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding: number): string {
-        let path = this._createTopPath(size, lines, verticalPadding);
+        let path = this.createTopPath(size, lines, verticalPadding);
         for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
             const line = lines[lineIdx];
             let pathMod = null;
@@ -28,15 +28,15 @@ class ScruffrStackableBackgroundShape extends ScruffrBackgroundShape {
             }
             path += pathMod;
         }
-        path += this._createBottomPath();
+        path += this.createBottomPath();
         return path;
     }
 
-    protected _createTopPath(size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding: number): string {
+    public createTopPath(size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding: number): string {
         return `m -8 ${-lines[0].dimensions.y / 2 - verticalPadding + 4} a 4 4 0 0 1 4 -4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
     }
 
-    protected _createBottomPath(): string {
+    public createBottomPath(): string {
         return `a 4 4 0 0 1 -4 4 H 40 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 H -4 a 4 4 0 0 1 -4 -4 z`;
     }
 
@@ -91,7 +91,7 @@ export const BackgroundShapes = {
 
     StackHead: new class extends ScruffrStackableBackgroundShape {
 
-        protected override _createTopPath(size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding : number): string {
+        public override createTopPath(size: Vec2, lines: ScruffrBackgroundContentLine[], verticalPadding : number): string {
             return `m -8 ${-lines[0].dimensions.y / 2 - verticalPadding} c 2.6 -2.3 5.5 -4.3 8.5 -6.2 c -1 -12.5 5.3 -23.3 8.4 -24.8 c 3.7 -1.8 16.5 13.1 18.4 15.4 c 8.4 -1.3 17 -1.3 25.4 0 c 1.9 -2.3 14.7 -17.2 18.4 -15.4 c 3.1 1.5 9.4 12.3 8.4 24.8 c 3 1.8 5.9 3.9 8.5 6.1 H ${size.x + 4} a 4 4 0 0 1 4 4`;
         }
 
@@ -115,7 +115,7 @@ export const BackgroundShapes = {
 
     StackTail: new class extends ScruffrStackableBackgroundShape {
 
-        protected override _createBottomPath(): string {
+        public override createBottomPath(): string {
             return `a 4 4 0 0 1 -4 4 H -4 a 4 4 0 0 1 -4 -4 z`;
         }
     }

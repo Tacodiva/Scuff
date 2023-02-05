@@ -1,6 +1,6 @@
-import type { IScruffrBlockPartElement } from "../ScruffrBlockInstanceElement";
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScruffrBackground, ScruffrBackgroundContentLine } from ".";
+import type { ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
+import type { IScruffrBlockPartElement } from "../IScruffrBlockPartElement";
 
 export abstract class ScruffrBackgroundShape {
     public readonly minSize: Vec2;

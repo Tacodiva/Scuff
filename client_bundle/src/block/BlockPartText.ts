@@ -1,9 +1,8 @@
-import type { IScruffrBlockPartElement, ScruffrBlockContentElement } from "../scruffr/ScruffrBlockInstanceElement";
+import type { IScruffrBlockPartElement } from "../scruffr/IScruffrBlockPartElement";
+import type { ScruffrBlockContentElement } from "../scruffr/ScruffrBlockContentElement";
 import { ScruffrTextElement } from "../scruffr/ScruffrTextElement";
+import type { IBlockPart } from "./IBlockPart";
 
-export interface IBlockPart {
-    render(block: ScruffrBlockContentElement): IScruffrBlockPartElement;
-}
 
 export class BlockPartText implements IBlockPart {
 

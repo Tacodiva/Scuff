@@ -1,8 +1,9 @@
-import { BlockInputTypeSubscript } from "../../block/BlockInputType";
+import { BlockInputTypeSubscript } from "../../block/BlockInputTypeSubscript";
 import type { BlockScript } from "../../block/BlockScript";
 import type { Vec2 } from "../../utils/Vec2";
-import { ScruffrAttachmentPoint } from ".";
-import type { ScruffrRootScriptElement, ScruffrScriptElement } from "../ScruffrScriptElement";
+import { ScruffrAttachmentPoint } from "./ScruffrAttachmentPoint";
+import type { ScruffrScriptElement } from "../ScruffrScriptElement";
+import type { ScruffrRootScriptElement } from "../ScruffrRootScriptElement";
 
 export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
     public readonly parent: ScruffrScriptElement<BlockScript>;
@@ -34,18 +35,19 @@ export class ScruffrScriptAttachmentPoint extends ScruffrAttachmentPoint {
     }
 
     public takeScript(script: ScruffrRootScriptElement): void {
-        const firstBlock = script.children[0];
-        for (const input of firstBlock.block.type.inputs) {
-            if (input instanceof BlockInputTypeSubscript) {
-                const firstScript = firstBlock.block.getInput(input);
-                if (firstScript.blocks.length === 0) {
-                    // TODO Check distance to see if we should wrap or just place
-                    this.parent.wrapScript(this.index, script, firstBlock, input);
-                    return;
+        const firstBlock = script.getBlockInstanceElement(0);
+        if (firstBlock)
+            for (const input of firstBlock.block.type.inputs) {
+                if (input instanceof BlockInputTypeSubscript) {
+                    const firstScript = firstBlock.block.getInput(input);
+                    if (firstScript.blocks.length === 0) {
+                        // TODO Check distance to see if we should wrap or just place
+                        this.parent.wrapScript(this.index, script, firstBlock, input);
+                        return;
+                    }
+                    break;
                 }
-                break;
             }
-        }
         this.parent.insertScript(this.index, script);
     }
 

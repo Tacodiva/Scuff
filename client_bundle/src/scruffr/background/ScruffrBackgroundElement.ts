@@ -1,6 +1,7 @@
-import type { ScruffrBackground, ScruffrBackgroundContentLine } from ".";
-import type { IScruffrBlockPartElement } from "../ScruffrBlockInstanceElement";
-import { ScruffrParentElement, type ScruffrElement } from "../ScruffrElement";
+import type { ScruffrBackground, ScruffrBackgroundContentLine } from "./ScruffrBackground";
+import type { IScruffrBlockPartElement } from "../IScruffrBlockPartElement";
+import type { ScruffrElement } from "../ScruffrElement";
+import { ScruffrParentElement } from "../ScruffrParentElement";
 
 export abstract class ScruffrBackgroundElement<TContent extends ScruffrElement = ScruffrElement> extends ScruffrParentElement implements IScruffrBlockPartElement {
     public abstract override parent: ScruffrParentElement;

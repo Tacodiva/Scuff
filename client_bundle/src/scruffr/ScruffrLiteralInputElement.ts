@@ -1,7 +1,11 @@
-import { BlockInputString, type BlockInputType, type IBlockInput } from "../block/BlockInputType";
-import { ScruffrBackground } from "./background";
+import type { BlockInputType } from "../block/BlockInputType";
+import type { IBlockInput } from "../block/IBlockInput";
+import { BlockInputString } from "../block/BlockInputString";
+import { ScruffrBackground } from "./background/ScruffrBackground";
 import { BackgroundShapes } from "./background/BackgroundShapes";
-import { ScruffrBackgroundedBlockPartElement, type IScruffrBlockInput, type ScruffrBlockContentElement } from "./ScruffrBlockInstanceElement";
+import type { IScruffrBlockInput } from "./IScruffrBlockInput";
+import { ScruffrBackgroundedBlockPartElement } from "./ScruffrBackgroundedBlockPartElement";
+import type { ScruffrBlockContentElement } from "./ScruffrBlockContentElement";
 import type { ScruffrBlockRef } from "./ScruffrBlockRef";
 import { ScruffrTextElement } from "./ScruffrTextElement";
 
