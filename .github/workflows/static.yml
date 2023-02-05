@@ -28,13 +28,12 @@ jobs:
         uses: actions/configure-pages@v2
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
-      - run: npm i
+      - run: npm ci
       - run: npm run build
-      - run: cp -r build/client client_www/bundle  
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: client_www
+          path: public
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
