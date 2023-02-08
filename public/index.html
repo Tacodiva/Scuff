@@ -40,9 +40,13 @@
 		}
 	</style>
 
-	<link rel='stylesheet' href='lib/scuff-core/scuff-core.css'>
-
-	<script src='thirdparty/require.js'></script>
+	<script type="importmap">
+		{
+			"imports": {
+				"scuff": "./lib/scuff-core/scuff-core.mjs"
+			}
+		}
+	</script>
 	<script src='lib/index.js' defer></script>
 </head>
 

@@ -1,11 +1,17 @@
-import { ScuffCore, ScuffExtension } from "../public/lib/scuff-core/scuff-core";
+import { ScuffCore, ScuffExtension, ScuffExtensionLoader } from "scuff";
+import { ScuffScratch } from "ScuffScratch";
 
-const ext: ScuffExtension = {
+const extLoader: ScuffExtensionLoader = {
+    id: ScuffScratch.id,
 
-    init(core: ScuffCore) {
-        console.log("Scratch EXT Initalized!");
+    styles: [
+        "scuff-scratch.css"
+    ],
+
+    load(core: ScuffCore): ScuffExtension {
+        return new ScuffScratch(core);
     },
 
 };
 
-export default ext;
+export default extLoader;

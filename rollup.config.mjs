@@ -18,13 +18,10 @@ function onwarn(message) {
 export default [{
 	input: 'scuff-core/index.ts',
 
-	onwarn,
-
 	output: {
 		sourcemap: !production,
-		format: 'amd',
-		name: 'app',
-		file: 'public/lib/scuff-core/scuff-core.js',
+		format: 'es',
+		file: 'public/lib/scuff-core/scuff-core.mjs',
 	},
 	plugins: [
 		svelte({
@@ -52,9 +49,7 @@ export default [{
 
 		production && terser({ mangle: false }),
 	],
-	watch: {
-		clearScreen: false
-	}
+	onwarn
 },
 {
 	input: 'public/lib/scuff-core/types/api/index.d.ts',
@@ -71,17 +66,15 @@ export default [{
 {
 	input: 'scuff-scratch/index.ts',
 
-	onwarn,
-
+	external: ['scuff'],
 	output: {
 		sourcemap: !production,
-		format: 'amd',
-		name: 'app',
-		file: 'public/lib/scuff-scratch/scuff-scratch.js',
+		format: 'es',
+		file: 'public/lib/scuff-scratch/scuff-scratch.mjs',
 	},
 	plugins: [
 		css({
-			output: 'scuff-core.css'
+			output: 'scuff-scratch.css'
 		}),
 
 		typescript(
@@ -93,18 +86,17 @@ export default [{
 		),
 
 		production && terser({ mangle: false }),
-	]
+	],
+	onwarn
 },
 {
 	input: 'src/index.ts',
 
-	onwarn,
-
+	external: ['scuff'],
 	output: {
 		sourcemap: !production,
-		format: 'iife',
-		name: 'app',
-		file: 'public/lib/index.js',
+		format: 'es',
+		file: 'public/lib/index.js'
 	},
 	plugins: [
 		typescript(
@@ -117,6 +109,7 @@ export default [{
 
 		!production && livereload({ watch: ['public'] }),
 		production && terser({ mangle: false }),
-	]
+	],
+	onwarn
 }
 ];

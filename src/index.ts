@@ -1,14 +1,14 @@
-import { ScuffLoader } from "../public/lib/scuff-core/scuff-core";
 
-requirejs(["lib/scuff-core/scuff-core.js"], (scuffLoader: ScuffLoader) => {
-    scuffLoader.load({
+import("scuff").then(module => {
+
+    module.load({
+        path: "./lib/scuff-core/",
         extensions: [
-            "lib/scuff-scratch/scuff-scratch.js"
+            "./lib/scuff-scratch/scuff-scratch.mjs"
         ]
-    }).then(async core => {
+    }).then(core => {
         document.getElementById("scuff-loading")?.remove();
         core.main();
     });
-}, (err: any) => {
-    console.log(err);
+
 });

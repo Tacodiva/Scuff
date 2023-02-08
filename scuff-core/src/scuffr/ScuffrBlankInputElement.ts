@@ -2,7 +2,7 @@ import type { BlockInputType } from "../block/BlockInputType";
 import type { IBlockInput } from "../block/IBlockInput";
 import { BlockInputBooleanBlank } from "../block/BlockInputBooleanBlank";
 import { ScuffrBackground } from "./background/ScuffrBackground";
-import { BackgroundShapes } from "./background/BackgroundShapes";
+import { ScuffBackgroundShapes } from "./background/ScuffBackgroundShapes";
 import type { IScuffrBlockInput } from "./IScuffrBlockInput";
 import { ScuffrBackgroundedBlockPartElement } from "./ScuffrBackgroundedBlockPartElement";
 import type { ScuffrBlockContentElement } from "./ScuffrBlockContentElement";
@@ -16,7 +16,7 @@ export class ScuffrBlankInputElement extends ScuffrBackgroundedBlockPartElement<
 
     public constructor(parent: ScuffrBlockContentElement, input: BlockInputType) {
         super(parent.root, parent, new ScuffrBackground(
-            BackgroundShapes.InputTriangle,
+            ScuffBackgroundShapes.InputTriangle,
             null,
             "scuff-block-empty-boolean"
         ));

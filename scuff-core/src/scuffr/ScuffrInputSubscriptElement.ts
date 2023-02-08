@@ -4,7 +4,7 @@ import type { IBlockInput } from "../block/IBlockInput";
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrScriptAttachmentPoint } from "./attachment_points/ScuffrScriptAttachmentPoint";
 import type { IScuffrBackgroundModifier, ScuffrBackgroundContentLine } from "./background/ScuffrBackground";
-import { BackgroundShapes } from "./background/BackgroundShapes";
+import { ScuffBackgroundShapes } from "./background/ScuffBackgroundShapes";
 import type { IScuffrBlock } from "./IScuffrBlock";
 import type { IScuffrBlockInput } from "./IScuffrBlockInput";
 import type { ScuffrBlockContentElement } from "./ScuffrBlockContentElement";
@@ -77,8 +77,8 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
         if (
             (ghost && size.y === ScuffrInputSubscriptElement.MIN_HEIGHT) ||
             (this.children.length !== 0 &&
-                (!this._ghost?.wrapping && this.children[this.children.length - 1].background.shape === BackgroundShapes.StackTail) ||
-                (this._ghost?.wrapping && this._ghost.wrapping.wrapperBlock.background.shape === BackgroundShapes.StackTail)
+                (!this._ghost?.wrapping && this.children[this.children.length - 1].background.shape === ScuffBackgroundShapes.StackTail) ||
+                (this._ghost?.wrapping && this._ghost.wrapping.wrapperBlock.background.shape === ScuffBackgroundShapes.StackTail)
             ))
             return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
         else

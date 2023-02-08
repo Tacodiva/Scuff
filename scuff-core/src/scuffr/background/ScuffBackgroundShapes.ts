@@ -56,7 +56,7 @@ class ScuffrStackableBackgroundShape extends ScuffrBackgroundShape {
     }
 }
 
-export const BackgroundShapes = {
+export const ScuffBackgroundShapes = {
     InputRound: new class extends ScuffrBackgroundShape {
         public override createPath(size: Vec2, lines: ScuffrBackgroundContentLine[]): string {
             if (lines.length !== 1 || lines[0].modifier)
