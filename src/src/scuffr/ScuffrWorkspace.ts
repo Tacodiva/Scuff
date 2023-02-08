@@ -10,6 +10,7 @@ import { ScuffrScriptAttachmentPoint } from "./attachment_points/ScuffrScriptAtt
 import type { ScuffrAttachmentPoint } from "./attachment_points/ScuffrAttachmentPoint";
 import { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 import type { ScuffrAttachmentPointList } from "./attachment_points/ScuffrAttachmentPointList";
+import { ScuffrScriptTopAttachmentPoint } from "./attachment_points/ScuffrScriptTopAttachmentPoint";
 
 abstract class ScuffrAction {
     public readonly workspace: ScuffrWorkspace;
@@ -97,18 +98,20 @@ class ScriptDragAction extends ScuffrAction {
 
         let newPoint = this._findAttachmentPoint();
 
-        if (this._attachmentPoint && this._attachmentPoint !== newPoint)
-            this._attachmentPoint.unhighlight();
-        this._attachmentPoint = newPoint;
-        if (this._attachmentPoint)
-            this._attachmentPoint.highlight();
+        if (this._attachmentPoint !== newPoint) {
+            if (this._attachmentPoint)
+                this._attachmentPoint.unhighlight(this.script);
+            this._attachmentPoint = newPoint;
+            if (this._attachmentPoint)
+                this._attachmentPoint.highlight(this.script);
+        }
     }
 
     public override onEnd(): void {
         this.script.dom.classList.remove("scuff-block-dragging");
         if (this._attachmentPoint) {
+            this._attachmentPoint.unhighlight(this.script);
             this._attachmentPoint.takeScript(this.script);
-            this._attachmentPoint.unhighlight();
         }
     }
 
@@ -253,7 +256,9 @@ export class ScuffrWorkspace extends ScuffrParentElement {
             for (const point of list.list) {
                 const pointElement = this.svgDebug.appendChild(document.createElementNS(SVG_NS, "circle"));
                 pointElement.setAttribute("r", "10");
-                if (point instanceof ScuffrScriptAttachmentPoint)
+                if (point instanceof ScuffrScriptTopAttachmentPoint)
+                    pointElement.setAttribute("style", "fill: #fff;");
+                else if (point instanceof ScuffrScriptAttachmentPoint)
                     pointElement.setAttribute("style", "fill: #ff0000a0;");
                 else
                     pointElement.setAttribute("style", "fill: #00ff00a0;");
@@ -495,6 +500,9 @@ export class ScuffrWorkspace extends ScuffrParentElement {
                     this._mouseDownPos = null;
                 }
             }
+            if (this._action) {
+                (this._action as ScuffrAction).onMouseMove(event);
+            }    
         }
         // this.debugRender();
     }

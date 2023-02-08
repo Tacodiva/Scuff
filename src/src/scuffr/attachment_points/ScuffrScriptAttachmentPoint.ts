@@ -1,18 +1,18 @@
-import { BlockInputTypeSubscript } from "../../block/BlockInputTypeSubscript";
-import type { BlockScript } from "../../block/BlockScript";
 import type { Vec2 } from "../../utils/Vec2";
 import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 import type { ScuffrScriptElement } from "../ScuffrScriptElement";
 import type { ScuffrRootScriptElement } from "../ScuffrRootScriptElement";
+import type { ScuffrBlockInstanceElement } from "../ScuffrBlockInstanceElement";
+import type { ScuffrWrappingDescriptor } from "../ScuffrWrappingDescriptor";
 
 export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
-    public readonly parent: ScuffrScriptElement<BlockScript>;
+    public readonly parent: ScuffrScriptElement;
     public readonly index: number;
 
     public readonly requireStackUp: boolean;
     public readonly requireStackDown: boolean;
 
-    public constructor(script: ScuffrScriptElement<BlockScript>, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
+    public constructor(script: ScuffrScriptElement, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
         super(offset);
         this.parent = script;
         this.index = index;
@@ -21,6 +21,8 @@ export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
     }
 
     public canTakeScript(script: ScuffrRootScriptElement): boolean {
+        if (this._getWrapping(script))
+            return true;
         if (this.requireStackUp) {
             const firstBlock = script.script.blocks[0];
             if (!firstBlock.type.canStackUp(firstBlock))
@@ -35,29 +37,15 @@ export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
     }
 
     public takeScript(script: ScuffrRootScriptElement): void {
-        const firstBlock = script.getBlockInstanceElement(0);
-        if (firstBlock)
-            for (const input of firstBlock.block.type.inputs) {
-                if (input instanceof BlockInputTypeSubscript) {
-                    const firstScript = firstBlock.block.getInput(input);
-                    if (firstScript.blocks.length === 0) {
-                        // TODO Check distance to see if we should wrap or just place
-                        this.parent.wrapScript(this.index, script, firstBlock, input);
-                        return;
-                    }
-                    break;
-                }
-            }
-        this.parent.insertScript(this.index, script);
+        this.parent.insertScript(this.index, script, this._getWrapping(script));
     }
 
     public override calculateDelta(source: ScuffrRootScriptElement): Vec2 {
-        const delta = super.calculateDelta(source);
-        if (delta.y < 0) {
-            delta.y -= source.topOffset;
-        } else {
-            delta.y -= source.bottomOffset;
-        }
+        const delta = this._calculateRawDelta(source);
+        let a = delta.y - source.topOffset;
+        let b = delta.y + source.topOffset;
+        if (Math.abs(a) < Math.abs(b)) delta.y = a;
+        else delta.y = b;
         return delta;
     }
 
@@ -65,9 +53,15 @@ export class ScuffrScriptAttachmentPoint extends ScuffrAttachmentPoint {
         return this.parent.getRoot();
     }
 
-    public highlight(): void {
+    public highlight(script: ScuffrRootScriptElement): void {
+        this.parent.addGhost(this.index, script.children[0] as ScuffrBlockInstanceElement, this._getWrapping(script));
     }
 
-    public unhighlight(): void {
+    public unhighlight(script: ScuffrRootScriptElement): void {
+        this.parent.removeGhost();
+    }
+
+    protected _getWrapping(script: ScuffrRootScriptElement): ScuffrWrappingDescriptor | null {
+        return this.parent.tryWrap(this.index, script.children[0]);
     }
 }

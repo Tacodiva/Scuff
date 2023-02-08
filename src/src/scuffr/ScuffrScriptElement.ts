@@ -1,7 +1,6 @@
 import { ScuffrParentElement } from "./ScuffrParentElement";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
-import type { BlockInputTypeSubscript } from "../block/BlockInputTypeSubscript";
 import { ScuffrBlockInstanceElement } from "./ScuffrBlockInstanceElement";
 import { ScuffrScriptAttachmentPoint } from "./attachment_points/ScuffrScriptAttachmentPoint";
 import type { IScuffrBlock } from "./IScuffrBlock";
@@ -9,13 +8,20 @@ import { ScuffrInputSubscriptElement } from "./ScuffrInputSubscriptElement";
 import type { BlockScript } from "../block/BlockScript";
 import { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 import { ScuffrAttachmentPointList } from "./attachment_points/ScuffrAttachmentPointList";
+import { ScuffrBlockGhostElement } from "./ScuffrBlockGhostElement";
+import { ScuffrScriptTopAttachmentPoint } from "./attachment_points/ScuffrScriptTopAttachmentPoint";
+import type { ScuffrBlockContentInput } from "./ScuffrBlockContentElement";
+import { ScuffrWrappingDescriptor } from "./ScuffrWrappingDescriptor";
 
-export abstract class ScuffrScriptElement<TScript extends BlockScript> extends ScuffrParentElement implements IScuffrBlockParent<number> {
+export abstract class ScuffrScriptElement<TScript extends BlockScript = BlockScript> extends ScuffrParentElement implements IScuffrBlockParent<number> {
     public children: IScuffrBlock[];
     public readonly script: TScript;
     protected _root: ScuffrRootScriptElement | null;
+    protected _ghost: ScuffrBlockGhostElement | null;
+    public get ghost(): ScuffrBlockGhostElement | null { return this._ghost };
 
     public readonly attachmentPoints: ScuffrAttachmentPointList;
+    public abstract readonly isSubscript: boolean;
 
     public constructor(container: SVGElement, root: ScuffrRootScriptElement | null, workspace: ScuffrWorkspace, script: TScript, blocks?: IScuffrBlock[]) {
         super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
@@ -24,6 +30,7 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
 
         this.attachmentPoints = new ScuffrAttachmentPointList(this._root);
         this.script = script;
+        this._ghost = null;
 
         if (blocks) {
             this.children = blocks;
@@ -52,11 +59,8 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
         return this._root;
     }
 
-    public getBlockInstanceElement(key: number): ScuffrBlockInstanceElement | null {
-        let child = this.children[key];
-        if (child instanceof ScuffrBlockInstanceElement)
-            return child;
-        return null;
+    public getBlockElement(key: number): IScuffrBlock {
+        return this.children[key];
     }
 
     public static getBlockInstanceElements(blocks: IScuffrBlock[]): ScuffrBlockInstanceElement[] {
@@ -68,34 +72,57 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
         return instances;
     }
 
-    public insertScript(index: number, script: ScuffrRootScriptElement) {
-        this.script.blocks.splice(index, 0, ...script.script.blocks);
-        this.children.splice(index, 0, ...script.children);
-        if (index === 0) {
-            this.translationSelf.y = this.translationSelf.y + this.topOffset - script.bottomOffset;
-        }
-        for (let i = 0; i < script.children.length; i++) {
-            script.children[i].setParent(new ScuffrBlockRef(i + index, this));
-            this.dom.appendChild(script.children[i].dom);
-        }
-        this.update(true);
-        this.workspace.deleteRenderedScript(script, false);
+    public tryWrap(index: number, wrapper: IScuffrBlock): ScuffrWrappingDescriptor | null {
+        return ScuffrWrappingDescriptor.tryWrap(this, index, wrapper);
     }
 
-    public wrapScript(index: number, script: ScuffrRootScriptElement, block: ScuffrBlockInstanceElement, input: BlockInputTypeSubscript) {
-        this.script.blocks.splice(index, Infinity, ...script.script.blocks);
-        const newChildren = this.children.splice(index, Infinity, ...script.children);
-        block.getInput(input)?.translationParent
-        for (let i = 0; i < script.children.length; i++) {
-            script.children[i].setParent(new ScuffrBlockRef(i + index, this));
-            this.dom.appendChild(script.children[i].dom);
+    public insertScript(index: number, script: ScuffrRootScriptElement, wrap?: ScuffrWrappingDescriptor | null) {
+        if (wrap) {
+            this.script.blocks.splice(index, Infinity, ...script.script.blocks);
+            const newChildren = this.children.splice(index, Infinity, ...script.children);
+            if (!this.isSubscript && index === 0) {
+                this.translationSelf.x -= wrap.renderOffset.x;
+                this.translationSelf.y -= wrap.renderOffset.y + 4;
+            }
+            for (let i = 0; i < script.children.length; i++) {
+                script.children[i].setParent(new ScuffrBlockRef(i + index, this));
+                this.dom.appendChild(script.children[i].dom);
+            }
+            if (newChildren.length !== 0) {
+                const newScript = new ScuffrInputSubscriptElement(wrap.wrapperBlock, null, newChildren);
+                wrap.wrapperBlock.setInput(wrap.wrapperInput, newScript);
+            }
+            this.update(true);
+            this.workspace.deleteRenderedScript(script, false);
+        } else {
+            this.script.blocks.splice(index, 0, ...script.script.blocks);
+            this.children.splice(index, 0, ...script.children);
+            if (!this.isSubscript && index === 0)
+                this.translationSelf.y += this.topOffset - script.bottomOffset;
+            for (let i = 0; i < script.children.length; i++) {
+                script.children[i].setParent(new ScuffrBlockRef(i + index, this));
+                this.dom.appendChild(script.children[i].dom);
+            }
+            this.update(true);
+            this.workspace.deleteRenderedScript(script, false);
         }
-        if (newChildren.length !== 0) {
-            const newScript = new ScuffrInputSubscriptElement(block, null, newChildren);
-            block.setInput(input, newScript);
+    }
+
+    public addGhost(index: number, source: ScuffrBlockInstanceElement, wrap?: ScuffrWrappingDescriptor | null) {
+        this._ghost = new ScuffrBlockGhostElement(new ScuffrBlockRef(index, this), source, wrap);
+        this.children.splice(index, 0, this._ghost);
+        this._updateBlocks();
+        super.update(true);
+    }
+
+    public removeGhost() {
+        if (this._ghost) {
+            this.children.splice(this._ghost.index, 1);
+            this.dom.removeChild(this._ghost.dom);
+            this._ghost = null;
+            this._updateBlocks();
+            super.update(true);
         }
-        this.update(true);
-        this.workspace.deleteRenderedScript(script, false);
     }
 
     private _renderBlock(index: number) {
@@ -103,43 +130,88 @@ export abstract class ScuffrScriptElement<TScript extends BlockScript> extends S
     }
 
     public override update(propagateUp: boolean) {
+        this._updateBlocks();
+        this._updateAttachmentPoints();
+        super.update(propagateUp);
+    }
+
+    protected _updateBlocks() {
         this.updateTraslation();
-        this.attachmentPoints.clear();
+        if (this.children.length !== 0) {
+            this.topLeftOffset = { x: 0, y: 0 };
 
-        if (this.script.blocks.length !== 0) {
-            this.topLeftOffset = { x: 0, y: -this.children[0].topOffset };
+            if (this._ghost?.index === 0 && this.children.length > 1) {
+                if (this.isSubscript) {
+                    this.topLeftOffset.y = -this.children[1].topOffset;
+                } else {
+                    if (this._ghost.wrapping) {
+                        this.topLeftOffset.x = this._ghost.wrapping.renderOffset.x;
+                        this.topLeftOffset.y = -this.children[1].topOffset + this._ghost.wrapping.renderOffset.y;
+                    } else {
+                        this.topLeftOffset.y = this._ghost.dimensions.y - this.children[1].topOffset;
+                    }
+                }
+            } else {
+                this.topLeftOffset.y = -this.children[0].topOffset;
+            }
 
-            let x = 0;
+            let width = 0;
+            let height: number | null = null;
+
+            let x = this.leftOffset;
             let y = this.topOffset;
 
-            for (let blockIdx = 0; blockIdx < this.script.blocks.length; blockIdx++) {
+            for (let blockIdx = 0; blockIdx < this.children.length; blockIdx++) {
                 const renderedBlock = this.children[blockIdx];
                 renderedBlock.parentRef.childKey = blockIdx;
 
-                renderedBlock.translationParent.x = 0;
+                renderedBlock.translationParent.x = x;
                 renderedBlock.translationParent.y = y - renderedBlock.topOffset;
-                y += renderedBlock.dimensions.y;
-                renderedBlock.updateTraslation();
-                if (renderedBlock.dimensions.x > x) x = renderedBlock.dimensions.x
 
-                if (blockIdx === 0) {
-                    if (renderedBlock.shouldAttachUp())
-                        this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, false, true, { x: 0, y: this.topOffset }))
+                if (this._ghost?.wrapping && blockIdx === this._ghost.index) {
+                    height = y + this._ghost.dimensions.y;
+                    x += this._ghost.wrapping.renderOffset.x;
+                    y += this._ghost.wrapping.renderOffset.y;
+                } else {
+                    y += renderedBlock.dimensions.y;
                 }
-                if (renderedBlock.shouldAttachDown())
-                    if (blockIdx === this.script.blocks.length - 1)
-                        this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y: y }))
-                    else
-                        this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
+
+                renderedBlock.updateTraslation();
+                if (renderedBlock.dimensions.x > width) width = renderedBlock.dimensions.x
             }
 
-            this.dimensions = { x, y: y - this.topOffset };
+            if (!height) height = y;
+
+            this.dimensions = { x: width, y: height - this.topOffset };
         } else {
             this.topLeftOffset = { x: 0, y: 0 };
             this.dimensions = { x: 0, y: 0 };
         }
+    }
 
-        super.update(propagateUp);
+    protected _updateAttachmentPoints() {
+        this.attachmentPoints.clear();
+        let y = this.topOffset;
+
+        for (let blockIdx = 0; blockIdx < this.children.length; blockIdx++) {
+            const renderedBlock = this.children[blockIdx];
+
+            y += renderedBlock.dimensions.y;
+
+            if (blockIdx === 0) {
+                if (renderedBlock.shouldAttachUp()) {
+                    const offset = { x: 0, y: this.topOffset };
+                    if (!this.isSubscript)
+                        this.attachmentPoints.push(new ScuffrScriptTopAttachmentPoint(this, offset));
+                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, false, true, offset));
+                }
+            }
+            if (renderedBlock.shouldAttachDown() || (blockIdx + 1 < this.children.length && this.children[blockIdx + 1].shouldAttachUp()))
+                if (blockIdx === this.script.blocks.length - 1)
+                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, false, { x: 0, y: y }))
+                else
+                    this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, blockIdx + 1, true, true, { x: 0, y }))
+        }
     }
 
     public onChildDrag?(key: number, event: MouseEvent): boolean {

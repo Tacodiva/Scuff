@@ -6,6 +6,7 @@ import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 export class ScuffrRootScriptElement extends ScuffrScriptElement<BlockScriptRoot> {
 
     public readonly parent: ScuffrWorkspace;
+    public get isSubscript(): boolean { return true; }
 
     public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: IScuffrBlock[]) {
         if (!script) {

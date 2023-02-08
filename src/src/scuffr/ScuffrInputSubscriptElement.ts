@@ -14,9 +14,11 @@ import { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 import { ScuffrScriptElement } from "./ScuffrScriptElement";
 
 export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscriptInput> implements IScuffrBlockInput, IScuffrBackgroundModifier {
+    public static readonly MIN_HEIGHT = 32;
+    public get isSubscript(): boolean { return true; }
+
     private _parent: ScuffrBlockContentElement;
     public get parent(): ScuffrBlockContentElement { return this._parent; }
-
 
     public constructor(parent: ScuffrBlockInstanceElement, script: BlockSubscriptInput | null, blocks?: IScuffrBlock[]) {
         if (!script) {
@@ -27,23 +29,35 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
         this._parent = parent.content;
     }
 
-    public override update(propagateUp: boolean): void {
-        super.update(false);
-        if (this.children.length === 0) {
-            this.dimensions.x = 144;
-            this.dimensions.y = 32;
-            this.translationSelf.x = 0;
-            this.translationSelf.y = 0;
-            this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, true, false, { x: 8, y: -12 }))
-        } else {
-            this.translationSelf.x = 8;
-            this.translationSelf.y = -this.topOffset - this.dimensions.y / 2;
-            this.dimensions.x = 144;
-            this.dimensions.y += 8;
-            this.updateTraslation();
-        }
+    protected override _updateAttachmentPoints(): void {
+        super._updateAttachmentPoints();
+        this._updateDefualtAttachmentPoint();
+    }
 
-        if (propagateUp && this.parent) this.parent.update(true);
+    protected override _updateBlocks(): void {
+        super._updateBlocks();
+        
+        this.dimensions.x = 144;
+        if (this.children.length === 0) {
+            this.dimensions.y = ScuffrInputSubscriptElement.MIN_HEIGHT;
+        } else {
+            this.dimensions.x = 144;
+            this.topLeftOffset.y += 4;
+            this.dimensions.y += 8;
+        }
+        
+        this.translationSelf.x = 8;
+        this.translationSelf.y = -this.topOffset - this.dimensions.y / 2;
+
+        this.updateTraslation();
+        this._updateDefualtAttachmentPoint();
+    }
+
+    private _updateDefualtAttachmentPoint() {
+        if (this.children.length === 0 || (this.children.length === 1 && this._ghost)) {
+            this.attachmentPoints.clear();
+            this.attachmentPoints.push(new ScuffrScriptAttachmentPoint(this, 0, true, false, { x: this.leftOffset, y: this.topOffset }));
+        }
     }
 
     public toRootScript(): ScuffrRootScriptElement {
@@ -59,8 +73,13 @@ export class ScuffrInputSubscriptElement extends ScuffrScriptElement<BlockSubscr
         return this;
     }
 
-    public getPath(size: Vec2, line: ScuffrBackgroundContentLine): string | null {
-        if (this.children.length !== 0 && this.children[this.children.length - 1].background.shape === BackgroundShapes.StackTail)
+    public getPath(size: Vec2, line: ScuffrBackgroundContentLine, ghost: boolean = false): string | null {
+        if (
+            (ghost && size.y === ScuffrInputSubscriptElement.MIN_HEIGHT) ||
+            (this.children.length !== 0 &&
+                (!this._ghost?.wrapping && this.children[this.children.length - 1].background.shape === BackgroundShapes.StackTail) ||
+                (this._ghost?.wrapping && this._ghost.wrapping.wrapperBlock.background.shape === BackgroundShapes.StackTail)
+            ))
             return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
         else
             return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 h 8 c 2 0 3 1 4 2 l 4 4 c 1 1 2 2 4 2 h 12 c 2 0 3 -1 4 -2 l 4 -4 c 1 -1 2 -2 4 -2 H ${size.x + 4} a 4 4 0 0 1 4 4 `;

@@ -6,9 +6,10 @@ import { ScuffrBlockRef, type IScuffrBlockParent } from "./ScuffrBlockRef";
 import { ScuffrParentElement } from "./ScuffrParentElement";
 import type { ScuffrRootScriptElement } from "./ScuffrRootScriptElement";
 
-interface ScuffrBlockContentInput {
+export interface ScuffrBlockContentInput {
+    part: BlockInputType,
     element: IScuffrBlockInput,
-    index: number
+    index: number,
 }
 
 export class ScuffrBlockContentElement extends ScuffrParentElement implements IScuffrBlockParent<BlockInputType> {
@@ -35,7 +36,7 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         let renderedPart;
         if (part instanceof BlockInputType) {
             renderedPart = part.render(this);
-            this.inputs.set(part.id, { element: renderedPart, index });
+            this.inputs.set(part.id, { element: renderedPart, part, index });
             part.createAttachmentPoints(this, renderedPart);
         } else {
             renderedPart = part.render(this);
@@ -52,7 +53,7 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         if (oldInput.element.onAncestryChange) oldInput.element.onAncestryChange(null);
         input.setParent(new ScuffrBlockRef(key, this));
         this.children[oldInput.index] = input;
-        this.inputs.set(key.id, { element: input, index: oldInput.index });
+        this.inputs.set(key.id, { part: key, element: input, index: oldInput.index });
         key.createAttachmentPoints(this, input);
         this.update(true);
     }
@@ -61,7 +62,7 @@ export class ScuffrBlockContentElement extends ScuffrParentElement implements IS
         return this.inputs.get(key.id) ?? null;
     }
 
-    public getBlockInstanceElement(key: BlockInputType): ScuffrBlockInstanceElement | null {
+    public getBlockElement(key: BlockInputType): ScuffrBlockInstanceElement | null {
         const input = this.getInput(key);
         if (input && input.element instanceof ScuffrBlockInstanceElement)
             return input.element;

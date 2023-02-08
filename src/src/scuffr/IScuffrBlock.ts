@@ -8,7 +8,7 @@ import type { ScuffrScriptElement } from "./ScuffrScriptElement";
 
 export interface IScuffrBlock extends ScuffrBackgroundElement<ScuffrElement> {
     get parentRef(): ScuffrBlockRef;
-    setParent(parentRef: ScuffrBlockRef<number, ScuffrScriptElement<BlockScript>>): void;
+    setParent(parentRef: ScuffrBlockRef<number, ScuffrScriptElement>): void;
     onAncestryChange(root: ScuffrRootScriptElement | null): void;
 
     shouldAttachUp(): boolean;

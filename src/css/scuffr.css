@@ -17,6 +17,11 @@
     --scuff-bg-path-stroke: var(--scuff-block-category-tertiary);
 }
 
+.scuff-block-ghost {
+    --scuff-bg-path-fill: var(--scuff-block-ghost);
+    --scuff-bg-path-stroke: transparent;
+}
+
 .scuff-block-dragging {
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
 }

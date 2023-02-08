@@ -1,8 +1,9 @@
-import { BlockCategory } from "../block/BlockCategory";
-import { BlockInputTypeString } from "../block/BlockInputTypeString";
-import { BlockTypeBoolean } from "../block/BlockTypeBoolean";
-import { BlockTypeRound } from "../block/BlockTypeRound";
-import { raw } from "../l10n";
+import { BlockCategory } from "../../src/block/BlockCategory";
+import { BlockInputTypeString } from "../../src/block/BlockInputTypeString";
+import { BlockTypeBoolean } from "../../src/block/BlockTypeBoolean";
+import { BlockTypeRound } from "../../src/block/BlockTypeRound";
+import { raw } from "../../src/l10n";
+
 
 export class OperatorBlockPlus extends BlockTypeRound {
 

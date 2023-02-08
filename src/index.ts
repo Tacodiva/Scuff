@@ -2,9 +2,9 @@ import './scratch';
 import './css';
 import { BlockSubscriptInput } from "./src/block/BlockSubscriptInput";
 import { BlockScriptRoot } from "./src/block/BlockScriptRoot";
-import { ScratchBlocks } from './src/scratch_blocks/ScratchBlocks';
 import Target from './src/Target';
 import App from './svelte/App.svelte';
+import Blocks from './scratch/blocks';
 
 export function load(callback: () => void) {
 	callback();
@@ -14,40 +14,41 @@ export function main() {
 	const target = new Target();
 
 	const script = new BlockScriptRoot([
-		ScratchBlocks.EVENT_GREEN_FLAG.createInstance(),
+		Blocks.event.flag_clicked.createInstance(),
 
-		ScratchBlocks.CONTROL_IF.createInstance({
+		Blocks.control.if.createInstance({
 
-			idk: ScratchBlocks.OPERATOR_EQUALS.createInstance({
-				test: ScratchBlocks.OPERATOR_PLUS.createInstance()
+			idk: Blocks.operator.equals.createInstance({
+				test: Blocks.operator.add.createInstance()
 			}),
 			testI: new BlockSubscriptInput([
-				ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
+				Blocks.motion.move_steps.createInstance(),
 
-				ScratchBlocks.CONTROL_FOREVER.createInstance()
+				Blocks.control.if.createInstance(),
+				Blocks.control.forever.createInstance()
 			])
 		}),
 
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-			test: ScratchBlocks.OPERATOR_PLUS.createInstance({
-				test: ScratchBlocks.OPERATOR_PLUS.createInstance({
-					test: ScratchBlocks.OPERATOR_PLUS.createInstance({
-						test: ScratchBlocks.OPERATOR_PLUS.createInstance({
-							testII: ScratchBlocks.OPERATOR_EQUALS.createInstance(),
+		Blocks.motion.move_steps.createInstance({
+			test: Blocks.operator.add.createInstance({
+				test: Blocks.operator.add.createInstance({
+					test: Blocks.operator.add.createInstance({
+						test: Blocks.operator.add.createInstance({
+							testII: Blocks.operator.equals.createInstance(),
 						}),
 					}),
 				}),
-				testII: ScratchBlocks.OPERATOR_PLUS.createInstance(),
+				testII: Blocks.operator.add.createInstance(),
 			}),
 		}),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
+		Blocks.motion.move_steps.createInstance(),
+		Blocks.motion.move_steps.createInstance(),
+		Blocks.motion.move_steps.createInstance({
+			test: Blocks.operator.add.createInstance({}),
 		}),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance(),
-		ScratchBlocks.MOTION_MOVE_STEPS.createInstance({
-			test: ScratchBlocks.OPERATOR_PLUS.createInstance({}),
+		Blocks.motion.move_steps.createInstance(),
+		Blocks.motion.move_steps.createInstance({
+			test: Blocks.operator.add.createInstance({}),
 		}),
 	]);
 

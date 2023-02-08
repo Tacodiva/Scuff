@@ -50,8 +50,8 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
         this.content.setInput(key, input);
     }
 
-    protected override getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
-        const lines: ScuffrBackgroundContentLine[] = [];
+    public override getBackgroundContentLines(): (ScuffrBackgroundContentLine & { part?: IScuffrBlockPartElement })[] {
+        const lines: (ScuffrBackgroundContentLine & { part?: IScuffrBlockPartElement })[] = [];
         let lineContent: IScuffrBlockPartElement[] | null = null;
         for (const part of this.content.children) {
             if (part.getBackgroundModifier) {
@@ -59,7 +59,7 @@ export class ScuffrBlockInstanceElement extends ScuffrBackgroundedBlockPartEleme
                     lines.push({ elements: lineContent, dimensions: { x: 0, y: 0 } });
                     lineContent = [];
                 }
-                lines.push({ elements: [part], modifier: part.getBackgroundModifier() ?? undefined, dimensions: { x: 0, y: 0 } });
+                lines.push({ elements: [part], modifier: part.getBackgroundModifier() ?? undefined, dimensions: { x: 0, y: 0 }, part });
             } else {
                 if (!lineContent) lineContent = [];
                 lineContent.push(part);

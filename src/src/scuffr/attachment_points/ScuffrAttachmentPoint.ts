@@ -15,11 +15,16 @@ export abstract class ScuffrAttachmentPoint {
     }
 
     public calculateDelta(source: ScuffrRootScriptElement): Vec2 {
+        return this._calculateRawDelta(source);
+    }
+    
+    protected _calculateRawDelta(source: ScuffrRootScriptElement): Vec2 {
         return {
             x: this.translation.x + this.root.translationX - source.translationX,
             y: this.translation.y + this.root.translationY - source.translationY
         };
     }
+
 
     public get translation(): Vec2 {
         if (this._translation !== null) return this._translation;
@@ -39,8 +44,8 @@ export abstract class ScuffrAttachmentPoint {
     public abstract canTakeScript(script: ScuffrRootScriptElement): boolean;
     public abstract takeScript(script: ScuffrRootScriptElement): void;
 
-    public abstract highlight() : void;
-    public abstract unhighlight() : void;
+    public abstract highlight(script: ScuffrRootScriptElement) : void;
+    public abstract unhighlight(script: ScuffrRootScriptElement) : void;
 }
 
 export interface IScuffrPointAttachable extends ScuffrElement {

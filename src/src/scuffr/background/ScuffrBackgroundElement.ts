@@ -10,6 +10,8 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
     public readonly backgroundDOM: SVGElement;
 
     public get content() { return this.children[0]; }
+    
+    public renderedLines : ScuffrBackgroundContentLine[] | null;
 
     public constructor(parent: ScuffrParentElement, background: ScuffrBackground) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
@@ -17,17 +19,18 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
         this.backgroundDOM = this.dom.appendChild(background.shape.createElement())
         this.background = background;
         this.children = [this.createContent()];
+        this.renderedLines = null;
     }
 
     protected abstract createContent(): TContent;
 
     public override update(propagateUp: boolean) {
-        const lines = this.getBackgroundContentLines();
+        this.renderedLines = this.getBackgroundContentLines();
         let width = 0;
         let height = 0;
 
-        for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
-            const line = lines[lineIdx];
+        for (let lineIdx = 0; lineIdx < this.renderedLines.length; lineIdx++) {
+            const line = this.renderedLines[lineIdx];
 
             let x = 0;
             let lineHeight = 0;
@@ -41,7 +44,7 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
                 if (part.dimensions.y > lineHeight) lineHeight = part.dimensions.y;
             }
 
-            const minSize = this.background.shape.getMinLineSize(lineIdx, lines);
+            const minSize = this.background.shape.getMinLineSize(lineIdx, this.renderedLines);
             if (x < minSize.x) x = minSize.x;
             if (lineHeight < minSize.y) lineHeight = minSize.y;
             line.dimensions.x = x;
@@ -51,11 +54,11 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
         }
 
         this.content.dimensions = { x: width, y: height };
-        this.content.topLeftOffset = { x: 0, y: -lines[0].dimensions.y / 2 };
+        this.content.topLeftOffset = { x: 0, y: -this.renderedLines[0].dimensions.y / 2 };
 
         let y = this.content.topLeftOffset.y;
-        for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
-            const line = lines[lineIdx];
+        for (let lineIdx = 0; lineIdx < this.renderedLines.length; lineIdx++) {
+            const line = this.renderedLines[lineIdx];
             y += line.dimensions.y / 2;
             for (let partIdx = 0; partIdx < line.elements.length; partIdx++) {
                 const part = line.elements[partIdx];
@@ -76,7 +79,7 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
             size.y = this.background.shape.minSize.y;
         }
 
-        this.background.shape.updateElement(this.backgroundDOM, size, lines, verticalPadding, this.background);
+        this.background.shape.updateElement(this.backgroundDOM, size, this.renderedLines, verticalPadding, this.background);
         const padding = this.background.shape.getPadding(size);
 
         if (ajustX) {
@@ -94,16 +97,16 @@ export abstract class ScuffrBackgroundElement<TContent extends ScuffrElement = S
             x: size.x + padding.x * 2,
             y: size.y + padding.y * 2
         }
-        // console.log(lines[0].dimensions.y + ", " + verticalPadding);
+        // console.log(this.renderedLines[0].dimensions.y + ", " + verticalPadding);
 
         this.topLeftOffset = {
             x: padding.x,
-            y: lines[0].dimensions.y / 2 + verticalPadding
+            y: this.renderedLines[0].dimensions.y / 2 + verticalPadding
         };
         super.update(propagateUp);
     }
 
-    protected getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
+    public getBackgroundContentLines(): ScuffrBackgroundContentLine[] {
         if (this.content instanceof ScuffrParentElement) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
         else return [{ elements: [this.content], dimensions: { x: 0, y: 0 } }];
     }

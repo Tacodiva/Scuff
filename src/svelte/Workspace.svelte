@@ -75,8 +75,8 @@
         style="fill:var(--scuff-workspace-text);font-family:monospace;"
         dominant-baseline="hanging"
     >
-        <tspan x="2" y="5">Scuff alpha 10</tspan>
-        <tspan x="2" dy="1.2em">Now with 99.8% more cat ears</tspan>
+        <tspan x="2" y="5">Scuff alpha 11</tspan>
+        <tspan x="2" dy="1.2em">OOOoooOOOooo spooky ghosts!</tspan>
         <tspan x="2" dy="2.4em">Scuffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
         <tspan x="2" dy="1.2em">[X] Make block updates more efficient</tspan>
@@ -94,7 +94,7 @@
         >
         <tspan x="2" dy="1.2em">[X] Add input highlighting</tspan>
         <tspan x="2" dy="1.2em"
-            >[ ] Add ghost blocks to preview drag and drop</tspan
+            >[X] Add ghost blocks to preview drag and drop</tspan
         >
         <tspan x="2" dy="1.2em">[ ] Actually validate block inputs</tspan>
         <tspan x="2" dy="1.2em"

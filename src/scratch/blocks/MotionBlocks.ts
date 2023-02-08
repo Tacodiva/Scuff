@@ -1,7 +1,7 @@
-import { BlockCategory } from "../block/BlockCategory";
-import { BlockInputTypeString } from "../block/BlockInputTypeString";
-import { BlockTypeStackable } from "../block/BlockTypeStackable";
-import { raw } from "../l10n";
+import { BlockCategory } from "../../src/block/BlockCategory";
+import { BlockInputTypeString } from "../../src/block/BlockInputTypeString";
+import { BlockTypeStackable } from "../../src/block/BlockTypeStackable";
+import { raw } from "../../src/l10n";
 
 export class MotionBlockMoveSteps extends BlockTypeStackable {
 

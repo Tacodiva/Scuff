@@ -1,9 +1,9 @@
-import { BlockCategory } from "../block/BlockCategory";
-import type { BlockInputTypeString } from "../block/BlockInputTypeString";
-import { BlockInputTypeSubscript } from "../block/BlockInputTypeSubscript";
-import { BlockInputTypeBoolean } from "../block/BlockInputTypeBoolean";
-import { BlockTypeStackable, StackableBlockShape } from "../block/BlockTypeStackable";
-import { raw } from "../l10n";
+import { BlockCategory } from "../../src/block/BlockCategory";
+import { BlockInputTypeBoolean } from "../../src/block/BlockInputTypeBoolean";
+import type { BlockInputTypeString } from "../../src/block/BlockInputTypeString";
+import { BlockInputTypeSubscript } from "../../src/block/BlockInputTypeSubscript";
+import { BlockTypeStackable, StackableBlockShape } from "../../src/block/BlockTypeStackable";
+import { raw } from "../../src/l10n";
 
 export class ControlBlockIf extends BlockTypeStackable {
 
