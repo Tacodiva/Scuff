@@ -1,12 +1,11 @@
-
 .scuff-theme-default {
 	--scuff-workspace-bg-main: #111;
 	--scuff-workspace-bg-dots: #333;
 	--scuff-workspace-text: #f9f9f9;
-	
+
 	--scuff-block-font: "Helvetica Neue";
 	--scuff-block-font-fill: #ffffff;
-	
+
 	--scuff-block-input-bg: #ffffff;
 	--scuff-block-input-font-fill: #575E75;
 	--scuff-block-input-select: #4d97ff40;

@@ -8,6 +8,11 @@
 	<title>Scuff</title>
 
 	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
 		#scuff-loading {
 			width: 100vw;
 			height: 100vh;
@@ -35,17 +40,10 @@
 		}
 	</style>
 
-	<script src='lib/require.js'></script>
-	<link rel='stylesheet' href='bundle/bundle.css'>
+	<link rel='stylesheet' href='lib/scuff-core/scuff-core.css'>
 
-	<script>
-		const SVG_NS = "http://www.w3.org/2000/svg";
-
-		requirejs(["bundle/bundle.js"], (bundle) => bundle.load(() => {
-			document.getElementById("scuff-loading").remove();
-			bundle.main();
-		}));
-	</script>
+	<script src='thirdparty/require.js'></script>
+	<script src='lib/index.js' defer></script>
 </head>
 
 <body>

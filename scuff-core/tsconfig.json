@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": [
+    "**/*"
+  ],
+  "exclude": [],
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "ES2022",
+    // From @tsconfig/svelte/tsconfig.json
+    "moduleResolution": "node",
+    "importsNotUsedAsValues": "error",
+    "preserveValueImports": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "concurrently \"serve public\" \"rollup -c src/rollup.config.mjs -w\"",
-    "build": "rollup -c src/rollup.config.mjs"
+    "dev": "concurrently \"serve public\" \"rollup -c -w\"",
+    "build": "rollup -c"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
@@ -13,7 +13,9 @@
     "monaco-editor-types": "^1.0.1",
     "nodemon": "^2.0.20",
     "rollup": "^3.9.0",
+    "rollup-plugin-css-bundle": "^1.0.4",
     "rollup-plugin-css-only": "^4.3.0",
+    "rollup-plugin-dts": "^5.1.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-svelte": "^7.1.0",
     "serve": "^14.2.0",
