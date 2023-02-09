@@ -1,10 +1,9 @@
-import { BlockSubscriptInput } from "./src/block/BlockSubscriptInput";
-import { BlockScriptRoot } from "./src/block/BlockScriptRoot";
-import Target from './src/Target';
-import App from './svelte/App.svelte';
-import Blocks from './scratch/blocks';
-import type { ScuffExtension } from "./ScuffExtension";
+
+import type { ScuffExtension } from "./api/ScuffExtension";
 import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
+import type { BlockScriptRoot } from "./block/BlockScriptRoot";
+import Target from "./Target";
+import App from './svelte/App.svelte';
 
 type Version = [number, number];
 
@@ -33,18 +32,19 @@ export interface ScuffCore {
      */
     getExtensionAsync(id: string): Promise<ScuffExtension>;
 
-    main(): void;
+    main(script: BlockScriptRoot): void;
 }
 
 export class ScuffCoreImpl implements ScuffCore {
-
+    
+    public static readonly version: Version = [0, 12];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;
     private _extensionListeners: Map<string, ((ext: ScuffExtension) => void)[]> | null;
 
     public constructor(loaders: ScuffExtensionLoader[], ready: (core: ScuffCoreImpl) => void) {
-        this.version = [0, 11];
+        this.version = ScuffCoreImpl.version;
         this._extensions = new Map();
         let extensionPromises = this._extensionListeners = new Map();
 
@@ -104,47 +104,8 @@ export class ScuffCoreImpl implements ScuffCore {
         });
     }
 
-    main() {
+    public main(script: BlockScriptRoot) : void {
         const target = new Target();
-
-        const script = new BlockScriptRoot([
-            Blocks.event.flag_clicked.createInstance(),
-
-            Blocks.control.if.createInstance({
-
-                idk: Blocks.operator.equals.createInstance({
-                    test: Blocks.operator.add.createInstance()
-                }),
-                testI: new BlockSubscriptInput([
-                    Blocks.motion.move_steps.createInstance(),
-
-                    Blocks.control.if.createInstance(),
-                    Blocks.control.forever.createInstance()
-                ])
-            }),
-
-            Blocks.motion.move_steps.createInstance({
-                test: Blocks.operator.add.createInstance({
-                    test: Blocks.operator.add.createInstance({
-                        test: Blocks.operator.add.createInstance({
-                            test: Blocks.operator.add.createInstance({
-                                testII: Blocks.operator.equals.createInstance(),
-                            }),
-                        }),
-                    }),
-                    testII: Blocks.operator.add.createInstance(),
-                }),
-            }),
-            Blocks.motion.move_steps.createInstance(),
-            Blocks.motion.move_steps.createInstance(),
-            Blocks.motion.move_steps.createInstance({
-                test: Blocks.operator.add.createInstance({}),
-            }),
-            Blocks.motion.move_steps.createInstance(),
-            Blocks.motion.move_steps.createInstance({
-                test: Blocks.operator.add.createInstance({}),
-            }),
-        ]);
 
         script.translation = { x: 100, y: 100 };
         target.blockScripts.scripts.push(script);

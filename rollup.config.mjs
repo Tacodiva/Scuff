@@ -40,10 +40,7 @@ export default [{
 			{
 				tsconfig: "scuff-core/tsconfig.json",
 				sourceMap: !production,
-				inlineSources: !production,
-
-				declaration: true,
-				declarationDir: "types"
+				inlineSources: !production
 			}
 		),
 
@@ -52,7 +49,8 @@ export default [{
 	onwarn
 },
 {
-	input: 'public/lib/scuff-core/types/api/index.d.ts',
+	input: 'scuff-core/index.ts',
+	external: /\.css$/,
 	output: [
 		{
 			file: "public/lib/scuff-core/scuff-core.d.ts",
@@ -82,6 +80,12 @@ export default [{
 				tsconfig: "scuff-scratch/tsconfig.json",
 				sourceMap: !production,
 				inlineSources: !production,
+
+				paths: {
+					"scuff": [
+						"../public/lib/scuff-core/scuff-core.d.ts"
+					]
+				}
 			}
 		),
 
@@ -90,9 +94,23 @@ export default [{
 	onwarn
 },
 {
+	input: 'scuff-scratch/index.ts',
+
+	external: [/\.css$/, 'scuff'],
+	output: [
+		{
+			file: "public/lib/scuff-scratch/scuff-scratch.d.ts",
+			format: "es"
+		}
+	],
+	plugins: [
+		dts()
+	]
+},
+{
 	input: 'src/index.ts',
 
-	external: ['scuff'],
+	external: ['scuff', 'scuff-scratch'],
 	output: {
 		sourcemap: !production,
 		format: 'es',
@@ -104,6 +122,15 @@ export default [{
 				tsconfig: "src/tsconfig.json",
 				sourceMap: !production,
 				inlineSources: !production,
+
+				paths: {
+					"scuff": [
+						"../public/lib/scuff-core/scuff-core.d.ts"
+					],
+					"scuff-scratch": [
+						"../public/lib/scuff-scratch/scuff-scratch.d.ts"
+					]
+				}
 			}
 		),
 

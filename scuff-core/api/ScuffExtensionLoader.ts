@@ -1,5 +1,5 @@
 import type { ScuffCore } from "../ScuffCore";
-import type { ScuffExtension } from "../ScuffExtension";
+import type { ScuffExtension } from "./ScuffExtension";
 
 /**
  * The type of the defualt export of extension modules.

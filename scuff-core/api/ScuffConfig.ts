@@ -1,7 +1,7 @@
 
-import type { ScuffExtensionLoader } from './ScuffExtensionLoader';
+import type { ScuffExtensionLoader } from '../api/ScuffExtensionLoader';
 
-export type ScuffExtensionDefinition = (ScuffExtensionLoader | string);
+export type ScuffExtensionDefinition = ({ loader: ScuffExtensionLoader, path?: string } | string);
 
 export interface ScuffConfig {
     path: string;

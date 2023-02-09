@@ -7,7 +7,7 @@
     white-space: pre;
 }
 
-.scuff-block-empty-boolean {
+.scuff-block-empty {
     --scuff-bg-path-fill: var(--scuff-block-category-tertiary);
     --scuff-bg-path-stroke: none;
 }
@@ -20,6 +20,8 @@
 .scuff-block-ghost {
     --scuff-bg-path-fill: var(--scuff-block-ghost);
     --scuff-bg-path-stroke: transparent;
+    --scuff-block-decor-light: transparent;
+    --scuff-block-decor-dark: transparent;
 }
 
 .scuff-block-dragging {
@@ -61,4 +63,12 @@ input.scuff-input {
 
 .scuff-workspace-bg-dots {
     fill: var(--scuff-workspace-bg-dots);
+}
+
+.scuff-bg-decor-dark {
+    fill: var(--scuff-block-decor-dark);
+}
+
+.scuff-bg-decor-light {
+    fill: var(--scuff-block-decor-light);
 }

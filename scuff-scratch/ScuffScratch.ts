@@ -1,4 +1,4 @@
-import { ScuffCore, ScuffExtension } from "../public/lib/scuff-core/scuff-core";
+import { ScuffCore, ScuffExtension } from "scuff";
 
 export class ScuffScratch implements ScuffExtension {
 

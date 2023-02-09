@@ -1,17 +1,4 @@
-import { ScuffCore, ScuffExtension, ScuffExtensionLoader } from "scuff";
-import { ScuffScratch } from "ScuffScratch";
+import './css';
 
-const extLoader: ScuffExtensionLoader = {
-    id: ScuffScratch.id,
-
-    styles: [
-        "scuff-scratch.css"
-    ],
-
-    load(core: ScuffCore): ScuffExtension {
-        return new ScuffScratch(core);
-    },
-
-};
-
-export default extLoader;
+export { ScratchExtLoader as default } from './loader';
+export { ScratchBlocks } from './blocks';

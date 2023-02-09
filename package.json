@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "concurrently \"serve public\" \"rollup -c -w\"",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "start": "npm run build && serve public"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",

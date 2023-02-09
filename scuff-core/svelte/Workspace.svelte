@@ -1,7 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { BlockScripts } from "../src/block/BlockScripts";
-    import { ScuffrWorkspace } from "../src/scuffr/ScuffrWorkspace";
+    import type { BlockScripts } from "../block/BlockScripts";
+    import { ScuffCoreImpl } from "../ScuffCore";
+    import { ScuffrWorkspace } from "../scuffr/ScuffrWorkspace";
 
     export var scripts: BlockScripts;
 
@@ -75,7 +76,7 @@
         style="fill:var(--scuff-workspace-text);font-family:monospace;"
         dominant-baseline="hanging"
     >
-        <tspan x="2" y="5">Scuff alpha 11</tspan>
+        <tspan x="2" y="5">Scuff {ScuffCoreImpl.version[0]}.{ScuffCoreImpl.version[1]}</tspan>
         <tspan x="2" dy="1.2em">OOOoooOOOooo spooky ghosts!</tspan>
         <tspan x="2" dy="2.4em">Scuffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
