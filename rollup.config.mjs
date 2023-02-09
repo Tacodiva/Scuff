@@ -114,7 +114,7 @@ export default [{
 	output: {
 		sourcemap: !production,
 		format: 'es',
-		file: 'public/lib/index.js'
+		file: 'public/lib/index.mjs'
 	},
 	plugins: [
 		typescript(

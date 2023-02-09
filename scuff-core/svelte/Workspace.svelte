@@ -13,6 +13,7 @@
 
     onMount(() => {
         worksapce = new ScuffrWorkspace(
+            elementSVGRoot,
             elementWorkspace,
             elementBackgroundPattern,
             scripts
@@ -28,7 +29,7 @@
 <svg
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
-    style="width: 100vw; height: 100vh;"
+    style="width: 10000px; height: 10000px;"
     bind:this={elementSVGRoot}
     class="scuff-theme-default"
 >

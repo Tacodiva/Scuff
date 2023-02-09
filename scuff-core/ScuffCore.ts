@@ -1,9 +1,9 @@
 
 import type { ScuffExtension } from "./api/ScuffExtension";
 import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
-import type { BlockScriptRoot } from "./block/BlockScriptRoot";
 import Target from "./Target";
 import App from './svelte/App.svelte';
+import type { BlockScriptRoot } from "./block/BlockScriptRoot";
 
 type Version = [number, number];
 
@@ -107,8 +107,15 @@ export class ScuffCoreImpl implements ScuffCore {
     public main(script: BlockScriptRoot) : void {
         const target = new Target();
 
-        script.translation = { x: 100, y: 100 };
-        target.blockScripts.scripts.push(script);
+
+        for (let x = 0; x < 20; x++) {
+            for (let y = 0; y < 10; y++) {
+                const clone = script.clone(); 
+                clone.translation = { x: x * 400, y: y * 800 };
+                target.blockScripts.scripts.push(clone);
+            }
+        }
+
         target.blockScripts.transformScale = 1.5;
         target.blockScripts.transformPosition = { x: 0, y: 150 };
 

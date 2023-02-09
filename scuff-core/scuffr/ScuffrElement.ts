@@ -7,7 +7,8 @@ export abstract class ScuffrElement {
 
     public readonly workspace: ScuffrWorkspace;
 
-    public readonly dom: SVGElement;
+    public readonly dom: SVGGraphicsElement;
+    private readonly _domTranslation: SVGTransform;
     public dimensions: Vec2;
     public topLeftOffset: Vec2;
 
@@ -16,15 +17,22 @@ export abstract class ScuffrElement {
     public get translationX() { return this.translationSelf.x + this.translationParent.x; }
     public get translationY() { return this.translationSelf.y + this.translationParent.y; }
 
+
     public abstract parent: ScuffrElementParent | null;
 
-    public constructor(dom: SVGElement, workspace?: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
+    public constructor(dom: SVGGraphicsElement, workspace?: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
         this.workspace = workspace ?? this._getWorkspace();
         this.dom = dom;
-        this.translationSelf = translation;
         this.dimensions = dimensions;
         this.topLeftOffset = topLeftOffset;
+
+        this.translationSelf = translation;
         this.translationParent = translationParent;
+        this._domTranslation = this.workspace.svg?.createSVGTransform();
+        if (this._domTranslation) {
+            this.dom.transform.baseVal.clear();
+            this.dom.transform.baseVal.appendItem(this._domTranslation);
+        }
 
         (<any>this.dom)[ScuffrElement.DATA_NAME] = this;
     }
@@ -55,7 +63,8 @@ export abstract class ScuffrElement {
     }
 
     public updateTraslation() {
-        this.dom.setAttribute("transform", `translate(${this.translationX}, ${this.translationY})`)
+        if (this._domTranslation)
+            this._domTranslation.setTranslate(this.translationX, this.translationY);
         this.onTranslationUpdate();
     }
 

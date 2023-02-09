@@ -7,5 +7,9 @@ export abstract class BlockScript {
     public constructor(blocks: BlockInstance[] = []) {
         this.blocks = blocks;
     }
+
+    protected _clone(): BlockInstance[] {
+        return this.blocks.flatMap(block => block.clone());
+    }
 }
 

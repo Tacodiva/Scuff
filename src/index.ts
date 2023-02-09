@@ -31,17 +31,16 @@ import("scuff").then(async module => {
         ScratchBlocks.motion.move_steps.createInstance({
             test: ScratchBlocks.operator.add.createInstance({
                 test: ScratchBlocks.operator.add.createInstance({
-                    test: ScratchBlocks.operator.add.createInstance({
-                        test: ScratchBlocks.operator.add.createInstance({
-                            testII: ScratchBlocks.operator.equals.createInstance(),
-                        }),
-                    }),
                 }),
                 testII: ScratchBlocks.operator.add.createInstance(),
             }),
         }),
         ScratchBlocks.motion.move_steps.createInstance(),
-        ScratchBlocks.motion.move_steps.createInstance(),
+        ScratchBlocks.motion.move_steps.createInstance({
+            test: ScratchBlocks.operator.add.createInstance({
+                testII: ScratchBlocks.operator.equals.createInstance(),
+            }),
+        }),
         ScratchBlocks.motion.move_steps.createInstance({
             test: ScratchBlocks.operator.add.createInstance({}),
         }),
@@ -51,6 +50,6 @@ import("scuff").then(async module => {
         }),
     ]);
 
-    document.getElementById("scuff-loading")?.remove();    
+    document.getElementById("scuff-loading")?.remove();
     core.main(script);
 });

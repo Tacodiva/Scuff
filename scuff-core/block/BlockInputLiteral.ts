@@ -12,12 +12,14 @@ export abstract class BlockInputLiteral implements BlockInput {
         this._value = value;
     }
 
+    public abstract clone(): BlockInput;
+
     public get value() {
         return this._value;
     }
 
     public set value(value: string) {
-        this.value = value;
+        this._value = value;
     }
 
     public render(parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput>): ScuffrElementInput {

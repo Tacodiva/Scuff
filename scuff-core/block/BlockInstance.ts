@@ -28,6 +28,8 @@ export class BlockInstance implements BlockInput {
     public readonly type: BlockType;
     private readonly _inputs: Map<string, BlockInputInstanceInput>;
 
+    public constructor(type: BlockType);
+
     public constructor(type: BlockType) {
         this.type = type;
         this._inputs = new Map();
@@ -35,6 +37,13 @@ export class BlockInstance implements BlockInput {
         for (let input of type.inputs) {
             this._inputs.set(input.id, new BlockInputInstanceInput(input));
         }
+    }
+
+    public clone(): BlockInstance {
+        const clone = new BlockInstance(this.type);
+        for (const input of this._inputs.values())
+            clone._inputs.get(input.type.id)!.value = input.value.clone();
+        return clone;
     }
 
     public hasAttachmentPoint(): boolean {
@@ -67,11 +76,11 @@ export class BlockInstance implements BlockInput {
         this._getInputFromID(inputID).set(value);
     }
 
-    public setInput<T extends BlockInput>(inputType: BlockPartInput<T>, value : T) {
+    public setInput<T extends BlockInput>(inputType: BlockPartInput<T>, value: T) {
         this._getInput(inputType).value = value;
     }
 
-    public resetInput(inputID : string) {
+    public resetInput(inputID: string) {
         this._getInputFromID(inputID).reset();
     }
 

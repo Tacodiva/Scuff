@@ -20,7 +20,7 @@ export class ScuffrElementText extends ScuffrElement {
     public override update(propagateUp: boolean): void {
         if (this._textNode) this._textNode.nodeValue = this.text;
         else this._textNode = document.createTextNode(this.text);
-        this.dimensions = this.workspace.getTextNodeDimensions(this._textNode);
+        this.dimensions = this.workspace.getTextDimensions(this.text, this._textNode);
         this.topLeftOffset = { x: 0, y: this.dimensions.x / 2 };
         this.dom.appendChild(this._textNode);
         super.update(propagateUp);

@@ -11,6 +11,7 @@ import type { ScuffrAttachmentPoint } from "./attachment-points/ScuffrAttachment
 import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
+import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
 
 abstract class ScuffrAction {
     public readonly workspace: ScuffrWorkspace;
@@ -205,43 +206,62 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     public readonly blockScripts: BlockScripts;
     public children: ScuffrElementScriptRoot[];
 
-    public readonly svgScriptContainer: SVGElement;
-    public readonly svgTextStagingElement: SVGElement;
+    public readonly svg : SVGSVGElement;
+
+    public readonly svgScriptContainer: SVGGElement;
     public readonly svgBackgroundPattern: SVGPatternElement;
     public readonly svgBackgroundElement: SVGRectElement;
     public readonly svgDebug: SVGElement;
+    
+    public readonly svgScriptTranformTranslate: SVGTransform;
+    public readonly svgScriptTranformScale: SVGTransform;
+    public readonly svgBackgroundTranformTranslate: SVGTransform;
+    public readonly svgBackgroundTranformScale: SVGTransform;
 
     public readonly attachmentPoints: Set<ScuffrAttachmentPointList>;
+
+    private readonly _textSizeCache : ScuffrTextSizeCache;
 
     private _action: ScuffrAction | null;
     private _mouseDownPos: Vec2 | null;
 
-    public constructor(root: SVGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
-        super(root);
+    public constructor(root : SVGSVGElement, svgWorkspace: SVGGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
+        super(svgWorkspace);
         (<any>window).workspace = this;
         this.parent = null;
 
         this.blockScripts = blockScripts;
         this.children = [];
         this.attachmentPoints = new Set();
+        this._textSizeCache = new ScuffrTextSizeCache(this);
+
+        this.svg = root;
 
         this.svgBackgroundPattern = backgroundPattern;
-        this.svgBackgroundElement = root.appendChild(document.createElementNS(SVG_NS, "rect"));
+        this.svgBackgroundElement = svgWorkspace.appendChild(document.createElementNS(SVG_NS, "rect"));
         this.svgBackgroundElement.setAttribute("width", "100%");
         this.svgBackgroundElement.setAttribute("height", "100%");
         this.svgBackgroundElement.style.fill = `url("#${backgroundPattern.id}")`;
-
-        this.svgScriptContainer = root.appendChild(document.createElementNS(SVG_NS, "g"));
+        
+        this.svgScriptContainer = svgWorkspace.appendChild(document.createElementNS(SVG_NS, "g"));
+        
         this.svgDebug = this.svgScriptContainer.appendChild(document.createElementNS(SVG_NS, "g"));
-
-        this.svgTextStagingElement = root.appendChild(document.createElementNS(SVG_NS, "g")).appendChild(document.createElementNS(SVG_NS, "text"));
-        this.svgTextStagingElement.classList.add("scuffr-block-text");
-
+                
         this._action = null;
         this._mouseDownPos = null;
+        
+        this.svgScriptTranformScale = root.createSVGTransform();
+        this.svgScriptContainer.transform.baseVal.appendItem(this.svgScriptTranformScale);
+        this.svgScriptTranformTranslate = root.createSVGTransform();
+        this.svgScriptContainer.transform.baseVal.appendItem(this.svgScriptTranformTranslate);
+
+        this.svgBackgroundTranformScale = root.createSVGTransform();
+        this.svgBackgroundPattern.patternTransform.baseVal.appendItem(this.svgBackgroundTranformScale);
+        this.svgBackgroundTranformTranslate = root.createSVGTransform();
+        this.svgBackgroundPattern.patternTransform.baseVal.appendItem(this.svgBackgroundTranformTranslate);
 
         this.updateGlobalTransform();
-
+        
         for (const script of this.blockScripts.scripts) {
             const rendered = new ScuffrElementScriptRoot(this, script);
             rendered.updateAll();
@@ -413,9 +433,10 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     public updateGlobalTransform() {
-        const transform = `scale(${this.blockScripts.transformScale}) translate(${this.blockScripts.transformPosition.x}, ${this.blockScripts.transformPosition.y})`;
-        this.svgScriptContainer.setAttribute("transform", transform);
-        this.svgBackgroundPattern.setAttribute("patternTransform", transform);
+        this.svgScriptTranformScale.setScale(this.blockScripts.transformScale, this.blockScripts.transformScale);
+        this.svgScriptTranformTranslate.setTranslate(this.blockScripts.transformPosition.x, this.blockScripts.transformPosition.y);
+        this.svgBackgroundTranformScale.setScale(this.blockScripts.transformScale, this.blockScripts.transformScale);
+        this.svgBackgroundTranformTranslate.setTranslate(this.blockScripts.transformPosition.x, this.blockScripts.transformPosition.y);
     }
 
     public addListeners() {
@@ -502,9 +523,8 @@ export class ScuffrWorkspace extends ScuffrElementParent {
             }
             if (this._action) {
                 (this._action as ScuffrAction).onMouseMove(event);
-            }    
+            }
         }
-        // this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {
@@ -517,9 +537,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         }
     }
 
-    public getTextNodeDimensions(node: Text): Vec2 {
-        this.svgTextStagingElement.appendChild(node);
-        const bounds = this.svgTextStagingElement.getBoundingClientRect();
-        return { x: bounds.width, y: bounds.height };
+    public getTextDimensions(text: string, node?: Text): Vec2 {
+        return this._textSizeCache.getTextDimensions(text, node);
     }
 }

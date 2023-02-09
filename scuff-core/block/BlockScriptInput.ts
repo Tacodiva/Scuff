@@ -5,6 +5,7 @@ import { ScuffrElementScriptInput } from "../scuffr/ScuffrElementScriptInput";
 import type { BlockPartInput } from "./BlockPartInput";
 import { BlockScript } from "./BlockScript";
 import type { BlockInput } from "./BlockInput";
+import type { BlockInstance } from "./BlockInstance";
 
 
 export class BlockScriptInput extends BlockScript implements BlockInput {
@@ -13,4 +14,7 @@ export class BlockScriptInput extends BlockScript implements BlockInput {
         return new ScuffrElementScriptInput(parent, this);
     }
 
+    public clone(): BlockScriptInput {
+        return new BlockScriptInput(this._clone());
+    }
 }

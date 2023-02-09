@@ -9,4 +9,8 @@ export class BlockScriptRoot extends BlockScript {
         super(blocks);
         this.translation = pos;
     }
+
+    public clone(): BlockScriptRoot {
+        return new BlockScriptRoot(this._clone(), this.translation);
+    }
 }
