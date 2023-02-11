@@ -1,4 +1,4 @@
-# [Scuff](https://tacodiva.github.io/Scuff/) <sub><sup>_(todo: create 'scuffy', a cute vector dog logo)_</sup></sub>
+# [Scuff](http://scuff.emberj.sh/) <sub><sup>_(todo: create 'scuffy', a cute vector dog logo)_</sup></sub>
 
 
 ### Scuff is a <ins>very</ins> work in progress rewrite of the scratch editor.
