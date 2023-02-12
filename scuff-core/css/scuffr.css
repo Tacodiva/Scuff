@@ -3,7 +3,7 @@
     color: var(--scuff-block-font-fill);
     font-family: var(--scuff-block-font), Helvetica, sans-serif;
     font-size: 12pt;
-    font-weight: 500;
+    font-weight: normal;
     white-space: pre;
 }
 

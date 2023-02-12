@@ -529,7 +529,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
                 (this._action as ScuffrAction).onMouseMove(event);
             }
         }
-        // this.debugRender();
+        this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {

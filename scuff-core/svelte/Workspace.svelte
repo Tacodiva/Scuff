@@ -12,6 +12,10 @@
     var worksapce: ScuffrWorkspace;
 
     onMount(() => {
+        if (location.href.includes("light")) elementSVGRoot.classList.add("scuff-theme-light");
+        if (location.href.includes("contrast")) elementSVGRoot.classList.add("scuff-theme-contrast-blocks");
+        if (location.href.includes("bold")) elementSVGRoot.classList.add("scuff-theme-bold");
+        
         worksapce = new ScuffrWorkspace(
             elementSVGRoot,
             elementWorkspace,
@@ -19,6 +23,7 @@
             scripts
         );
         worksapce.addListeners();
+
 
         return () => {
             worksapce.removeListeners();
@@ -36,8 +41,8 @@
     <defs>
         <pattern
             id="scuff-workspace-bg-pattern"
-            width="50"
-            height="50"
+            width="40"
+            height="40"
             patternUnits="userSpaceOnUse"
             bind:this={elementBackgroundPattern}
         >
@@ -105,6 +110,7 @@
         <tspan x="2" dy="1.2em">[ ] Add dropdown block inputs</tspan>
         <tspan x="2" dy="1.2em">[ ] Add support for icons in blocks</tspan>
         <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>
+        <tspan x="2" dy="1.2em">[ ] Undo / Redo support</tspan>
         <tspan x="2" dy="1.2em">[ ] Investigate touchscreen support</tspan>
         <tspan x="2" dy="1.2em">[ ] Come up with more TODOs</tspan>
     </text>

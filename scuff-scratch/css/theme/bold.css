@@ -1,0 +1,8 @@
+
+.scuff-block-text {
+    font-weight: var(--scuff-block-font-weight, normal);
+}
+
+.scuff-theme-bold {
+    --scuff-block-font-weight: bold;
+}
