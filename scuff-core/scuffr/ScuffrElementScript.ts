@@ -11,6 +11,7 @@ import { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentP
 import { ScuffrElementBlockGhost } from "./ScuffrElementBlockGhost";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrWrappingDescriptor } from "./ScuffrWrappingDescriptor";
+import type { Vec2 } from "../utils/Vec2";
 
 export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScript> extends ScuffrElementParent implements ScuffrBlockReferenceParent<number> {
     public children: ScuffrElementBlock[];
@@ -22,8 +23,8 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
     public readonly attachmentPoints: ScuffrAttachmentPointList;
     public abstract readonly isSubscript: boolean;
 
-    public constructor(container: SVGElement, root: ScuffrElementScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, blocks?: ScuffrElementBlock[]) {
-        super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
+    public constructor(container: SVGElement, root: ScuffrElementScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, blocks?: ScuffrElementBlock[], translation?: Vec2) {
+        super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace, translation);
         if (root) this._root = root;
         else this._root = this.getRoot();
 
@@ -34,17 +35,14 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         if (blocks) {
             this.children = blocks;
 
-            this.translationSelf = this.children[0].getAbsoluteTranslation();
-            this.translationSelf.x += this.children[0].leftOffset;
-
             for (let i = 0; i < this.children.length; i++) {
                 const block = this.children[i];
                 this.dom.appendChild(block.dom);
                 block.setParent(new ScuffrBlockReference(i, this));
             }
 
-            this.update(true);
             this.updateTranslation();
+            this.update(true);
         } else {
             this.children = [];
 
@@ -113,7 +111,8 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
     public addGhost(index: number, source: ScuffrElementBlockInstance, wrap?: ScuffrWrappingDescriptor | null) {
         this._ghost = new ScuffrElementBlockGhost(new ScuffrBlockReference(index, this), source, wrap);
         this.children.splice(index, 0, this._ghost);
-        this.update(true);
+        this._updateBlocks();
+        super.update(true);
     }
 
     public removeGhost() {
@@ -121,7 +120,8 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
             this.children.splice(this._ghost.index, 1);
             this.dom.removeChild(this._ghost.dom);
             this._ghost = null;
-            this.update(true);
+            this._updateBlocks();
+            super.update(true);
         }
     }
 
@@ -240,12 +240,13 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         }
 
         const draggedChild = this.children[key];
-        const pos = draggedChild.getAbsoluteTranslation();
+        const pos = { ...draggedChild.getAbsoluteTranslation() };
         pos.x += draggedChild.leftOffset;
 
         this.script.blocks.splice(key);
         const draggedBlocks = this.children.splice(key);
-        const newScript = new ScuffrElementScriptRoot(this.workspace, null, draggedBlocks);
+        const newScript = new ScuffrElementScriptRoot(this.workspace, null, draggedBlocks, pos);
+
         this.workspace.addRenderedScript(newScript);
         this.workspace.dragRenderedScript(newScript, event);
         this.update(true);

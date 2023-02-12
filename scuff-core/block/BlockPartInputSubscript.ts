@@ -8,9 +8,9 @@ export class BlockPartInputSubscript extends BlockPartInput<BlockScriptInput> {
         super(id, block, () => new BlockScriptInput());
     }
 
-    public isValidValue(value: BlockInput): BlockScriptInput | null {
+    public isValidValue(value: BlockInput): BlockScriptInput | false {
         if (value instanceof BlockScriptInput)
             return value;
-        return null;
+        return false;
     }
 }

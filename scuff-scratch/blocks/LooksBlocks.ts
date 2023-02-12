@@ -2,18 +2,17 @@ import { ScratchBlockTypeStackable } from "../block/block-types/ScratchBlockType
 import { ScratchInputTypeString } from "../block/input-types/ScratchInputTypeString";
 import { ScratchBlockCategory } from "../block/ScratchBlockCategory";
 import { l10n } from "scuff";
-import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNumber";
 
-export class MotionBlockMoveSteps extends ScratchBlockTypeStackable {
+export class LooksBlockSay extends ScratchBlockTypeStackable {
 
     constructor() {
-        super("move_steps")
+        super("looks_say")
         this.init({
-            text: l10n.raw("move % steps"),
+            text: l10n.raw("say %"),
             inputs: [
-                new ScratchInputTypeNumber("test", this, 69)
+                new ScratchInputTypeString("test", this, "Hello, World!")
             ],
-            category: ScratchBlockCategory.MOTION
+            category: ScratchBlockCategory.LOOKS
         });
     }
 }

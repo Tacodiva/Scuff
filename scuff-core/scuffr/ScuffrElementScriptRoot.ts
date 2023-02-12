@@ -2,23 +2,21 @@ import { BlockScriptRoot } from "../block/BlockScriptRoot";
 import type { ScuffrElementBlock } from "./ScuffrElementBlock";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import { ScuffrElementScript } from "./ScuffrElementScript";
+import type { Vec2 } from "../utils/Vec2";
 
 export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot> {
 
     public readonly parent: ScuffrWorkspace;
     public get isSubscript(): boolean { return false; }
 
-    public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: ScuffrElementBlock[]) {
+    public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: ScuffrElementBlock[], translation?: Vec2) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
             script = new BlockScriptRoot(ScuffrElementScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
+            if (translation) script.translation = translation;
         }
-        super(workspace.svgScriptContainer, null, workspace, script, blocks);
+        super(workspace.svgScriptContainer, null, workspace, script, blocks, script ? script.translation : translation);
         this.parent = workspace;
-        if (!blocks) {
-            this.translationSelf = script.translation;
-            this.updateTranslation();
-        }
     }
 
     public override getRoot(): ScuffrElementScriptRoot {

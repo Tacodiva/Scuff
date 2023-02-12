@@ -3,6 +3,7 @@ import { ScratchBlockTypeTriangle } from "../block/block-types/ScratchBlockTypeT
 import { ScratchInputTypeString } from "../block/input-types/ScratchInputTypeString";
 import { ScratchBlockCategory } from "../block/ScratchBlockCategory";
 import { l10n } from "scuff";
+import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNumber";
 
 export class OperatorBlockPlus extends ScratchBlockTypeRound {
 
@@ -11,8 +12,8 @@ export class OperatorBlockPlus extends ScratchBlockTypeRound {
         this.init({
             text: l10n.raw("% + %"),
             inputs: [
-                new ScratchInputTypeString("test", this, "5"),
-                new ScratchInputTypeString("testII", this, "10"),
+                new ScratchInputTypeNumber("test", this, 5),
+                new ScratchInputTypeNumber("testII", this, 10),
             ],
             category: ScratchBlockCategory.OPERATORS
         });

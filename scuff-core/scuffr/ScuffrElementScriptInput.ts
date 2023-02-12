@@ -61,7 +61,10 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
     }
 
     public toRootScript(): ScuffrElementScriptRoot {
-        const rootScript = new ScuffrElementScriptRoot(this.workspace, null, this.children);
+        const translation = this.children[0].getAbsoluteTranslation();
+        const rootScript = new ScuffrElementScriptRoot(this.workspace, null, this.children,
+            { x: translation.x + this.children[0].leftOffset, y: translation.y }
+        );
         this.workspace.addRenderedScript(rootScript);
         this.children = [];
         this.script.blocks.length = 0;
@@ -83,7 +86,7 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
             // end at 12
             // return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
             return `a 4 4 0 0 1 -4 4 ${shape.nub.getLeftPath(12)} a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
-            else
+        else
             return `a 4 4 0 0 1 -4 4 ${shape.nub.getLeftPath(12)} a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 ${shape.nub.getRightPath()} H ${size.x + 4} a 4 4 0 0 1 4 4 `;
     }
 

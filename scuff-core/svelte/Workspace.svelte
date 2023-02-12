@@ -83,7 +83,7 @@
         dominant-baseline="hanging"
     >
         <tspan x="2" y="5">Scuff {ScuffCoreImpl.version[0]}.{ScuffCoreImpl.version[1]}</tspan>
-        <tspan x="2" dy="1.2em">OOOoooOOOooo spooky ghosts!</tspan>
+        <tspan x="2" dy="1.2em">Now with themes! <a href="https://scuff.emberj.sh/?light+bold+contrast">https://scuff.emberj.sh/?light+bold+contrast</a></tspan>
         <tspan x="2" dy="2.4em">Scuffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
         <tspan x="2" dy="1.2em">[X] Make block updates more efficient</tspan>
@@ -103,7 +103,7 @@
         <tspan x="2" dy="1.2em"
             >[X] Add ghost blocks to preview drag and drop</tspan
         >
-        <tspan x="2" dy="1.2em">[ ] Actually validate block inputs</tspan>
+        <tspan x="2" dy="1.2em">[X] Actually validate block inputs</tspan>
         <tspan x="2" dy="1.2em"
             >[ ] Add horizontal and vertical scroll bar</tspan
         >

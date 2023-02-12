@@ -15,7 +15,7 @@ import("scuff").then(async module => {
     const top = ScratchBlocks.control.forever.createInstance();
     let bottom = top;
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
         const next = ScratchBlocks.control.forever.createInstance();
         bottom.setInputByID("testI", new module.BlockScriptInput([next]));
         bottom = next;
@@ -26,6 +26,8 @@ import("scuff").then(async module => {
 
     const script = new module.BlockScriptRoot([
         ScratchBlocks.event.flag_clicked.createInstance(),
+
+        ScratchBlocks.looks.say.createInstance(),
 
         ScratchBlocks.control.if.createInstance({
 
@@ -62,7 +64,7 @@ import("scuff").then(async module => {
         ScratchBlocks.motion.move_steps.createInstance({
             test: ScratchBlocks.operator.add.createInstance({}),
         }),
-        // top
+        top
     ]);
 
     document.getElementById("scuff-loading")?.remove();

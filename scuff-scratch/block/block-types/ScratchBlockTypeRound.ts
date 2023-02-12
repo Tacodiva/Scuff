@@ -1,7 +1,7 @@
 import { BlockInstance, ScuffrColouredShape, ScuffrShape, ScuffrShapeInputRound } from "scuff";
-import { ScratchBlockType } from "./ScratchBlockType";
+import { ScratchBlockTypeInput } from "./ScratchBlockTypeInput";
 
-export abstract class ScratchBlockTypeRound extends ScratchBlockType {
+export abstract class ScratchBlockTypeRound extends ScratchBlockTypeInput {
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
 
     public getBackground(block: BlockInstance): ScuffrColouredShape {

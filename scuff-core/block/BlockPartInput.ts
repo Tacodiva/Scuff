@@ -28,10 +28,10 @@ export abstract class BlockPartInput<T extends BlockInput = BlockInput> implemen
     }
 
     public hasInputAttachmentPoint(): boolean {
-        return false;
+        return true;
     }
 
-    public abstract isValidValue(value: BlockInput): T | null;
+    public abstract isValidValue(value: BlockInput): T | false;
 }
 
 

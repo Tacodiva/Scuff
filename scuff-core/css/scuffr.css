@@ -35,12 +35,24 @@
 
 .scuff-block-bg-path {
     fill: var(--scuff-bg-path-fill);
+    transition: stroke 0.25s ease;
     stroke: var(--scuff-bg-path-stroke);
+    transition: stroke-width 0.25s ease;
+    stroke-width: var(--scuff-bg-path-stroke-width);
 }
 
 .scuff-input {
     --scuff-bg-path-fill: var(--scuff-block-input-bg);
     --scuff-block-font-fill: var(--scuff-block-input-font-fill);
+}
+
+.scuff-input-invalid {
+    --scuff-bg-path-stroke: var(--scuff-block-input-stroke-invalid);
+    stroke-width: 6px;
+}
+
+.scuff-input-selected {
+    stroke-width: 3px;
 }
 
 .scuff-input-highlight {

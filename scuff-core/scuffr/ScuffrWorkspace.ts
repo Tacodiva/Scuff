@@ -144,9 +144,14 @@ class LiteralInputEditAction extends ScuffrAction {
     public readonly svgForeignObject: SVGForeignObjectElement;
     public readonly htmlInput: HTMLInputElement;
 
+    public readonly initalValue: string;
+    public inputValid: boolean;
+
     public constructor(workspace: ScuffrWorkspace, input: ScuffrElementInputLiteral) {
         super(workspace);
         this.scuffrInput = input;
+        this.initalValue = input.getValue();
+        this.inputValid = true;
 
         this.scuffrInput.content.dom.style.display = "none";
 
@@ -160,6 +165,8 @@ class LiteralInputEditAction extends ScuffrAction {
             this.svgForeignObject.setAttribute("y", "-0.7em");
         }
         this.svgForeignObject.setAttribute("x", "-0.1em");
+        
+        this.scuffrInput.shapeDOM.classList.add("scuff-input-selected");
         this._updateDOM();
 
         this.htmlInput = this.svgForeignObject.appendChild(document.createElement("input"));
@@ -168,13 +175,21 @@ class LiteralInputEditAction extends ScuffrAction {
         this.htmlInput.oninput = this._onInputChange;
         this.htmlInput.focus();
         this.htmlInput.select();
-
-        this.scuffrInput.shapeDOM.classList.add("scuff-input-highlighted");
     }
 
     private _updateDOM() {
         this.svgForeignObject.setAttribute("transform", `translate(${this.scuffrInput.content.translationX}, ${this.scuffrInput.content.translationY})`);
         this.svgForeignObject.setAttribute("width", (this.scuffrInput.content.dimensions.x + 5) + "px");
+        let isValueValid = this.scuffrInput.isValueValid();
+        if (this.inputValid && !isValueValid) {
+            this.scuffrInput.shapeDOM.classList.remove("scuff-input-selected");
+            this.scuffrInput.shapeDOM.classList.add("scuff-input-invalid");
+            this.inputValid = false;
+        } else if (!this.inputValid && isValueValid) {
+            this.scuffrInput.shapeDOM.classList.add("scuff-input-selected");
+            this.scuffrInput.shapeDOM.classList.remove("scuff-input-invalid");
+            this.inputValid = true;
+        }
     }
 
     private _onInputChange = () => {
@@ -183,9 +198,11 @@ class LiteralInputEditAction extends ScuffrAction {
     }
 
     public override onEnd(): void {
+        if (!this.inputValid) this.scuffrInput.setValue(this.initalValue);
         this.svgForeignObject.remove();
         this.scuffrInput.content.dom.style.display = "";
-        this.scuffrInput.shapeDOM.classList.remove("scuff-input-highlighted");
+        this.scuffrInput.shapeDOM.classList.remove("scuff-input-selected");
+        this.scuffrInput.shapeDOM.classList.remove("scuff-input-invalid");
     }
 
     public override onMouseMove(event: MouseEvent): void {
@@ -375,7 +392,8 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     public dragRenderedBlock(block: ScuffrElementBlockInstance, mousePos: Vec2) {
-        const renderedScript = new ScuffrElementScriptRoot(this, null, [block]);
+        const translation = block.getAbsoluteTranslation();
+        const renderedScript = new ScuffrElementScriptRoot(this, null, [block], { x: translation.x + block.leftOffset, y: translation.y });
         this.addRenderedScript(renderedScript);
         this.dragRenderedScript(renderedScript, mousePos);
     }

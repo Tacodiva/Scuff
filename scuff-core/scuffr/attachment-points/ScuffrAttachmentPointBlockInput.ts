@@ -20,7 +20,7 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
 
     public canTakeScript(script: ScuffrElementScriptRoot): boolean {
         if (script.children.length !== 1) return false;
-        return this.input.isValidValue(script.script.blocks[0]) !== null;
+        return !!this.input.isValidValue(script.script.blocks[0]);
     }
 
     public takeScript(script: ScuffrElementScriptRoot): void {
@@ -31,13 +31,13 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
             let rootBlock = this.block;
             while (rootBlock.parent instanceof ScuffrElementBlockContent)
                 rootBlock = rootBlock.parent.parent;
-            replacedInput.translationParent = {
-                x: rootBlock.getAbsoluteTranslation().x - this.block.getAbsoluteTranslation().x + rootBlock.rightOffset + 10,
-                y: 0
-            }
             replacedInput.attachmentPoints.clear();
-            replacedInput.updateTranslation();
-            const renderedScript = new ScuffrElementScriptRoot(replacedInput.workspace, null, [replacedInput]);
+            const rootTranslation = rootBlock.getAbsoluteTranslation();
+            const renderedScript = new ScuffrElementScriptRoot(replacedInput.workspace, null, [replacedInput], {
+                x: rootTranslation.x + rootBlock.rightOffset + 25,
+                y: rootTranslation.y
+            });
+            renderedScript.updateTranslation();
             replacedInput.workspace.addRenderedScript(renderedScript);
         }
 

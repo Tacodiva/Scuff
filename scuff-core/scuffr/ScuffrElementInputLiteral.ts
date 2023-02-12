@@ -40,6 +40,14 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
         this.update(true);
     }
 
+    public getValue() {
+        return this.content.text;
+    }
+
+    public isValueValid() : boolean {
+        return !!this.inputType.isValidValue(this._input);       
+    }
+
     public override onClick(event: MouseEvent): boolean {
         event.preventDefault();
         this.workspace.editLiteralInput(this);
