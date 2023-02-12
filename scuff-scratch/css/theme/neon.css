@@ -1,0 +1,18 @@
+.scuff-block-bg-path {
+    fill-opacity: var(--scuff-bg-opacity, 100%);
+}
+
+.scuff-block-ghost {
+    --scuff-bg-opacity: 100%;
+}
+
+.scuff-theme-neon {
+    --scuff-bg-path-stroke-width: 2px;
+    --scuff-bg-opacity: 10%;
+    --scuff-block-input-bg: transparent;
+    --scuff-block-input-font-fill: var(--scuff-block-font-fill);
+}
+
+.scuff-theme-neon.scuff-theme-light {
+    --scuff-block-font-fill: #000;
+}

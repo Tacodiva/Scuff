@@ -15,6 +15,7 @@
         if (location.href.includes("light")) elementSVGRoot.classList.add("scuff-theme-light");
         if (location.href.includes("contrast")) elementSVGRoot.classList.add("scuff-theme-contrast-blocks");
         if (location.href.includes("bold")) elementSVGRoot.classList.add("scuff-theme-bold");
+        if (location.href.includes("neon")) elementSVGRoot.classList.add("scuff-theme-neon");
         
         worksapce = new ScuffrWorkspace(
             elementSVGRoot,
@@ -83,7 +84,8 @@
         dominant-baseline="hanging"
     >
         <tspan x="2" y="5">Scuff {ScuffCoreImpl.version[0]}.{ScuffCoreImpl.version[1]}</tspan>
-        <tspan x="2" dy="1.2em">Now with themes! <a href="https://scuff.emberj.sh/?light+bold+contrast">https://scuff.emberj.sh/?light+bold+contrast</a></tspan>
+        <tspan x="2" dy="1.2em">Now with themes! Try out <a href="https://scuff.emberj.sh/?light+bold+contrast">https://scuff.emberj.sh/?light+bold+contrast</a></tspan>
+        <tspan x="2" dy="1.2em">...or maybe <a href="https://scuff.emberj.sh/?neon">https://scuff.emberj.sh/?neon</a></tspan>
         <tspan x="2" dy="2.4em">Scuffr TODO List:</tspan>
         <tspan x="2" dy="1.2em">[X] Make inputs editable</tspan>
         <tspan x="2" dy="1.2em">[X] Make block updates more efficient</tspan>
