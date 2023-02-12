@@ -36,6 +36,7 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
                 y: 0
             }
             replacedInput.attachmentPoints.clear();
+            replacedInput.updateTranslation();
             const renderedScript = new ScuffrElementScriptRoot(replacedInput.workspace, null, [replacedInput]);
             replacedInput.workspace.addRenderedScript(renderedScript);
         }

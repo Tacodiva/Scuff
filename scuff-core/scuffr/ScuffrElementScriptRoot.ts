@@ -15,17 +15,20 @@ export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot
         }
         super(workspace.svgScriptContainer, null, workspace, script, blocks);
         this.parent = workspace;
-        this.translationSelf = script.translation;
+        if (!blocks) {
+            this.translationSelf = script.translation;
+            this.updateTranslation();
+        }
     }
 
     public override getRoot(): ScuffrElementScriptRoot {
         return this;
     }
 
-    public override updateTraslation() {
+    public override updateTranslation(propgrateDown?: boolean) {
         this.script.translation.x = this.translationSelf.x;
         this.script.translation.y = this.translationSelf.y;
-        super.updateTraslation();
+        super.updateTranslation(propgrateDown);
     }
 
     public toRootScript(): ScuffrElementScriptRoot {

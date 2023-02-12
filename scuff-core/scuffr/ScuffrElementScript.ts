@@ -36,15 +36,15 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
 
             this.translationSelf = this.children[0].getAbsoluteTranslation();
             this.translationSelf.x += this.children[0].leftOffset;
-            this.updateTraslation();
 
-            for (const block of this.children)
+            for (let i = 0; i < this.children.length; i++) {
+                const block = this.children[i];
                 this.dom.appendChild(block.dom);
+                block.setParent(new ScuffrBlockReference(i, this));
+            }
 
             this.update(true);
-
-            for (let i = 0; i < this.children.length; i++)
-                this.children[i].setParent(new ScuffrBlockReference(i, this));
+            this.updateTranslation();
         } else {
             this.children = [];
 
@@ -110,8 +110,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
     public addGhost(index: number, source: ScuffrElementBlockInstance, wrap?: ScuffrWrappingDescriptor | null) {
         this._ghost = new ScuffrElementBlockGhost(new ScuffrBlockReference(index, this), source, wrap);
         this.children.splice(index, 0, this._ghost);
-        this._updateBlocks();
-        super.update(true);
+        this.update(true);
     }
 
     public removeGhost() {
@@ -119,8 +118,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
             this.children.splice(this._ghost.index, 1);
             this.dom.removeChild(this._ghost.dom);
             this._ghost = null;
-            this._updateBlocks();
-            super.update(true);
+            this.update(true);
         }
     }
 
@@ -135,7 +133,6 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
     }
 
     protected _updateBlocks() {
-        this.updateTraslation();
         if (this.children.length !== 0) {
             this.topLeftOffset = { x: 0, y: 0 };
 
@@ -175,7 +172,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
                     y += renderedBlock.dimensions.y;
                 }
 
-                renderedBlock.updateTraslation();
+                renderedBlock.updateTranslation();
                 if (renderedBlock.dimensions.x > width) width = renderedBlock.dimensions.x
             }
 
@@ -211,6 +208,11 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
                 else
                     this.attachmentPoints.push(new ScuffrAttachmentPointScript(this, blockIdx + 1, true, true, { x: 0, y }))
         }
+    }
+
+    public override onTranslationUpdate(): void {
+        super.onTranslationUpdate();
+        this.attachmentPoints.recalculateTranslation();
     }
 
     public onChildDrag?(key: number, event: MouseEvent): boolean {

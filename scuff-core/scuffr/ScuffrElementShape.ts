@@ -65,7 +65,7 @@ export abstract class ScuffrElementShape<TContent extends ScuffrElement = Scuffr
             for (let partIdx = 0; partIdx < line.elements.length; partIdx++) {
                 const part = line.elements[partIdx];
                 part.translationParent.y = y;
-                part.updateTraslation();
+                part.updateTranslation(propagateUp);
             }
             y += line.dimensions.y / 2;
         }
@@ -89,11 +89,11 @@ export abstract class ScuffrElementShape<TContent extends ScuffrElement = Scuffr
         } else {
             this.content.translationParent.x = 0;
         }
-        this.content.updateTraslation();
+        this.content.updateTranslation(propagateUp);
 
         this.translationSelf.x = padding.x;
         this.translationSelf.y = 0;
-        this.updateTraslation();
+        this.updateTranslation(propagateUp);
 
         this.dimensions = {
             x: size.x + padding.x * 2,

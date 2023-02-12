@@ -28,7 +28,7 @@ export abstract class ScuffrElementBlockPartBackground<TContent extends ScuffrEl
     }
 
     public override onTranslationUpdate(): void {
-        this.attachmentPoints.recalculateTranslation();
         super.onTranslationUpdate();
+        this.attachmentPoints.recalculateTranslation();
     }
 }

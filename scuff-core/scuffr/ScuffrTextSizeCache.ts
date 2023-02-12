@@ -10,7 +10,7 @@ export class ScuffrTextSizeCache {
         this._svgTextStagingElement = workspace.dom
             .appendChild(document.createElementNS(SVG_NS, "g"))
             .appendChild(document.createElementNS(SVG_NS, "text"));
-        this._svgTextStagingElement.classList.add("scuffr-block-text");
+        this._svgTextStagingElement.classList.add("scuff-block-text");
         this._cache = new Map();
     }
 

@@ -17,6 +17,8 @@ export abstract class ScuffrElement {
     public get translationX() { return this.translationSelf.x + this.translationParent.x; }
     public get translationY() { return this.translationSelf.y + this.translationParent.y; }
 
+    private _lastTranslationUpdate: Vec2;
+    private _absoluteTranslation: Vec2 | null;
 
     public abstract parent: ScuffrElementParent | null;
 
@@ -34,10 +36,18 @@ export abstract class ScuffrElement {
             this.dom.transform.baseVal.appendItem(this._domTranslation);
         }
 
+        this._absoluteTranslation = null;
+        this._lastTranslationUpdate = { x: NaN, y: NaN };
+
         (<any>this.dom)[ScuffrElement.DATA_NAME] = this;
     }
 
     public getAbsoluteTranslation(): Vec2 {
+        if (this._absoluteTranslation) return this._absoluteTranslation;
+        return this._absoluteTranslation = this._calculateAbsoluteTranslation();
+    }
+
+    private _calculateAbsoluteTranslation(): Vec2 {
         if (!this.parent) return { x: this.translationX, y: this.translationY };
         const parentTrans = this.parent.getAbsoluteTranslation();
         return {
@@ -62,13 +72,22 @@ export abstract class ScuffrElement {
         return false;
     }
 
-    public updateTraslation() {
+    public updateTranslation(propgrateDown: boolean = true) {
+        const x = this.translationX;
+        const y = this.translationY;
+        if (this._lastTranslationUpdate.x === x && this._lastTranslationUpdate.y === y)
+            return;
+        this._lastTranslationUpdate.x = x;
+        this._lastTranslationUpdate.y = y;
         if (this._domTranslation)
-            this._domTranslation.setTranslate(this.translationX, this.translationY);
-        this.onTranslationUpdate();
+            this._domTranslation.setTranslate(x, y);
+        if (propgrateDown)
+            this.onTranslationUpdate();
     }
 
-    public onTranslationUpdate() { }
+    public onTranslationUpdate() {
+        this._absoluteTranslation = null;
+    }
 
     public updateAll() {
         this.update(false);

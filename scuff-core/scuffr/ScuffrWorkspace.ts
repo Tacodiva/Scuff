@@ -95,11 +95,15 @@ class ScriptDragAction extends ScuffrAction {
         scriptCoords.y += this.offset.y;
 
         this.script.translationSelf = scriptCoords;
-        this.script.updateTraslation();
+        this.script.updateTranslation();
 
         let newPoint = this._findAttachmentPoint();
 
-        if (this._attachmentPoint !== newPoint) {
+        if (this._attachmentPoint !== newPoint && (
+            (!this._attachmentPoint || !newPoint) || (
+                this._attachmentPoint.translation.x !== newPoint.translation.x ||
+                this._attachmentPoint.translation.y !== newPoint.translation.y
+            ))) {
             if (this._attachmentPoint)
                 this._attachmentPoint.unhighlight(this.script);
             this._attachmentPoint = newPoint;
@@ -159,7 +163,7 @@ class LiteralInputEditAction extends ScuffrAction {
         this._updateDOM();
 
         this.htmlInput = this.svgForeignObject.appendChild(document.createElement("input"));
-        this.htmlInput.classList.add("scuff-input", "scuffr-block-text");
+        this.htmlInput.classList.add("scuff-input", "scuff-block-text");
         this.htmlInput.value = this.scuffrInput.content.text;
         this.htmlInput.oninput = this._onInputChange;
         this.htmlInput.focus();
@@ -206,13 +210,13 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     public readonly blockScripts: BlockScripts;
     public children: ScuffrElementScriptRoot[];
 
-    public readonly svg : SVGSVGElement;
+    public readonly svg: SVGSVGElement;
 
     public readonly svgScriptContainer: SVGGElement;
     public readonly svgBackgroundPattern: SVGPatternElement;
     public readonly svgBackgroundElement: SVGRectElement;
     public readonly svgDebug: SVGElement;
-    
+
     public readonly svgScriptTranformTranslate: SVGTransform;
     public readonly svgScriptTranformScale: SVGTransform;
     public readonly svgBackgroundTranformTranslate: SVGTransform;
@@ -220,12 +224,12 @@ export class ScuffrWorkspace extends ScuffrElementParent {
 
     public readonly attachmentPoints: Set<ScuffrAttachmentPointList>;
 
-    private readonly _textSizeCache : ScuffrTextSizeCache;
+    private readonly _textSizeCache: ScuffrTextSizeCache;
 
     private _action: ScuffrAction | null;
     private _mouseDownPos: Vec2 | null;
 
-    public constructor(root : SVGSVGElement, svgWorkspace: SVGGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
+    public constructor(root: SVGSVGElement, svgWorkspace: SVGGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
         super(svgWorkspace);
         (<any>window).workspace = this;
         this.parent = null;
@@ -242,14 +246,14 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this.svgBackgroundElement.setAttribute("width", "100%");
         this.svgBackgroundElement.setAttribute("height", "100%");
         this.svgBackgroundElement.style.fill = `url("#${backgroundPattern.id}")`;
-        
+
         this.svgScriptContainer = svgWorkspace.appendChild(document.createElementNS(SVG_NS, "g"));
-        
+
         this.svgDebug = this.svgScriptContainer.appendChild(document.createElementNS(SVG_NS, "g"));
-                
+
         this._action = null;
         this._mouseDownPos = null;
-        
+
         this.svgScriptTranformScale = root.createSVGTransform();
         this.svgScriptContainer.transform.baseVal.appendItem(this.svgScriptTranformScale);
         this.svgScriptTranformTranslate = root.createSVGTransform();
@@ -261,7 +265,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this.svgBackgroundPattern.patternTransform.baseVal.appendItem(this.svgBackgroundTranformTranslate);
 
         this.updateGlobalTransform();
-        
+
         for (const script of this.blockScripts.scripts) {
             const rendered = new ScuffrElementScriptRoot(this, script);
             rendered.updateAll();
@@ -366,7 +370,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         pos.x -= renderedScript.dimensions.x / 2;
         pos.y -= renderedScript.dimensions.y / 2;
         renderedScript.translationSelf = pos;
-        renderedScript.updateTraslation();
+        renderedScript.updateTranslation();
         this.dragRenderedScript(renderedScript, mousePos);
     }
 
@@ -525,6 +529,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
                 (this._action as ScuffrAction).onMouseMove(event);
             }
         }
+        // this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {

@@ -50,7 +50,6 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
         this.translationSelf.x = 8;
         this.translationSelf.y = -this.topOffset - this.dimensions.y / 2;
 
-        this.updateTraslation();
         this._updateDefualtAttachmentPoint();
     }
 
@@ -92,11 +91,6 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
         this._root = root;
         for (const child of this.children) child.onAncestryChange(root);
         this.attachmentPoints.onAncestryChange(root);
-    }
-
-    public override onTranslationUpdate(): void {
-        this.attachmentPoints.recalculateTranslation();
-        super.onTranslationUpdate();
     }
 
     public setParent(parentRef: ScuffrBlockReference<BlockPartInput<BlockInput>, ScuffrElementBlockContent>) {

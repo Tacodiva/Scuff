@@ -1,10 +1,14 @@
-.scuffr-block-text {
+.scuff-block-text {
     fill: var(--scuff-block-font-fill);
     color: var(--scuff-block-font-fill);
     font-family: var(--scuff-block-font), Helvetica, sans-serif;
     font-size: 12pt;
     font-weight: 500;
     white-space: pre;
+}
+
+.scuff-input {
+    cursor: text;
 }
 
 .scuff-block-empty {
@@ -15,6 +19,7 @@
 .scuff-block {
     --scuff-bg-path-fill: var(--scuff-block-category-primary);
     --scuff-bg-path-stroke: var(--scuff-block-category-tertiary);
+    cursor: grab;
 }
 
 .scuff-block-ghost {

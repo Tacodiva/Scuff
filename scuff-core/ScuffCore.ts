@@ -108,8 +108,8 @@ export class ScuffCoreImpl implements ScuffCore {
         const target = new Target();
 
 
-        for (let x = 0; x < 20; x++) {
-            for (let y = 0; y < 10; y++) {
+        for (let x = 0; x < 1; x++) {
+            for (let y = 0; y < 1; y++) {
                 const clone = script.clone(); 
                 clone.translation = { x: x * 400, y: y * 800 };
                 target.blockScripts.scripts.push(clone);

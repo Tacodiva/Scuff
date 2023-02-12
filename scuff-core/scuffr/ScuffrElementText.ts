@@ -13,7 +13,7 @@ export class ScuffrElementText extends ScuffrElement {
         this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");
         this.dom.setAttribute("dy", '1');
-        this.dom.classList.add("scuffr-block-text");
+        this.dom.classList.add("scuff-block-text");
         this._textNode = null;
     }
 

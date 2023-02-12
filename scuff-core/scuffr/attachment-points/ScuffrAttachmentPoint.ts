@@ -34,7 +34,7 @@ export abstract class ScuffrAttachmentPoint {
     public recalculateTranslation() {
         const absTrans = this.parent.getAbsoluteTranslation();
         return this._translation = {
-            x: absTrans.x - this.root.translationX + this.offset.x,
+            x: absTrans.x - this.root.translationX + this.offset.x + this.parent.leftOffset,
             y: absTrans.y - this.root.translationY + this.offset.y
         };
     }
