@@ -90,3 +90,19 @@ input.scuff-input {
 .scuff-bg-decor-light {
     fill: var(--scuff-block-decor-light);
 }
+
+.scuff-scrollbar-handle {
+    fill: var(--scuff-scrollbar);
+    transition: fill 0.1s ease;
+    transition: fill-opacity 0.1s ease;
+    fill-opacity: 80%;
+}
+
+.scuff-scrollbar-handle:hover {
+    fill: var(--scuff-scrollbar-hover);
+}
+
+.scuff-scrollbar-handle-active {
+    fill: var(--scuff-scrollbar-hover);
+    fill-opacity: 100%;
+}

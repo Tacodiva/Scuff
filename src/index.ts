@@ -15,7 +15,7 @@ import("scuff").then(async module => {
     const top = ScratchBlocks.control.forever.createInstance();
     let bottom = top;
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 0; i++) {
         const next = ScratchBlocks.control.forever.createInstance();
         bottom.setInputByID("testI", new module.BlockScriptInput([next]));
         bottom = next;

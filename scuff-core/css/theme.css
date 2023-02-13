@@ -15,10 +15,13 @@
 	--scuff-block-decor-light: #FFD5E6;
 
 	--scuff-block-ghost: #0008;
+	--scuff-scrollbar: #444;
+	--scuff-scrollbar-hover: #4d97ff;
 }
 
 .scuff-theme-light {
 	--scuff-workspace-bg-main: #f9f9f9;
 	--scuff-workspace-bg-dots: #ddd;
 	--scuff-workspace-text: #111;
+	--scuff-scrollbar: #bbb;
 }

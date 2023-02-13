@@ -73,6 +73,11 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         return ScuffrWrappingDescriptor.tryWrap(this, index, wrapper);
     }
 
+    public override updateAll(): void {
+        super.updateAll();
+        this.updateTranslation(false);
+    }
+
     public insertScript(index: number, script: ScuffrElementScriptRoot, wrap?: ScuffrWrappingDescriptor | null) {
         if (wrap) {
             this.script.blocks.splice(index, Infinity, ...script.script.blocks);

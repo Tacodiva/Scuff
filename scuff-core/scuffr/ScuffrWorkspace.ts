@@ -12,6 +12,8 @@ import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
+import type { ScrollablePane } from "../editor/scrollbar/ScrollablePaneInfo";
+import { writable } from "svelte/store";
 
 abstract class ScuffrAction {
     public readonly workspace: ScuffrWorkspace;
@@ -110,6 +112,8 @@ class ScriptDragAction extends ScuffrAction {
             if (this._attachmentPoint)
                 this._attachmentPoint.highlight(this.script);
         }
+
+        this.workspace.findWorkspaceCorners();
     }
 
     public override onEnd(): void {
@@ -165,7 +169,7 @@ class LiteralInputEditAction extends ScuffrAction {
             this.svgForeignObject.setAttribute("y", "-0.7em");
         }
         this.svgForeignObject.setAttribute("x", "-0.1em");
-        
+
         this.scuffrInput.shapeDOM.classList.add("scuff-input-selected");
         this._updateDOM();
 
@@ -239,6 +243,10 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     public readonly svgBackgroundTranformTranslate: SVGTransform;
     public readonly svgBackgroundTranformScale: SVGTransform;
 
+    public readonly scrollPane: ScrollablePane;
+    private readonly _scrollTopLeft: Vec2;
+    private readonly _scrollBottomRight: Vec2;
+
     public readonly attachmentPoints: Set<ScuffrAttachmentPointList>;
 
     private readonly _textSizeCache: ScuffrTextSizeCache;
@@ -281,13 +289,24 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this.svgBackgroundTranformTranslate = root.createSVGTransform();
         this.svgBackgroundPattern.patternTransform.baseVal.appendItem(this.svgBackgroundTranformTranslate);
 
-        this.updateGlobalTransform();
-
         for (const script of this.blockScripts.scripts) {
             const rendered = new ScuffrElementScriptRoot(this, script);
             rendered.updateAll();
             this.children.push(rendered);
         }
+
+        this.scrollPane = writable();
+        this.scrollPane.subscribe(pane => {
+            if (pane) {
+                this.blockScripts.transformPosition.x = -pane.scroll.x;
+                this.blockScripts.transformPosition.y = -pane.scroll.y;
+                this._updateGlobalTransformDOM();
+            }
+        });
+        this._scrollTopLeft = { x: 0, y: 0 };
+        this._scrollBottomRight = { x: 0, y: 0 };
+
+        this.findWorkspaceCorners();
     }
 
     public debugRender() {
@@ -454,7 +473,52 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return false;
     }
 
+    public findWorkspaceCorners() {
+        this._scrollTopLeft.x = 0;
+        this._scrollTopLeft.y = 0;
+        this._scrollBottomRight.x = 0;
+        this._scrollBottomRight.y = 0;
+        for (const script of this.children) {
+            const scriptTrans = script.getAbsoluteTranslation();
+            if (scriptTrans.x > this._scrollBottomRight.x)
+                this._scrollBottomRight.x = scriptTrans.x;
+
+            if (scriptTrans.y + script.bottomOffset > this._scrollBottomRight.y)
+                this._scrollBottomRight.y = scriptTrans.y + script.bottomOffset;
+
+            if (scriptTrans.x < this._scrollTopLeft.x)
+                this._scrollTopLeft.x = scriptTrans.x;
+
+            if (scriptTrans.y + script.topOffset < this._scrollTopLeft.y)
+                this._scrollTopLeft.y = scriptTrans.y + script.topOffset;
+        }
+        const scrollPadding = 2500;
+        this._scrollTopLeft.x -= scrollPadding;
+        this._scrollTopLeft.y -= scrollPadding;
+        this._scrollBottomRight.x += scrollPadding;
+        this._scrollBottomRight.y += scrollPadding;
+        this.updateGlobalTransform();
+    }
+
     public updateGlobalTransform() {
+        const svgBounds = this.svg.getBoundingClientRect();
+        const translation = this.blockScripts.transformPosition;
+        this.scrollPane.set({
+            contentTopLeft: this._scrollTopLeft,
+            contentBottomRight: this._scrollBottomRight,
+            clientSize: { x: svgBounds.width, y: svgBounds.height },
+            viewportSize: {
+                x: svgBounds.width / this.blockScripts.transformScale,
+                y: svgBounds.height / this.blockScripts.transformScale
+            },
+            scroll: {
+                x: -translation.x,
+                y: -translation.y
+            }
+        });
+    }
+
+    private _updateGlobalTransformDOM() {
         this.svgScriptTranformScale.setScale(this.blockScripts.transformScale, this.blockScripts.transformScale);
         this.svgScriptTranformTranslate.setTranslate(this.blockScripts.transformPosition.x, this.blockScripts.transformPosition.y);
         this.svgBackgroundTranformScale.setScale(this.blockScripts.transformScale, this.blockScripts.transformScale);
@@ -557,6 +621,15 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         if (!this._action) {
             if (this._dispatch(event.target, (element) => element.onWheel(event)))
                 event.preventDefault();
+            else {
+                let delta = -event.deltaY / this.blockScripts.transformScale;
+                if (event.shiftKey) {
+                    this.blockScripts.transformPosition.x += delta;
+                } else {
+                    this.blockScripts.transformPosition.y += delta;
+                }
+                this.updateGlobalTransform();
+            }
         }
     }
 

@@ -2,7 +2,7 @@
 import type { ScuffExtension } from "./api/ScuffExtension";
 import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
 import Target from "./Target";
-import App from './svelte/App.svelte';
+import App from './editor/EditorComponent.svelte';
 import type { BlockScriptRoot } from "./block/BlockScriptRoot";
 
 type Version = [number, number];
@@ -36,8 +36,8 @@ export interface ScuffCore {
 }
 
 export class ScuffCoreImpl implements ScuffCore {
-    
-    public static readonly version: Version = [0, 13];
+
+    public static readonly version: Version = [0, 14];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;
@@ -104,20 +104,20 @@ export class ScuffCoreImpl implements ScuffCore {
         });
     }
 
-    public main(script: BlockScriptRoot) : void {
+    public main(script: BlockScriptRoot): void {
         const target = new Target();
 
 
-        for (let x = 0; x < 1; x++) {
-            for (let y = 0; y < 1; y++) {
-                const clone = script.clone(); 
-                clone.translation = { x: x * 400, y: y * 800 };
-                target.blockScripts.scripts.push(clone);
-            }
-        }
+        // for (let x = 0; x < 80; x++) {
+        //     for (let y = 0; y < 240; y++) {
+        const clone = script.clone();
+        // clone.translation = { x: x * 240, y: y * 80 };
+        target.blockScripts.scripts.push(clone);
+        //     }
+        // }
 
         target.blockScripts.transformScale = 1.5;
-        target.blockScripts.transformPosition = { x: 0, y: 150 };
+        // target.blockScripts.transformPosition = { x: 0, y: 150 };
 
         new App({
             target: document.body,
