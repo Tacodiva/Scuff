@@ -23,6 +23,15 @@
     cursor: grab;
 }
 
+.scuff-block-input-square {
+    cursor: default;
+}
+
+.scuff-block-input-round {
+    cursor: default;
+    --scuff-bg-path-fill: var(--scuff-block-category-secondary);
+}
+
 .scuff-block-ghost {
     --scuff-bg-path-fill: var(--scuff-block-ghost);
     --scuff-bg-path-stroke: transparent;

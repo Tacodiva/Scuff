@@ -8,6 +8,7 @@ import type { ScuffrColouredShape } from "../scuffr/shape/ScuffrColouredShape";
 export interface BlockTypeDescription {
     text: l10nString;
     inputs?: BlockPartInput[];
+    decoration?: ((block: BlockType) => BlockPart)[];
 }
 
 export abstract class BlockType {
@@ -27,6 +28,8 @@ export abstract class BlockType {
         this._inputs = new Map();
         this._parts = [];
 
+        let decorationIdx = 0;
+
         const text = desc.text.str;
         let lastI = 0;
         for (let i = 0; i < text.length; i++) {
@@ -34,7 +37,7 @@ export abstract class BlockType {
                 case '\\':
                     ++i;
                     break;
-                case '%':
+                case '%': {
                     const partText = text.substring(lastI, i).trim();
                     lastI = i + 1;
                     if (partText.length !== 0)
@@ -45,6 +48,17 @@ export abstract class BlockType {
                     this._inputs.set(input.id, input);
                     this._parts.push(input);
                     break;
+                }
+                case '$': {
+                    const partText = text.substring(lastI, i).trim();
+                    lastI = i + 1;
+                    if (partText.length !== 0)
+                        this._parts.push(new BlockPartText(partText));
+                    if (!desc.decoration) throw new Error("Expected decorations in block type description.");
+                    const decor = desc.decoration[decorationIdx++];
+                    if (!decor) throw new Error("Not enough decorations provided.");
+                    this._parts.push(decor(this));
+                }
             }
         }
 
@@ -54,6 +68,9 @@ export abstract class BlockType {
 
         if (this._inputs.size !== (desc.inputs?.length ?? 0))
             throw new Error(`Too many inputs provided. Expected ${this._inputs.size} but found ${desc.inputs?.length ?? 0}`);
+
+        if (decorationIdx !== (desc.decoration?.length ?? 0))
+            throw new Error(`Too many decorations provided. Expected ${this._inputs.size} but found ${desc.decoration?.length ?? 0}`);
     }
 
     public checkInited() {

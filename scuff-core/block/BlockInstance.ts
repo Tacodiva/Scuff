@@ -6,21 +6,23 @@ import type { BlockType } from "./BlockType";
 
 class BlockInputInstanceInput<T extends BlockInput = BlockInput> {
     public readonly type: BlockPartInput<T>;
+    public readonly block: BlockInstance;
     public value: T;
 
-    public constructor(type: BlockPartInput<T>) {
+    public constructor(block: BlockInstance, type: BlockPartInput<T>) {
         this.type = type;
-        this.value = type.defaultValueFactory();
+        this.block = block; 
+        this.value = type.defaultValueFactory(block);
     }
 
     public set(value: BlockInput) {
-        const castValue = this.type.isValidValue(value);
-        if (!castValue) throw new Error(`Input valie ${value} not valid for input ${this.type.id}.`);
-        this.value = castValue;
+        const valid = this.type.isValidValue(this.block, value);
+        if (!valid) throw new Error(`Input valie ${value} not valid for input ${this.type.id}.`);
+        this.value = valid;
     }
 
     public reset() {
-        this.value = this.type.defaultValueFactory();
+        this.value = this.type.defaultValueFactory(this.block);
     }
 }
 
@@ -34,15 +36,16 @@ export class BlockInstance implements BlockInput {
         this.type = type;
         this._inputs = new Map();
 
-        for (let input of type.inputs) {
-            this._inputs.set(input.id, new BlockInputInstanceInput(input));
+        for (const input of type.inputs) {
+            this._inputs.set(input.id, new BlockInputInstanceInput(this, input));
         }
     }
 
     public clone(): BlockInstance {
         const clone = new BlockInstance(this.type);
-        for (const input of this._inputs.values())
+        for (const input of this._inputs.values()) {
             clone._inputs.get(input.type.id)!.value = input.value.clone();
+        }
         return clone;
     }
 

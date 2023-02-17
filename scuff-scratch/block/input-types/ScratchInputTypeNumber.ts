@@ -15,7 +15,7 @@ export class ScratchInputTypeNumber extends BlockPartInput<ScratchInputString | 
         super(id, block, () => new ScratchInputString("" + (defaultValue ?? "")));
     }
 
-    public isValidValue(value: BlockInput): ScratchInputString | BlockInstance | false {
+    public isValidValue(block: BlockInstance, value: BlockInput): ScratchInputString | BlockInstance | false {
         if (value instanceof ScratchInputString) {
             return ScratchInputTypeNumber.isValidNumber(value.value) ? value : false;
         }

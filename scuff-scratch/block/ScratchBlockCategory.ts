@@ -5,6 +5,7 @@ export class ScratchBlockCategory {
     public static readonly SOUNDS = new ScratchBlockCategory("sounds");
     public static readonly EVENTS = new ScratchBlockCategory("events");
     public static readonly CONTROL = new ScratchBlockCategory("control");
+    public static readonly SENSING = new ScratchBlockCategory("sensing");
     public static readonly OPERATORS = new ScratchBlockCategory("operators");
     public static readonly DATA = new ScratchBlockCategory("data");
 

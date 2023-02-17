@@ -95,6 +95,38 @@
                 />
                 <feComposite in="SourceGraphic" in2="outGlow" operator="over" />
             </filter>
+
+            <symbol id="scuff-block-green-flag" viewBox="0 0 24 24">
+                <path
+                    fill="#45993d"
+                    d="M20.8,3.7c-0.4-0.2-0.9-0.1-1.2,0.2c-2,1.6-4.8,1.6-6.8,0c-2.3-1.9-5.6-2.3-8.3-1V2.5c0-0.6-0.5-1-1-1
+                    s-1,0.4-1,1v18.8c0,0.5,0.5,1,1,1h0.1c0.5,0,1-0.5,1-1v-6.4c1-0.7,2.1-1.2,3.4-1.3c1.2,0,2.4,0.4,3.4,1.2c2.9,2.3,7,2.3,9.8,0
+                    c0.3-0.2,0.4-0.5,0.4-0.9V4.7C21.6,4.2,21.3,3.8,20.8,3.7z M20.5,13.9C20.5,13.9,20.5,13.9,20.5,13.9C18,16,14.4,16,11.9,14
+                    c-1.1-0.9-2.5-1.4-4-1.4c-1.2,0.1-2.3,0.5-3.4,1.1V4C7,2.6,10,2.9,12.2,4.6c2.4,1.9,5.7,1.9,8.1,0c0.1,0,0.1,0,0.2,0
+                    c0,0,0.1,0.1,0.1,0.1L20.5,13.9z"
+                />
+                <path
+                    fill="#4cbf56"
+                    d="M20.6,4.8l-0.1,9.1c0,0,0,0.1,0,0.1c-2.5,2-6.1,2-8.6,0c-1.1-0.9-2.5-1.4-4-1.4c-1.2,0.1-2.3,0.5-3.4,1.1V4
+                    C7,2.6,10,2.9,12.2,4.6c2.4,1.9,5.7,1.9,8.1,0c0.1,0,0.1,0,0.2,0C20.5,4.7,20.6,4.7,20.6,4.8z"
+                />
+            </symbol>
+
+            <symbol
+                id="scuff-block-dropdown-arrow"
+                viewBox="0 0 12.71 8.79"
+            >
+                <g opacity="0.1">
+                    <path
+                        fill="#231f20"
+                        d="M12.71,2.44A2.41,2.41,0,0,1,12,4.16L8.08,8.08a2.45,2.45,0,0,1-3.45,0L0.72,4.16A2.42,2.42,0,0,1,0,2.44,2.48,2.48,0,0,1,.71.71C1,0.47,1.43,0,6.36,0S11.75,0.46,12,.71A2.44,2.44,0,0,1,12.71,2.44Z"
+                    />
+                </g>
+                <path
+                    fill="#fff"
+                    d="M6.36,7.79a1.43,1.43,0,0,1-1-.42L1.42,3.45a1.44,1.44,0,0,1,0-2c0.56-.56,9.31-0.56,9.87,0a1.44,1.44,0,0,1,0,2L7.37,7.37A1.43,1.43,0,0,1,6.36,7.79Z"
+                />
+            </symbol>
         </defs>
         <g bind:this={elementWorkspace} />
         <text
@@ -105,7 +137,9 @@
                 >Scuff {ScuffCoreImpl.version[0]}.{ScuffCoreImpl
                     .version[1]}</tspan
             >
-            <tspan x="2" dy="2.4em">It took me 4 hours to add two scrollbars (:</tspan>
+            <tspan x="2" dy="2.4em"
+                >Green flag now actually green.</tspan
+            >
 
             <tspan x="2" dy="2.4em"
                 >Now with themes! Try out <a
@@ -145,10 +179,12 @@
             <tspan x="2" dy="1.2em"
                 >[X] Add horizontal and vertical scroll bar</tspan
             >
+            <tspan x="2" dy="1.2em">[X] Add support for icons in blocks</tspan>
             <tspan x="2" dy="1.2em">[ ] Add dropdown block inputs</tspan>
-            <tspan x="2" dy="1.2em">[ ] Add support for icons in blocks</tspan>
-            <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>
+            <tspan x="2" dy="1.2em">[ ] Fix nested block spacing</tspan>
             <tspan x="2" dy="1.2em">[ ] Undo / Redo support</tspan>
+            <tspan x="2" dy="1.2em">[ ] Make tab move to the next input</tspan>
+            <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>
             <tspan x="2" dy="1.2em">[ ] Investigate touchscreen support</tspan>
             <tspan x="2" dy="1.2em">[ ] Come up with more TODOs</tspan>
         </text>

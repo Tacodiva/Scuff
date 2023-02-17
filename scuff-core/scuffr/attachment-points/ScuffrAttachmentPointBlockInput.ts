@@ -20,7 +20,7 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
 
     public canTakeScript(script: ScuffrElementScriptRoot): boolean {
         if (script.children.length !== 1) return false;
-        return !!this.input.isValidValue(script.script.blocks[0]);
+        return !!this.input.isValidValue(this.block.block, script.script.blocks[0]);
     }
 
     public takeScript(script: ScuffrElementScriptRoot): void {

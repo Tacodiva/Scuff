@@ -45,7 +45,7 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
     }
 
     public isValueValid() : boolean {
-        return !!this.inputType.isValidValue(this._input);       
+        return !!this.inputType.isValidValue(this.parent.parent.block, this._input);       
     }
 
     public override onClick(event: MouseEvent): boolean {

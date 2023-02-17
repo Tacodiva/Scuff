@@ -1,17 +1,14 @@
 import type { Vec2 } from "../../utils/Vec2";
-import { ScuffrShape } from "./ScuffrShape";
-import type { ScuffrShapeContentLine } from "./ScuffrShapeContentLine";
-import { ScuffrShapeInputTriangle } from "./ScuffrShapeInputTriangle";
+import type { ScuffrShape } from "./ScuffrShape";
+import { ScuffrShapeInput } from "./ScuffrShapeInput";
 
-export class ScuffrShapeInputRound extends ScuffrShape {
+export class ScuffrShapeInputRound extends ScuffrShapeInput {
 
     constructor() {
         super({ x: 20, y: 32 });
     }
 
-    public override createPath(size: Vec2, lines: ScuffrShapeContentLine[]): string {
-        if (lines.length !== 1 || lines[0].modifier)
-            throw new Error("Round shaped blocks do not support multiple lines.");
+    protected _inputCreatePath(size: Vec2): string {
         let radius = size.y / 2;
         return `m ${size.x - 8} ${-radius} a ${radius} ${radius} 0 0 1 0 ${size.y} H 6 a ${radius} ${radius} 0 0 1 0 ${-size.y} z`;
     }

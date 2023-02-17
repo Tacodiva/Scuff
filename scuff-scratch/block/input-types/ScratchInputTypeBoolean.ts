@@ -8,7 +8,7 @@ export class ScratchInputTypeBoolean extends BlockPartInput<ScratchInputBoolean 
         super(id, block, () => ScratchInputBoolean.INSTANCE);
     }
 
-    public isValidValue(value: BlockInput): ScratchInputBoolean | BlockInstance | false {
+    public isValidValue(block: BlockInstance, value: BlockInput): ScratchInputBoolean | BlockInstance | false {
         if (value instanceof ScratchInputBoolean)
             return value;
         if (value instanceof BlockInstance)

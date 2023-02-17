@@ -14,6 +14,7 @@ export { ScuffrElementBlockPartBackground } from './ScuffrElementBlockPartBackgr
 export { type ScuffrElementInput } from './ScuffrElementInput';
 export { ScuffrElementInputBlank } from './ScuffrElementInputBlank';
 export { ScuffrElementInputLiteral } from './ScuffrElementInputLiteral';
+export { ScuffrElementInputDropdown } from './ScuffrElementInputDropdown'
 export { ScuffrElementBlockInstance } from './ScuffrElementBlockInstance';
 export { ScuffrElementBlockContent } from './ScuffrElementBlockContent';
 export { ScuffrElementText } from './ScuffrElementText';

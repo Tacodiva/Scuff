@@ -6,11 +6,12 @@ import type { BlockPartInput } from "./BlockPartInput";
 import { BlockScript } from "./BlockScript";
 import type { BlockInput } from "./BlockInput";
 import type { BlockInstance } from "./BlockInstance";
+import type { ScuffrElementBlockContent } from "../scuffr";
 
 
 export class BlockScriptInput extends BlockScript implements BlockInput {
 
-    public render(parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput>): ScuffrElementInput {
+    public render(parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput {
         return new ScuffrElementScriptInput(parent, this);
     }
 
