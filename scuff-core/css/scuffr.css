@@ -2,8 +2,8 @@
     fill: var(--scuff-font-fill);
     color: var(--scuff-font-fill);
     font-family: var(--scuff-block-font), Helvetica, sans-serif;
-    font-size: 12pt;
-    font-weight: normal;
+    font-size: var(--scuff-block-font-size);
+    font-weight: var(--scuff-block-font-weight);
     white-space: pre;
 }
 
@@ -114,4 +114,45 @@ input.scuff-input {
 .scuff-scrollbar-handle-active {
     fill: var(--scuff-scrollbar-hover);
     fill-opacity: 100%;
+}
+
+.scuff-dropdown {
+    transition: transform 0.25s ease 0s, opacity 0.25s ease 0s;
+    transform: translate(0px, 0px);
+    --scuff-block-font-weight: bold;
+    --scuff-block-font-size: 13px;
+    --scuff-font-fill: var(--scuff-block-font-fill);
+}
+
+.scuff-dropdown-container {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.scuff-dropdown-search {
+    height: 32px;
+    border: 1px solid var(--scuff-block-category-tertiary);
+    border-radius: 2px;
+    background-color: var(--scuff-block-category-secondary);
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 28px;
+}
+
+.scuff-dropdown-item {
+    padding: 4px 91px 4px 28px;
+    min-height: 24px;
+}
+
+.scuff-dropdown-item:hover {
+    background-color: var(--scuff-block-category-tertiary);
+}
+
+.scuff-dropdown-bg-path {
+    fill: var(--scuff-block-category-primary);
+    stroke: var(--scuff-block-category-tertiary);
+    stroke-width: var(--scuff-bg-path-stroke-width);
 }

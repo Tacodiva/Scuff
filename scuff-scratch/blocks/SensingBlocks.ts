@@ -18,6 +18,11 @@ export class SensingBlockKeyPressed extends ScratchBlockTypeTriangle {
                     ["mosaic", "left arrow"],
                     ["brightness", "any"],
                     ["ghost", "a"],
+                    ["ghost", "b"],
+                    ["ghost", "c"],
+                    ["ghost", "d"],
+                    ["ghost", "e"],
+                    ["ghost", "f"],
                 ]),
             ],
             category: ScratchBlockCategory.SENSING

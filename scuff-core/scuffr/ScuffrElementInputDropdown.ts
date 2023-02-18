@@ -56,6 +56,7 @@ export class ScuffrElementInputDropdown extends ScuffrElementBlockPartBackground
     }
 
     public override onClick(event: MouseEvent): boolean {
+        this.workspace.openDropdown(this);
         return true;
     }
 }

@@ -7,223 +7,18 @@ import type { BlockScripts } from "../block/BlockScripts";
 import type { BlockInstance } from "../block/BlockInstance";
 import type { ScuffrElementInputLiteral } from "./ScuffrElementInputLiteral";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
-import type { ScuffrAttachmentPoint } from "./attachment-points/ScuffrAttachmentPoint";
 import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
 import type { ScrollablePane } from "../editor/scrollbar/ScrollablePaneInfo";
 import { writable } from "svelte/store";
-
-abstract class ScuffrAction {
-    public readonly workspace: ScuffrWorkspace;
-
-    public constructor(workspace: ScuffrWorkspace) {
-        this.workspace = workspace;
-    }
-
-    protected end() {
-        this.workspace.endAction();
-    }
-
-    public onEnd() { }
-
-    public onMouseDown(event: MouseEvent): void {
-        event.preventDefault();
-    }
-
-    public onMouseUp(event: MouseEvent): void {
-        this.end();
-    }
-
-    public onMouseWheel(event: MouseEvent): void {
-        this.end();
-    }
-
-    public onMouseMove(event: MouseEvent): void {
-        if ((event.buttons & 1) !== 0)
-            this.end();
-    }
-}
-
-class PanningAction extends ScuffrAction {
-    public readonly startTransform: Vec2;
-    public readonly startPos: Vec2;
-
-    constructor(workspace: ScuffrWorkspace, startPos: Vec2) {
-        super(workspace);
-        this.startPos = startPos;
-        this.startTransform = workspace.blockScripts.transformPosition;
-    }
-
-    public override onMouseMove(event: MouseEvent): void {
-        this.workspace.blockScripts.transformPosition = {
-            x:
-                this.startTransform.x +
-                (event.x - this.startPos.x) / this.workspace.blockScripts.transformScale,
-            y:
-                this.startTransform.y +
-                (event.y - this.startPos.y) / this.workspace.blockScripts.transformScale,
-        };
-        this.workspace.updateGlobalTransform();
-    }
-}
-
-class ScriptDragAction extends ScuffrAction {
-    public static readonly ATTACH_RADIUS = 60;
-
-    public readonly script: ScuffrElementScriptRoot;
-    public readonly offset: Vec2;
-    public readonly startPos: Vec2;
-
-    private _attachmentPoint: ScuffrAttachmentPoint | null;
-
-    public constructor(workspace: ScuffrWorkspace, script: ScuffrElementScriptRoot, startPos: Vec2) {
-        super(workspace);
-        this.startPos = startPos;
-        this.script = script;
-        const startPosWorkspace = this.workspace.toWorkspaceCoords(startPos);
-        this.offset = {
-            x: script.translationX - startPosWorkspace.x,
-            y: script.translationY - startPosWorkspace.y,
-        };
-        this._attachmentPoint = null;
-        this.script.dom.classList.add("scuff-block-dragging");
-    }
-
-    public override onMouseMove(event: MouseEvent): void {
-        const scriptCoords = this.workspace.toWorkspaceCoords(event);
-        scriptCoords.x += this.offset.x;
-        scriptCoords.y += this.offset.y;
-
-        this.script.translationSelf = scriptCoords;
-        this.script.updateTranslation();
-
-        let newPoint = this._findAttachmentPoint();
-
-        if (this._attachmentPoint !== newPoint && (
-            (!this._attachmentPoint || !newPoint) || (
-                this._attachmentPoint.translation.x !== newPoint.translation.x ||
-                this._attachmentPoint.translation.y !== newPoint.translation.y
-            ))) {
-            if (this._attachmentPoint)
-                this._attachmentPoint.unhighlight(this.script);
-            this._attachmentPoint = newPoint;
-            if (this._attachmentPoint)
-                this._attachmentPoint.highlight(this.script);
-        }
-
-        this.workspace.findWorkspaceCorners();
-    }
-
-    public override onEnd(): void {
-        this.script.dom.classList.remove("scuff-block-dragging");
-        if (this._attachmentPoint) {
-            this._attachmentPoint.unhighlight(this.script);
-            this._attachmentPoint.takeScript(this.script);
-        }
-    }
-
-    private _findAttachmentPoint(): ScuffrAttachmentPoint | null {
-        let closestDist = ScriptDragAction.ATTACH_RADIUS * ScriptDragAction.ATTACH_RADIUS;
-        let closest = null;
-        for (const pointList of this.workspace.attachmentPoints) {
-            if (pointList.root === this.script) continue;
-            for (const targetPoint of pointList.list) {
-                const delta = targetPoint.calculateDelta(this.script);
-                const dist = delta.x * delta.x + delta.y * delta.y;
-                if (dist <= closestDist
-                    && targetPoint.canTakeScript(this.script)) {
-                    closestDist = dist;
-                    closest = targetPoint;
-                }
-            }
-        }
-        return closest;
-    }
-}
-
-class LiteralInputEditAction extends ScuffrAction {
-    public readonly scuffrInput: ScuffrElementInputLiteral;
-    public readonly svgForeignObject: SVGForeignObjectElement;
-    public readonly htmlInput: HTMLInputElement;
-
-    public readonly initalValue: string;
-    public inputValid: boolean;
-
-    public constructor(workspace: ScuffrWorkspace, input: ScuffrElementInputLiteral) {
-        super(workspace);
-        this.scuffrInput = input;
-        this.initalValue = input.getValue();
-        this.inputValid = true;
-
-        this.scuffrInput.content.dom.style.display = "none";
-
-        this.svgForeignObject = this.scuffrInput.dom.appendChild(document.createElementNS(SVG_NS, "foreignObject"));
-        this.svgForeignObject.setAttribute("height", "1.2em");
-        if (navigator.userAgent.toLowerCase().indexOf('firefox') !== -1) {
-            // If on firefox...
-            this.svgForeignObject.setAttribute("y", "-0.6em");
-        } else {
-            // Otherwise...
-            this.svgForeignObject.setAttribute("y", "-0.7em");
-        }
-        this.svgForeignObject.setAttribute("x", "-0.1em");
-
-        this.scuffrInput.shapeDOM.classList.add("scuff-input-selected");
-        this._updateDOM();
-
-        this.htmlInput = this.svgForeignObject.appendChild(document.createElement("input"));
-        this.htmlInput.classList.add("scuff-input", "scuff-block-text");
-        this.htmlInput.value = this.scuffrInput.content.text;
-        this.htmlInput.oninput = this._onInputChange;
-        this.htmlInput.focus();
-        this.htmlInput.select();
-    }
-
-    private _updateDOM() {
-        this.svgForeignObject.setAttribute("transform", `translate(${this.scuffrInput.content.translationX}, ${this.scuffrInput.content.translationY})`);
-        this.svgForeignObject.setAttribute("width", (this.scuffrInput.content.dimensions.x + 5) + "px");
-        let isValueValid = this.scuffrInput.isValueValid();
-        if (this.inputValid && !isValueValid) {
-            this.scuffrInput.shapeDOM.classList.remove("scuff-input-selected");
-            this.scuffrInput.shapeDOM.classList.add("scuff-input-invalid");
-            this.inputValid = false;
-        } else if (!this.inputValid && isValueValid) {
-            this.scuffrInput.shapeDOM.classList.add("scuff-input-selected");
-            this.scuffrInput.shapeDOM.classList.remove("scuff-input-invalid");
-            this.inputValid = true;
-        }
-    }
-
-    private _onInputChange = () => {
-        this.scuffrInput.setValue(this.htmlInput.value);
-        this._updateDOM();
-    }
-
-    public override onEnd(): void {
-        if (!this.inputValid) this.scuffrInput.setValue(this.initalValue);
-        this.svgForeignObject.remove();
-        this.scuffrInput.content.dom.style.display = "";
-        this.scuffrInput.shapeDOM.classList.remove("scuff-input-selected");
-        this.scuffrInput.shapeDOM.classList.remove("scuff-input-invalid");
-    }
-
-    public override onMouseMove(event: MouseEvent): void {
-        if (event.target !== this.htmlInput)
-            super.onMouseMove(event);
-    }
-
-    public override onMouseDown(event: MouseEvent): void {
-        if (event.target !== this.htmlInput)
-            super.onMouseDown(event);
-    }
-
-    public override onMouseUp(event: MouseEvent): void {
-        if (event.target !== this.htmlInput)
-            super.onMouseUp(event);
-    }
-}
+import type { ScuffrElementInputDropdown } from "./ScuffrElementInputDropdown";
+import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
+import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
+import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";
+import { ScuffrInteractionDropdown } from "./interactions/ScuffrInteractionDropdown";
+import type { ScuffrInteraction } from "./interactions/ScuffrInteraction";
 
 export class ScuffrWorkspace extends ScuffrElementParent {
     public parent: null;
@@ -251,7 +46,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
 
     private readonly _textSizeCache: ScuffrTextSizeCache;
 
-    private _action: ScuffrAction | null;
+    private _interaction: ScuffrInteraction | null;
     private _mouseDownPos: Vec2 | null;
 
     public constructor(root: SVGSVGElement, svgWorkspace: SVGGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
@@ -276,7 +71,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
 
         this.svgDebug = this.svgScriptContainer.appendChild(document.createElementNS(SVG_NS, "g"));
 
-        this._action = null;
+        this._interaction = null;
         this._mouseDownPos = null;
 
         this.svgScriptTranformScale = root.createSVGTransform();
@@ -422,13 +217,17 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     public dragRenderedScript(script: ScuffrElementScriptRoot, mousePos: Vec2) {
-        this.startAction(new ScriptDragAction(this, script, mousePos));
+        this.startInteraction(new ScuffrInteractionDragScript(this, script, mousePos));
         // Move the script to the bottom of the container so it renders on top of everything else
         this.svgScriptContainer.appendChild(script.dom);
     }
 
     public editLiteralInput(input: ScuffrElementInputLiteral) {
-        this.startAction(new LiteralInputEditAction(this, input));
+        this.startInteraction(new ScuffrInteractionLiteralEdit(this, input));
+    }
+
+    public openDropdown(input: ScuffrElementInputDropdown) {
+        this.startInteraction(new ScuffrInteractionDropdown(this, input));
     }
 
     public toWorkspaceCoords(pos: Vec2): Vec2 {
@@ -450,7 +249,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     public override onDrag(startPosition: Vec2): boolean {
-        this.startAction(new PanningAction(this, startPosition));
+        this.startInteraction(new ScuffrInteractionPanning(this, startPosition));
         return true;
     }
 
@@ -539,15 +338,15 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         window.removeEventListener("wheel", this.eventWheelListener);
     }
 
-    public endAction() {
-        if (!this._action) return;
-        this._action.onEnd();
-        this._action = null;
+    public endInteraction() {
+        if (!this._interaction) return;
+        this._interaction.onEnd();
+        this._interaction = null;
     }
 
-    public startAction(action: ScuffrAction) {
-        this.endAction();
-        this._action = action;
+    public startInteraction(interaction: ScuffrInteraction) {
+        this.endInteraction();
+        this._interaction = interaction;
     }
 
     private _dispatch<T>(element: any, listenerInvoker: (element: ScuffrElement) => boolean): boolean {
@@ -571,20 +370,20 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     private readonly eventMouseDownListener = (event: MouseEvent) => {
-        if (this._action) {
-            this._action.onMouseDown(event);
+        if (this._interaction) {
+            this._interaction.onMouseDown(event);
         }
-        if (!this._action) {
+        if (!this._interaction) {
             event.preventDefault();
         }
         this._mouseDownPos = event;
     }
 
     private readonly eventMouseUpListener = (event: MouseEvent) => {
-        if (this._action) {
-            this._action.onMouseUp(event);
+        if (this._interaction) {
+            this._interaction.onMouseUp(event);
         }
-        if (!this._action && this._mouseDownPos) {
+        if (!this._interaction && this._mouseDownPos) {
             if (this._dispatch(event.target, (element) => element.onClick(event)))
                 event.preventDefault();
         }
@@ -592,10 +391,10 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     private readonly eventMouseMoveListener = (event: MouseEvent) => {
-        if (this._action) {
-            this._action.onMouseMove(event);
+        if (this._interaction) {
+            this._interaction.onMouseMove(event);
         }
-        if (!this._action) {
+        if (!this._interaction) {
             if ((event.buttons & 1) !== 0 && this._mouseDownPos) {
                 // You can move the mouse a small amount before starting a drag
                 //  just incase you intended a click not a drag.
@@ -607,18 +406,18 @@ export class ScuffrWorkspace extends ScuffrElementParent {
                     this._mouseDownPos = null;
                 }
             }
-            if (this._action) {
-                (this._action as ScuffrAction).onMouseMove(event);
+            if (this._interaction) {
+                (this._interaction as ScuffrInteraction).onMouseMove(event);
             }
         }
         // this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {
-        if (this._action) {
-            this._action.onMouseWheel(event);
+        if (this._interaction) {
+            this._interaction.onMouseWheel(event);
         }
-        if (!this._action) {
+        if (!this._interaction) {
             if (this._dispatch(event.target, (element) => element.onWheel(event)))
                 event.preventDefault();
             else {
