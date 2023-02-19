@@ -127,8 +127,11 @@ input.scuff-input {
 .scuff-dropdown-container {
     width: 100%;
     height: 100%;
+}
+
+.scuff-dropdown-option-container {
+    height: 100%;
     overflow-y: scroll;
-    overflow-x: hidden;
 }
 
 .scuff-dropdown-search {
@@ -143,12 +146,20 @@ input.scuff-input {
 }
 
 .scuff-dropdown-item {
-    padding: 4px 91px 4px 28px;
+    padding: 4px 91px 4px 0;
     min-height: 24px;
 }
 
-.scuff-dropdown-item:hover {
+.scuff-dropdown-item-highlight {
     background-color: var(--scuff-block-category-tertiary);
+}
+
+.scuff-dropdown-item > svg {
+    width: 14px;
+    height: 14px;
+    padding-left: 7px;
+    padding-right: 7px;
+    translate: 0 4px;
 }
 
 .scuff-dropdown-bg-path {

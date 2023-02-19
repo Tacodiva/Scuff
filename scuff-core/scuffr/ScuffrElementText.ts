@@ -17,6 +17,11 @@ export class ScuffrElementText extends ScuffrElement {
         this._textNode = null;
     }
 
+    public setText(text: string) {
+        this.text = text;
+        this.update(true);
+    }
+
     public override update(propagateUp: boolean): void {
         if (this._textNode) this._textNode.nodeValue = this.text;
         else this._textNode = document.createTextNode(this.text);

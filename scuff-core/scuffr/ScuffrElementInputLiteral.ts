@@ -35,9 +35,7 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
 
     public setValue(value: string) {
         this._input.value = value;
-        this.content.text = value;
-        this.content.update(false);
-        this.update(true);
+        this.content.setText(value);
     }
 
     public getValue() {

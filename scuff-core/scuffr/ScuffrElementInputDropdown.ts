@@ -28,7 +28,7 @@ export class ScuffrElementInputDropdown extends ScuffrElementBlockPartBackground
     private _parent: ScuffrElementBlockContent;
     public override get parent(): ScuffrElementBlockContent { return this._parent; }
     public readonly inputType: BlockPartInput;
-    public readonly value: BlockDropdownOption;
+    public value: BlockDropdownOption;
 
     public constructor(parent: ScuffrElementBlockContent, shape: ScuffrShape, typeClass: string | null, inputType: BlockPartInput, value: BlockDropdownOption) {
         super(parent.root, parent, {
@@ -48,6 +48,12 @@ export class ScuffrElementInputDropdown extends ScuffrElementBlockPartBackground
 
     public asInput(): BlockInput {
         return this.value;
+    }
+
+    public setValue(value: BlockDropdownOption) {
+        this.value = value;
+        this._parent.parent.block.setInput(this.inputType, value);
+        this.content.children[0].setText(value.text);
     }
 
     public setParent(parentRef: ScuffrBlockReference<BlockPartInput<BlockInput>, ScuffrElementBlockContent>): void {

@@ -123,6 +123,14 @@
                     d="M6.36,7.79a1.43,1.43,0,0,1-1-.42L1.42,3.45a1.44,1.44,0,0,1,0-2c0.56-.56,9.31-0.56,9.87,0a1.44,1.44,0,0,1,0,2L7.37,7.37A1.43,1.43,0,0,1,6.36,7.79Z"
                 />
             </symbol>
+
+            <symbol id="scuff-block-tick" viewBox="0 0 512 457.57">
+                <path
+                    style="fill-rule:evenodd;"
+                    class="cls-1"
+                    d="M0,220.57c100.43-1.33,121-5.2,191.79,81.5,54.29-90,114.62-167.9,179.92-235.86C436-.72,436.5-.89,512,.24,383.54,143,278.71,295.74,194.87,457.57,150,361.45,87.33,280.53,0,220.57Z"
+                />
+            </symbol>
         </defs>
         <g bind:this={elementWorkspace} />
         <text
@@ -133,7 +141,9 @@
                 >Scuff {ScuffCoreImpl.version[0]}.{ScuffCoreImpl
                     .version[1]}</tspan
             >
-            <tspan x="2" dy="2.4em">Please ignore the half finished dropdown menus.</tspan>
+            <tspan x="2" dy="2.4em"
+                >Dropdown menus!</tspan
+            >
 
             <tspan x="2" dy="2.4em"
                 >Now with themes! Try out <a
@@ -174,7 +184,7 @@
                 >[X] Add horizontal and vertical scroll bar</tspan
             >
             <tspan x="2" dy="1.2em">[X] Add support for icons in blocks</tspan>
-            <tspan x="2" dy="1.2em">[ ] Add dropdown block inputs</tspan>
+            <tspan x="2" dy="1.2em">[X] Add dropdown block inputs</tspan>
             <tspan x="2" dy="1.2em">[ ] Fix nested block spacing</tspan>
             <tspan x="2" dy="1.2em">[ ] Undo / Redo support</tspan>
             <tspan x="2" dy="1.2em">[ ] Make tab move to the next input</tspan>
