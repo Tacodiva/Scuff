@@ -19,13 +19,13 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
     public readonly htmlOptionContainer: HTMLDivElement;
     public readonly htmlInput: HTMLInputElement;
 
-    public constructor(workspace: ScuffrWorkspace, dropdown: ScuffrElementInputDropdown) {
-        super(workspace);
+    public constructor(dropdown: ScuffrElementInputDropdown) {
+        super(dropdown.workspace);
         this.scuffrInput = dropdown;
 
         this.svgMenu = document.body.appendChild(document.createElementNS(SVG_NS, "svg"));
         this.svgMenu.classList.add("scuff-dropdown");
-        this.svgMenu.classList.add(...dropdown.parent.parent.shape.categoryClass?.split(" ") ?? []);
+        this.svgMenu.classList.add(...dropdown.parent.parent.shape.categoryClasses);
 
         this.svgBackground = this.svgMenu.appendChild(document.createElementNS(SVG_NS, "path"));
         this.svgMenuContent = this.svgMenu.appendChild(document.createElementNS(SVG_NS, "foreignObject"));
@@ -105,13 +105,13 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
     }
 
     private _updateOptions() {
-        const search = this.htmlInput.value.trim();
+        const search = this.htmlInput.value.trim().toLowerCase();
         this.displayedOptions.length = 0;
         if (search.length === 0) {
             this.displayedOptions.push(...this.allOptions);
         } else {
             for (const option of this.allOptions) {
-                if (option.text.indexOf(search) !== -1)
+                if (option.text.toLowerCase().indexOf(search) !== -1)
                     this.displayedOptions.push(option);
             }
             this.displayedOptions.sort((a, b) => a.text.length - b.text.length);

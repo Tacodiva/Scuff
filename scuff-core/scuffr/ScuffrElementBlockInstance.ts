@@ -9,6 +9,8 @@ import { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
 import type { ScuffrBlockReference, ScuffrBlockReferenceParent } from "./ScuffrBlockReference";
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
+import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionContextMenu";
+import { l10n } from "../l10n";
 
 export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBackground<ScuffrElementBlockContent> implements ScuffrElementBlock, ScuffrElementInput {
     public readonly block: BlockInstance;
@@ -79,5 +81,77 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBackground
 
     public shouldAttachDown(): boolean {
         return this.block.type.canStackDown(this.block);
+    }
+
+    public override onRightClick(event: MouseEvent): boolean {
+        this.workspace.startInteraction(new ScuffrInteractionContextMenu(this.workspace, event, [
+            {
+                type: "action",
+                text: l10n.raw("Duplicate"),
+                action: (event) => {
+                    this.workspace.dragBlock(this.block.clone(), event);
+                }
+            },
+            {
+                type: "action",
+                text: l10n.raw("Delete Block"),
+                action() {
+                    console.log("Delete")
+                }
+            },
+            {
+                type: "submenu",
+                text: l10n.raw("Submenu 1"),
+                items: [
+                    {
+                        type: "action",
+                        text: l10n.raw("Delete Block"),
+                        action() {
+                            console.log("Delete")
+                        }
+                    },
+                    {
+                        type: "divider"
+                    },
+                    {
+                        type: "action",
+                        text: l10n.raw("Duplicate"),
+                        disabled: true,
+                        action: (event) => {
+                            console.log("Dup")
+                        }
+                    },
+                    {
+                        type: "submenu",
+                        text: l10n.raw("Submenu 2"),
+                        items: [
+                            {
+                                type: "action",
+                                text: l10n.raw("Delete Block"),
+                                action() {
+                                    console.log("Delete")
+                                }
+                            },
+                            {
+                                type: "action",
+                                text: l10n.raw("Duplicate"),
+                                disabled: true,
+                                action: (event) => {
+                                    console.log("Dup")
+                                }
+                            },
+                            {
+                                type: "action",
+                                text: l10n.raw("Something else"),
+                                action() {
+                                    console.log("Delete")
+                                }
+                            },
+                        ],
+                    },
+                ]
+            }
+        ], [...this.shape.categoryClasses, "scuff-context-menu-block"]));
+        return true;
     }
 }

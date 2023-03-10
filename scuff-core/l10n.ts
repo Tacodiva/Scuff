@@ -11,7 +11,7 @@ export const l10n = {
 
 export class l10nString {
 
-    private readonly id: string;
+    public readonly id: string;
     private readonly translate: boolean;
 
     constructor(id: string, translate: boolean) {

@@ -8,6 +8,7 @@ import type { BlockInputLiteral } from "../block/BlockInputLiteral";
 import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
 import { ScuffrShapeInputRound } from "./shape/ScuffrShapeInputRound";
 import type { ScuffrShape } from "./shape";
+import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";
 
 export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<ScuffrElementText> implements ScuffrElementInput {
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
@@ -20,8 +21,8 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
     public constructor(parent: ScuffrElementBlockContent, input: BlockPartInput, value: BlockInputLiteral) {
         super(parent.root, parent, {
             shape: ScuffrElementInputLiteral.shape,
-            categoryClass: null,
-            typeClass: "scuff-input"
+            categoryClasses: [],
+            typeClasses: ["scuff-input"]
         });
         this._parent = parent;
         this.inputType = input;
@@ -42,13 +43,13 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
         return this.content.text;
     }
 
-    public isValueValid() : boolean {
-        return !!this.inputType.isValidValue(this.parent.parent.block, this._input);       
+    public isValueValid(): boolean {
+        return !!this.inputType.isValidValue(this.parent.parent.block, this._input);
     }
 
     public override onClick(event: MouseEvent): boolean {
         event.preventDefault();
-        this.workspace.editLiteralInput(this);
+        this.workspace.startInteraction(new ScuffrInteractionLiteralEdit(this));
         return true;
     }
 

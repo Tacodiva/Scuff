@@ -4,6 +4,7 @@ import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
 import Target from "./Target";
 import App from './editor/EditorComponent.svelte';
 import type { BlockScriptRoot } from "./block/BlockScriptRoot";
+import type { ScuffrWorkspace } from "./scuffr";
 
 type Version = [number, number];
 
@@ -37,7 +38,7 @@ export interface ScuffCore {
 
 export class ScuffCoreImpl implements ScuffCore {
 
-    public static readonly version: Version = [0, 16];
+    public static readonly version: Version = [0, 17];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;

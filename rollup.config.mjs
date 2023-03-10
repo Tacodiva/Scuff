@@ -58,6 +58,9 @@ export default [{
 		}
 	],
 	plugins: [
+		svelte({
+			preprocess: sveltePreprocess()
+		}),
 		dts()
 	]
 },

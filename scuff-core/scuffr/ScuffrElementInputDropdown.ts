@@ -9,6 +9,7 @@ import { ScuffrElementText } from "./ScuffrElementText";
 import type { BlockDropdownOption, BlockPartInputDropdown } from "../block";
 import { ScuffrElement, ScuffrElementParent } from ".";
 import { ScuffrElementIcon } from "./ScuffrElementIcon";
+import { ScuffrInteractionDropdown } from "./interactions/ScuffrInteractionDropdown";
 
 class Content extends ScuffrElementParent {
     public children: readonly [ScuffrElementText, ScuffrElementIcon];
@@ -30,11 +31,11 @@ export class ScuffrElementInputDropdown extends ScuffrElementBlockPartBackground
     public readonly inputType: BlockPartInput;
     public value: BlockDropdownOption;
 
-    public constructor(parent: ScuffrElementBlockContent, shape: ScuffrShape, typeClass: string | null, inputType: BlockPartInput, value: BlockDropdownOption) {
+    public constructor(parent: ScuffrElementBlockContent, shape: ScuffrShape, typeClasses: string[], inputType: BlockPartInput, value: BlockDropdownOption) {
         super(parent.root, parent, {
             shape: shape,
-            categoryClass: null,
-            typeClass: typeClass
+            categoryClasses: [],
+            typeClasses
         });
         this._parent = parent;
         this.inputType = inputType;
@@ -62,7 +63,7 @@ export class ScuffrElementInputDropdown extends ScuffrElementBlockPartBackground
     }
 
     public override onClick(event: MouseEvent): boolean {
-        this.workspace.openDropdown(this);
+        this.workspace.startInteraction(new ScuffrInteractionDropdown(this))
         return true;
     }
 }

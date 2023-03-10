@@ -154,7 +154,7 @@ input.scuff-input {
     background-color: var(--scuff-block-category-tertiary);
 }
 
-.scuff-dropdown-item > svg {
+.scuff-dropdown-item>svg {
     width: 14px;
     height: 14px;
     padding-left: 7px;
@@ -166,4 +166,79 @@ input.scuff-input {
     fill: var(--scuff-block-category-primary);
     stroke: var(--scuff-block-category-tertiary);
     stroke-width: var(--scuff-bg-path-stroke-width);
+}
+
+.scuff-context-menu {
+    position: absolute;
+    transition: transform 0.25s ease 0s, opacity 0.25s ease 0s;
+    transform: translate(0px, 0px);
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.4));
+}
+
+.scuff-context-menu-bg-path {
+    fill: var(--scuff-context-menu-background);
+    stroke: var(--scuff-context-menu-stroke);
+    stroke-width: var(--scuff-bg-path-stroke-width, 1px);
+}
+
+.scuff-context-menu-block {
+    --scuff-context-menu-background: var(--scuff-block-category-primary);
+    --scuff-context-menu-stroke: var(--scuff-block-category-tertiary);
+    --scuff-context-menu-selection: var(--scuff-block-category-tertiary);
+    --scuff-context-menu-text: var(--scuff-block-font-fill);
+
+}
+
+.scuff-context-menu-container {
+    width: 100%;
+    height: 100%;
+    --scuff-block-font-size: 13px;
+    --scuff-font-fill: var(--scuff-context-menu-text);
+}
+
+.scuff-context-menu-item {
+    padding: 4px 28px;
+    height: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    height: min-content;
+    display: flex;
+    color: var(--scuff-context-menu-text);
+}
+
+.scuff-context-menu-item>div {
+    width: min-content;
+}
+
+.scuff-context-menu-item-submenu {
+    padding: 4px 12px 4px 28px;
+}
+
+.scuff-context-menu-item-submenu>p {
+    margin: 0 0 0 auto;
+    font-weight: bold;
+}
+
+.scuff-context-menu-item-disabled {
+    color: var(--scuff-context-menu-stroke);
+}
+
+.scuff-context-menu-divider {
+    padding: 2px 0px 5px 0;
+}
+
+.scuff-context-menu-divider>hr {
+    margin: 0;
+    height: 1px;
+    color: var(--scuff-context-menu-stroke);
+    background-color: var(--scuff-context-menu-stroke);
+    border: none;
+}
+
+.scuff-context-menu-item:hover {
+    background-color: var(--scuff-context-menu-selection);
+}
+
+.scuff-context-menu-item-disabled:hover {
+    background-color: transparent;
 }

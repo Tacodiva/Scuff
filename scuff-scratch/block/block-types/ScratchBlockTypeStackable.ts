@@ -40,8 +40,8 @@ export abstract class ScratchBlockTypeStackable extends ScratchBlockType {
     public getBackground(block: BlockInstance): ScuffrColouredShape {
         return {
             shape: this.getBackgroundShape(block),
-            categoryClass: this.category.cssClass,
-            typeClass: "scuff-block"
+            categoryClasses: [this.category.cssClass],
+            typeClasses: ["scuff-block"]
         };
     }
 

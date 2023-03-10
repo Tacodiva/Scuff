@@ -17,7 +17,7 @@ export abstract class ScuffrElementShape<TContent extends ScuffrElement = Scuffr
 
     public constructor(parent: ScuffrElementParent, shape: ScuffrColouredShape) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
-        this.dom.classList.add(...shape.categoryClass?.split(" ") ?? [], ...shape.typeClass?.split(" ") ?? []);
+        this.dom.classList.add(...shape.categoryClasses, ...shape.typeClasses);
         this.shapeDOM = this.dom.appendChild(shape.shape.createElement())
         this.shape = shape;
         this.children = [this.createContent()];

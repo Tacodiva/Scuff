@@ -10,8 +10,8 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
     public readonly initalValue: string;
     public inputValid: boolean;
 
-    public constructor(workspace: ScuffrWorkspace, input: ScuffrElementInputLiteral) {
-        super(workspace);
+    public constructor(input: ScuffrElementInputLiteral) {
+        super(input.workspace);
         this.scuffrInput = input;
         this.initalValue = input.getValue();
         this.inputValid = true;

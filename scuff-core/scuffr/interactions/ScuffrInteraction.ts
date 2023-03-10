@@ -13,11 +13,11 @@ export abstract class ScuffrInteraction {
 
     public onEnd() { }
 
-    public onMouseDown(event: MouseEvent): void {
+    public onMouseDown(event: MouseEvent): boolean | void {
         event.preventDefault();
     }
 
-    public onMouseUp(event: MouseEvent): void {
+    public onMouseUp(event: MouseEvent): boolean | void {
         this.end();
     }
 

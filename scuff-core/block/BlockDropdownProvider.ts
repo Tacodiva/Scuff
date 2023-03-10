@@ -7,5 +7,5 @@ import type { BlockPartInput } from "./BlockPartInput";
 
 export interface BlockDropdownProvider {
     renderOption(option: BlockDropdownOption, parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput;
-    getOptions(block: BlockInstance) : BlockDropdownOption[];
+    getOptions(block: BlockInstance): BlockDropdownOption[];
 }

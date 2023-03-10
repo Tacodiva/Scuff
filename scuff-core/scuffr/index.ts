@@ -19,5 +19,6 @@ export { ScuffrElementBlockInstance } from './ScuffrElementBlockInstance';
 export { ScuffrElementBlockContent } from './ScuffrElementBlockContent';
 export { ScuffrElementText } from './ScuffrElementText';
 export { ScuffrElementDummy } from './ScuffrElementDummy';
+export { ScuffrWorkspace } from './ScuffrWorkspace';
 
 export * from './shape';

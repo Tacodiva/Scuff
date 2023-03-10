@@ -16,6 +16,11 @@
 	--scuff-block-decor-dark: #00000098;
 	--scuff-block-decor-light: #FFD5E6;
 
+	--scuff-context-menu-text: #fff;
+	--scuff-context-menu-background: #202020;
+	--scuff-context-menu-stroke: #444;
+	--scuff-context-menu-selection: #4d97ff;
+
 	--scuff-block-ghost: #0008;
 	--scuff-scrollbar: #444;
 	--scuff-scrollbar-hover: #4d97ff;
@@ -25,5 +30,11 @@
 	--scuff-workspace-bg-main: #f9f9f9;
 	--scuff-workspace-bg-dots: #ddd;
 	--scuff-workspace-text: #111;
+
 	--scuff-scrollbar: #bbb;
+
+	--scuff-context-menu-text: #111;
+	--scuff-context-menu-background: #fff;
+	--scuff-context-menu-stroke: #ccc;
+	--scuff-context-menu-selection: #d6e9f8;
 }

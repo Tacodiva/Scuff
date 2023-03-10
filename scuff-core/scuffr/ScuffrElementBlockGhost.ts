@@ -23,8 +23,8 @@ export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDum
         super(parentRef.parent,
             {
                 shape: sourceBlock.getBackground().shape,
-                categoryClass: sourceBlock.shape.categoryClass,
-                typeClass: "scuff-block-ghost"
+                categoryClasses: sourceBlock.shape.categoryClasses,
+                typeClasses: ["scuff-block-ghost"]
             });
         this.parentRef = parentRef;
         this.sourceBlock = sourceBlock;

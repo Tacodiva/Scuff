@@ -5,7 +5,6 @@ import { ScuffrElement } from "./ScuffrElement";
 import { ScuffrElementParent } from "./ScuffrElementParent";
 import type { BlockScripts } from "../block/BlockScripts";
 import type { BlockInstance } from "../block/BlockInstance";
-import type { ScuffrElementInputLiteral } from "./ScuffrElementInputLiteral";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
 import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
@@ -13,12 +12,11 @@ import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttach
 import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
 import type { ScrollablePane } from "../editor/scrollbar/ScrollablePaneInfo";
 import { writable } from "svelte/store";
-import type { ScuffrElementInputDropdown } from "./ScuffrElementInputDropdown";
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
 import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
-import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";
-import { ScuffrInteractionDropdown } from "./interactions/ScuffrInteractionDropdown";
 import type { ScuffrInteraction } from "./interactions/ScuffrInteraction";
+import { ScuffrInteractionContextMenu, type ScuffrContextMenuItem } from "./interactions/ScuffrInteractionContextMenu";
+import { l10n, l10nString } from "../l10n";
 
 export class ScuffrWorkspace extends ScuffrElementParent {
     public parent: null;
@@ -194,40 +192,26 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return true;
     }
 
-    public dragBlock(block: BlockInstance, mousePos: Vec2) {
+    public dragBlock(block: BlockInstance, mousePos: Vec2, offset?: Vec2) {
         const script = new BlockScriptRoot([block]);
         const renderedScript = this.addScript(script);
         let pos = this.toWorkspaceCoords(mousePos);
-        pos.x -= renderedScript.dimensions.x / 2;
-        pos.y -= renderedScript.dimensions.y / 2;
+        if (offset) {
+            pos.x += offset.x;
+            pos.y += offset.y;
+        } else {
+            pos.x -= renderedScript.dimensions.x / 2;
+        }
         renderedScript.translationSelf = pos;
         renderedScript.updateTranslation();
-        this.dragRenderedScript(renderedScript, mousePos);
+        this.startInteraction(new ScuffrInteractionDragScript(renderedScript, mousePos));
     }
 
     public dragRenderedBlock(block: ScuffrElementBlockInstance, mousePos: Vec2) {
         const translation = block.getAbsoluteTranslation();
         const renderedScript = new ScuffrElementScriptRoot(this, null, [block], { x: translation.x + block.leftOffset, y: translation.y });
         this.addRenderedScript(renderedScript);
-        this.dragRenderedScript(renderedScript, mousePos);
-    }
-
-    public dragScript(script: BlockScriptRoot, mousePos: Vec2) {
-        this.dragRenderedScript(this.getRenderedScript(script), mousePos);
-    }
-
-    public dragRenderedScript(script: ScuffrElementScriptRoot, mousePos: Vec2) {
-        this.startInteraction(new ScuffrInteractionDragScript(this, script, mousePos));
-        // Move the script to the bottom of the container so it renders on top of everything else
-        this.svgScriptContainer.appendChild(script.dom);
-    }
-
-    public editLiteralInput(input: ScuffrElementInputLiteral) {
-        this.startInteraction(new ScuffrInteractionLiteralEdit(this, input));
-    }
-
-    public openDropdown(input: ScuffrElementInputDropdown) {
-        this.startInteraction(new ScuffrInteractionDropdown(this, input));
+        this.startInteraction(new ScuffrInteractionDragScript(renderedScript, mousePos));
     }
 
     public toWorkspaceCoords(pos: Vec2): Vec2 {
@@ -250,6 +234,99 @@ export class ScuffrWorkspace extends ScuffrElementParent {
 
     public override onDrag(startPosition: Vec2): boolean {
         this.startInteraction(new ScuffrInteractionPanning(this, startPosition));
+        return true;
+    }
+
+    public override onRightClick(event: MouseEvent): boolean {
+        this.startInteraction(new ScuffrInteractionContextMenu(this, event, [
+            {
+                type: "action",
+                text: l10n.raw("Undo"),
+                action() {
+                    console.log("Undo");
+                }
+            },
+            {
+                type: "action",
+                text: l10n.raw("Redo"),
+                action() {
+                    console.log("Redo");
+                }
+            },
+            {
+                type: "divider"
+            },
+            {
+                type: "submenu",
+                text: l10n.raw("Submenu 1"),
+                items: [
+                    {
+                        type: "action",
+                        text: l10n.raw("Delete Block"),
+                        action() {
+                            console.log("Delete")
+                        }
+                    },
+                    {
+                        type: "divider"
+                    },
+                    {
+                        type: "action",
+                        text: l10n.raw("Duplicate"),
+                        disabled: true,
+                        action: (event) => {
+                            console.log("Dup")
+                        }
+                    },
+                    {
+                        type: "submenu",
+                        text: l10n.raw("Submenu 2"),
+                        items: [
+                            {
+                                type: "action",
+                                text: l10n.raw("Delete Block"),
+                                action() {
+                                    console.log("Delete")
+                                }
+                            },
+                            {
+                                type: "action",
+                                text: l10n.raw("Duplicate"),
+                                disabled: true,
+                                action: (event) => {
+                                    console.log("Dup")
+                                }
+                            },
+                            {
+                                type: "action",
+                                text: l10n.raw("Something else"),
+                                action() {
+                                    console.log("Delete")
+                                }
+                            },
+                        ],
+                    },
+                    {
+                        type: "divider"
+                    },
+                    {
+                        type: "action",
+                        text: l10n.raw("Something really really really long"),
+                        action() {
+                            console.log("Delete")
+                        }
+                    },
+                ],
+            },
+            {
+                type: "action",
+                text: l10n.raw("Clean up Blocks"),
+                action() {
+                    console.log("Clean up Blocks");
+                },
+                disabled: true
+            },
+        ], []));
         return true;
     }
 
@@ -329,6 +406,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
         window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
         window.addEventListener("wheel", this.eventWheelListener, { passive: false });
+        window.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
     }
 
     public removeListeners() {
@@ -336,6 +414,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         window.removeEventListener("mouseup", this.eventMouseUpListener);
         window.removeEventListener("mousemove", this.eventMouseMoveListener);
         window.removeEventListener("wheel", this.eventWheelListener);
+        window.removeEventListener("contextmenu", this.eventContextMenuListener);
     }
 
     public endInteraction() {
@@ -370,18 +449,24 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     private readonly eventMouseDownListener = (event: MouseEvent) => {
+        if ((event.buttons & 1) === 0)
+            return;
+        this._mouseDownPos = event;
         if (this._interaction) {
-            this._interaction.onMouseDown(event);
+            if (this._interaction.onMouseDown(event))
+                return;
         }
         if (!this._interaction) {
             event.preventDefault();
         }
-        this._mouseDownPos = event;
     }
 
     private readonly eventMouseUpListener = (event: MouseEvent) => {
+        if (event.button !== 0)
+            return;
         if (this._interaction) {
-            this._interaction.onMouseUp(event);
+            if (this._interaction.onMouseUp(event))
+                return;
         }
         if (!this._interaction && this._mouseDownPos) {
             if (this._dispatch(event.target, (element) => element.onClick(event)))
@@ -430,6 +515,11 @@ export class ScuffrWorkspace extends ScuffrElementParent {
                 this.updateGlobalTransform();
             }
         }
+    }
+
+    private readonly eventContextMenuListener = (event: MouseEvent) => {
+        if (this._dispatch(event.target, (element) => element.onRightClick(event)))
+            event.preventDefault();
     }
 
     public getTextDimensions(text: string, node?: Text): Vec2 {

@@ -12,6 +12,7 @@ import { ScuffrElementBlockGhost } from "./ScuffrElementBlockGhost";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrWrappingDescriptor } from "./ScuffrWrappingDescriptor";
 import type { Vec2 } from "../utils/Vec2";
+import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
 
 export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScript> extends ScuffrElementParent implements ScuffrBlockReferenceParent<number> {
     public children: ScuffrElementBlock[];
@@ -239,7 +240,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
 
     public onChildDrag?(key: number, event: MouseEvent): boolean {
         if (key === 0) {
-            this.workspace.dragRenderedScript(this.toRootScript(), event);
+            this.workspace.startInteraction(new ScuffrInteractionDragScript(this.toRootScript(), event));
             super.update(true);
             return true;
         }
@@ -253,7 +254,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         const newScript = new ScuffrElementScriptRoot(this.workspace, null, draggedBlocks, pos);
 
         this.workspace.addRenderedScript(newScript);
-        this.workspace.dragRenderedScript(newScript, event);
+        this.workspace.startInteraction(new ScuffrInteractionDragScript(newScript, event));
         this.update(true);
         return true;
     }

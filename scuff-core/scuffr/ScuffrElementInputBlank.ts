@@ -16,8 +16,8 @@ export class ScuffrElementInputBlank extends ScuffrElementBlockPartBackground<Sc
     public constructor(parent: ScuffrElementBlockContent, shape: ScuffrShape, inputType: BlockPartInput, value: BlockInput) {
         super(parent.root, parent, {
             shape,
-            categoryClass: null,
-            typeClass: "scuff-block-empty"
+            categoryClasses: [],
+            typeClasses: ["scuff-block-empty"]
         });
         this._parent = parent;
         this.inputType = inputType;

@@ -6,7 +6,7 @@ export class ScratchInputTypeDropdownSquare extends ScratchInputTypeDropdown<Blo
 
     public static readonly optionRenderer: ScratchDropdownOptionRenderer = {
         renderOption(option: BlockDropdownOption, parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput {
-            return new ScuffrElementInputDropdown(parent.content, ScratchInputTypeDropdownSquare.shape, "scuff-block-input-square", parentRef.childKey, option);
+            return new ScuffrElementInputDropdown(parent.content, ScratchInputTypeDropdownSquare.shape, ["scuff-block-input-square"], parentRef.childKey, option);
         }
     };
 

@@ -8,8 +8,8 @@ export abstract class ScratchBlockTypeRound extends ScratchBlockTypeInput {
     public getBackground(block: BlockInstance): ScuffrColouredShape {
         return {
             shape: ScratchBlockTypeRound.shape,
-            categoryClass: this.category.cssClass,
-            typeClass: "scuff-block"
+            categoryClasses: [this.category.cssClass],
+            typeClasses: ["scuff-block"]
         };
     }
 }

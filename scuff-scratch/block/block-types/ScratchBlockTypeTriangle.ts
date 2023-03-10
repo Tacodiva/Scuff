@@ -7,8 +7,8 @@ export abstract class ScratchBlockTypeTriangle extends ScratchBlockTypeInput {
     public getBackground(block: BlockInstance): ScuffrColouredShape {
         return {
             shape: ScratchBlockTypeTriangle.shape,
-            categoryClass: this.category.cssClass,
-            typeClass: "scuff-block"
+            categoryClasses: [this.category.cssClass],
+            typeClasses: ["scuff-block"]
         };
     }
 }

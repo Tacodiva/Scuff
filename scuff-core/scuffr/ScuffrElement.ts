@@ -64,6 +64,10 @@ export abstract class ScuffrElement {
         return false;
     }
 
+    public onRightClick(event: MouseEvent) : boolean {
+        return false;
+    }
+
     public onDrag(event: MouseEvent): boolean {
         return false;
     }

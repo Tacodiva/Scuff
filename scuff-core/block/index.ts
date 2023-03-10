@@ -13,3 +13,4 @@ export { BlockPartText } from './BlockPartText';
 export { BlockScript } from './BlockScript';
 export { BlockScriptRoot } from './BlockScriptRoot';
 export { BlockScriptInput } from './BlockScriptInput';
+export { BlockScripts } from './BlockScripts';
