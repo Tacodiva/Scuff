@@ -6,11 +6,10 @@ export { ScuffrElementScriptRoot } from './ScuffrElementScriptRoot';
 export { ScuffrElementScript } from './ScuffrElementScript';
 // <-
 
-export { ScuffrBlockReference } from './ScuffrBlockReference';
 export { ScuffrElement } from './ScuffrElement';
 export { ScuffrElementParent } from './ScuffrElementParent';
 export { type ScuffrElementBlockPart } from './ScuffrElementBlockPart';
-export { ScuffrElementBlockPartBackground } from './ScuffrElementBlockPartBackground';
+export { ScuffrElementInputBase as ScuffrElementBlockPartBackground } from './ScuffrElementBlockInputBase';
 export { type ScuffrElementInput } from './ScuffrElementInput';
 export { ScuffrElementInputBlank } from './ScuffrElementInputBlank';
 export { ScuffrElementInputLiteral } from './ScuffrElementInputLiteral';
@@ -20,5 +19,7 @@ export { ScuffrElementBlockContent } from './ScuffrElementBlockContent';
 export { ScuffrElementText } from './ScuffrElementText';
 export { ScuffrElementDummy } from './ScuffrElementDummy';
 export { ScuffrWorkspace } from './ScuffrWorkspace';
+export * from './ScuffrReferenceTypes';
+export * from './ScuffrReference';
 
 export * from './shape';

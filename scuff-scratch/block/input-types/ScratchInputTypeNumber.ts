@@ -1,5 +1,5 @@
 import { ScratchInputString } from "../inputs/ScratchInputString";
-import { BlockPartInput, BlockType, BlockInput, BlockInstance } from "scuff";
+import { BlockPartInput, BlockType, BlockInput, BlockInstance, BlockPartInputFactory } from "scuff";
 import { ScratchBlockTypeInput } from "../block-types/ScratchBlockTypeInput";
 
 export class ScratchInputTypeNumber extends BlockPartInput<ScratchInputString | BlockInstance> {
@@ -11,8 +11,12 @@ export class ScratchInputTypeNumber extends BlockPartInput<ScratchInputString | 
         );
     }
 
-    public constructor(id: string, block: BlockType, defaultValue?: number) {
-        super(id, block, () => new ScratchInputString("" + (defaultValue ?? "")));
+    public static create(name: string, defaultValue?: number): BlockPartInputFactory {
+        return (type, id) => new ScratchInputTypeNumber(id, name, type, defaultValue);
+    }
+
+    public constructor(id: number, name: string, block: BlockType, defaultValue?: number) {
+        super(id, name, block, () => new ScratchInputString("" + (defaultValue ?? "")));
     }
 
     public isValidValue(block: BlockInstance, value: BlockInput): ScratchInputString | BlockInstance | false {

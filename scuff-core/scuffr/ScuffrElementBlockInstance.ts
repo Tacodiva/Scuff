@@ -1,36 +1,44 @@
 import type { BlockInstance } from "../block/BlockInstance";
-import { ScuffrElementBlockPartBackground } from "./ScuffrElementBlockPartBackground";
 import type { ScuffrElementBlock } from "./ScuffrElementBlock";
 import type { ScuffrElementInput } from "./ScuffrElementInput";
 import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
 import type { BlockInput } from "../block/BlockInput";
 import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
-import type { ScuffrBlockReference, ScuffrBlockReferenceParent } from "./ScuffrBlockReference";
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
 import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionContextMenu";
 import { l10n } from "../l10n";
+import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
+import { ScuffrElementBlockPartBase } from "./ScuffrElementBlockPartBase";
 
-export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBackground<ScuffrElementBlockContent> implements ScuffrElementBlock, ScuffrElementInput {
+export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<ScuffrElementBlockContent> implements ScuffrElementBlock, ScuffrElementInput {
     public readonly block: BlockInstance;
-    public parentRef: ScuffrBlockReference;
-    public get parent(): ScuffrBlockReferenceParent { return this.parentRef.parent; }
+    public reference: ScuffrReferenceBlock;
+    public get parent(): ScuffrReferenceParentBlock { return this.reference.parent; }
 
-    public constructor(block: BlockInstance, parentRef: ScuffrBlockReference) {
+    public constructor(block: BlockInstance, parentRef: ScuffrReferenceBlock) {
         super(parentRef.parent.getRoot(), parentRef.parent, block.type.getBackground(block));
-        this.parentRef = parentRef;
+        this.reference = parentRef;
         this.block = block;
         this.content.renderAll();
+    }
+
+    getIndexValue(index: number){
+        throw new Error("Method not implemented.");
+    }
+
+    public getReference(): ScuffrReferenceBlock {
+        return this.reference;
     }
 
     protected createContent(): ScuffrElementBlockContent {
         return new ScuffrElementBlockContent(this);
     }
 
-    public setParent(parentRef: ScuffrBlockReference) {
-        this.parentRef = parentRef;
-        this.onAncestryChange(parentRef.parent.getRoot());
+    public setParent(reference: ScuffrReferenceBlock) {
+        this.reference = reference;
+        this.onAncestryChange(reference.parent.getRoot());
     }
 
     public override onAncestryChange(root: ScuffrElementScriptRoot | null): void {
@@ -41,11 +49,11 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBackground
     }
 
     public override onDrag(event: MouseEvent): boolean {
-        return this.parentRef.onDrag(event);
+        return (this.parent.onChildDrag && this.parent.onChildDrag(this.reference.index, event)) ?? false;
     }
 
     public getInput(key: BlockPartInput): ScuffrElementInput | null {
-        return this.content.getInput(key)?.element ?? null;
+        return this.content.getInput(key)?.rendered ?? null;
     }
 
     public setInput(key: BlockPartInput, input: ScuffrElementInput) {

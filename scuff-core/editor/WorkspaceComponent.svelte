@@ -116,6 +116,7 @@
             <tspan x="2" dy="1.2em">[ ] Make tab move to the next input</tspan>
             <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>
             <tspan x="2" dy="1.2em">[X] Right click menu</tspan>
+            <tspan x="2" dy="1.2em">[ ] Comment code (god please no don't make me)</tspan>
             <tspan x="2" dy="1.2em">[ ] Come up with more TODOs</tspan>
         </text>
     </svg>

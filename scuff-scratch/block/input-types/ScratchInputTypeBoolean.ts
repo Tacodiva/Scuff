@@ -1,11 +1,15 @@
 import { ScratchInputBoolean } from "../inputs/ScratchInputBoolean";
-import { BlockPartInput, BlockType, BlockInput, BlockInstance } from "scuff";
-import { ScratchBlockTypeInput } from "../block-types/ScratchBlockTypeInput";
+import { BlockPartInput, BlockType, BlockInput, BlockInstance, BlockPartInputFactory } from "scuff";
 import { ScratchBlockTypeTriangle } from "../block-types/ScratchBlockTypeTriangle";
 
 export class ScratchInputTypeBoolean extends BlockPartInput<ScratchInputBoolean | BlockInstance> {
-    public constructor(id: string, block: BlockType) {
-        super(id, block, () => ScratchInputBoolean.INSTANCE);
+
+    public static create(name: string): BlockPartInputFactory {
+        return (type, id) => new ScratchInputTypeBoolean(id, name, type);
+    }
+
+    public constructor(id: number, name: string, block: BlockType) {
+        super(id, name, block, () => ScratchInputBoolean.INSTANCE);
     }
 
     public isValidValue(block: BlockInstance, value: BlockInput): ScratchInputBoolean | BlockInstance | false {

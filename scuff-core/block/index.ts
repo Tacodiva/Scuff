@@ -1,7 +1,7 @@
 
 export { BlockDropdownOption } from './BlockDropdownOption';
 export { type BlockDropdownProvider } from './BlockDropdownProvider';
-export { BlockType, type BlockTypeDescription } from './BlockType';
+export * from './BlockType';
 export { BlockPartInput } from './BlockPartInput';
 export { BlockInstance } from './BlockInstance';
 export { BlockInputLiteral } from './BlockInputLiteral';

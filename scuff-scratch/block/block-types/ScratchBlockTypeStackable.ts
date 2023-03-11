@@ -1,5 +1,5 @@
 import { BlockInstance, ScuffrColouredShape, ScuffrShape, ScuffrShapeStackBody, ScuffrShapeStackHead, ScuffrShapeStackTail } from "scuff";
-import { ScratchBlockType, ScratchBlockTypeDescriptor as ScratchBlockDescriptor } from "./ScratchBlockType";
+import { ScratchBlockType, ScratchBlockTypeData, ScratchBlockTypeDescription } from "./ScratchBlockType";
 
 export enum ScratchStackableBlockShape {
     HEAD,
@@ -7,8 +7,12 @@ export enum ScratchStackableBlockShape {
     TAIL
 }
 
-export interface ScratchStackableBlockDescriptor extends ScratchBlockDescriptor {
+export interface ScratchBlockTypeDescriptionStackable extends ScratchBlockTypeDescription {
     shape?: ScratchStackableBlockShape;
+}
+
+export interface ScratchBlockTypeDataStackable extends ScratchBlockTypeData {
+    shape: ScratchStackableBlockShape;
 }
 
 export abstract class ScratchBlockTypeStackable extends ScratchBlockType {
@@ -17,24 +21,27 @@ export abstract class ScratchBlockTypeStackable extends ScratchBlockType {
     public static readonly shapeBody: ScuffrShape = new ScuffrShapeStackBody();
     public static readonly shapeTail: ScuffrShape = new ScuffrShapeStackTail();
 
-    private _shape: ScratchStackableBlockShape | null;
-
-    constructor(id: string) {
-        super(id);
-        this._shape = null;
+    public static override parseDescription(desc: ScratchBlockTypeDescriptionStackable): ScratchBlockTypeDataStackable {
+        return {
+            ...ScratchBlockType.parseDescription(desc),
+            shape: desc.shape ?? ScratchStackableBlockShape.BODY
+        };
     }
 
-    protected override init(desc: ScratchStackableBlockDescriptor): void {
-        super.init(desc);
-        this._shape = desc.shape ?? ScratchStackableBlockShape.BODY;
+
+    private shape: ScratchStackableBlockShape | null;
+
+    constructor(data: ScratchBlockTypeDataStackable) {
+        super(data);
+        this.shape = data.shape;
     }
 
     public override canStackDown(block: BlockInstance): boolean {
-        return this._shape !== ScratchStackableBlockShape.TAIL;
+        return this.shape !== ScratchStackableBlockShape.TAIL;
     }
 
     public override canStackUp(block: BlockInstance): boolean {
-        return this._shape !== ScratchStackableBlockShape.HEAD;
+        return this.shape !== ScratchStackableBlockShape.HEAD;
     }
 
     public getBackground(block: BlockInstance): ScuffrColouredShape {
@@ -46,7 +53,7 @@ export abstract class ScratchBlockTypeStackable extends ScratchBlockType {
     }
 
     public getBackgroundShape(block: BlockInstance): ScuffrShape {
-        switch (this._shape) {
+        switch (this.shape) {
             case ScratchStackableBlockShape.HEAD:
                 return ScratchBlockTypeStackable.shapeHead;
             case ScratchStackableBlockShape.BODY:

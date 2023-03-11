@@ -1,29 +1,31 @@
-import { ScuffrBlockReference, type ScuffrBlockReferenceParent } from "./ScuffrBlockReference";
 import { BlockPartInput } from "../block/BlockPartInput";
 import { ScuffrElementParent } from "./ScuffrElementParent";
 import { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
 import type { ScuffrElementInput } from "./ScuffrElementInput";
 import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
 import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
+import type { ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
+import type { ScuffrReference, ScuffrReferenceLink } from "./ScuffrReference";
 
 interface ScuffrBlockContentInput {
-    part: BlockPartInput,
-    element: ScuffrElementInput,
-    index: number,
+    input: BlockPartInput;
+    rendered: ScuffrElementInput;
+    partIndex: number;
 }
 
-export class ScuffrElementBlockContent extends ScuffrElementParent implements ScuffrBlockReferenceParent<BlockPartInput> {
+export class ScuffrElementBlockContent extends ScuffrElementParent implements ScuffrReferenceParentBlock<ScuffrElementInput>, ScuffrReferenceLink<ScuffrElementInput> {
     public children: ScuffrElementBlockPart[];
     public parent: ScuffrElementBlockInstance;
-    public inputs: Map<string, ScuffrBlockContentInput>;
+    public inputs: ScuffrBlockContentInput[];
 
     public get root() { return this.parent.root; }
+    public get block() { return this.parent.block; }
 
     public constructor(parent: ScuffrElementBlockInstance) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
-        this.inputs = new Map();
+        this.inputs = [];
     }
 
     public renderAll() {
@@ -31,61 +33,65 @@ export class ScuffrElementBlockContent extends ScuffrElementParent implements Sc
             this._renderPart(partIdx);
     }
 
-    private _renderPart(index: number) {
-        const part = this.parent.block.type.parts[index];
-        let renderedPart;
+    private _renderPart(partIndex: number) {
+        const part = this.parent.block.type.parts[partIndex];
+        let rendered;
         if (part instanceof BlockPartInput) {
-            renderedPart = part.render(this);
-            this.inputs.set(part.id, { element: renderedPart, part, index });
-            part.createAttachmentPoints(this, renderedPart);
+            rendered = part.render(this);
+            this.inputs[part.index] = { rendered, input: part, partIndex };
+            part.createAttachmentPoints(this, rendered);
         } else {
-            renderedPart = part.render(this);
+            rendered = part.render(this);
         }
-        this.children[index] = (renderedPart);
-        return renderedPart;
+        this.children[partIndex] = (rendered);
+        return rendered;
     }
 
     public setInput(key: BlockPartInput, input: ScuffrElementInput) {
         this.parent.block.setInput(key, input.asInput());
         const oldInput = this.getInput(key);
         if (!oldInput)
-            throw new Error(`No input ${key.id} on block ${this.parent.block.type.id}.`);
-        this.dom.replaceChild(input.dom, oldInput.element.dom);
-        if (oldInput.element.onAncestryChange)
-            oldInput.element.onAncestryChange(null);
-        input.setParent(new ScuffrBlockReference(key, this));
-        this.children[oldInput.index] = input;
-        this.inputs.set(key.id, { part: key, element: input, index: oldInput.index });
+            throw new Error(`No input ${key.name} on block ${this.parent.block.type.id}.`);
+        this.dom.replaceChild(input.dom, oldInput.rendered.dom);
+        if (oldInput.rendered.onAncestryChange)
+            oldInput.rendered.onAncestryChange(null);
+        input.setParent({ index: oldInput.input.index, parent: this });
+        this.children[oldInput.partIndex] = input;
+        this.inputs[oldInput.input.index] = { input: key, rendered: input, partIndex: oldInput.partIndex };
         key.createAttachmentPoints(this, input);
         this.update(true);
     }
 
     public getInput(key: BlockPartInput): ScuffrBlockContentInput | null {
-        return this.inputs.get(key.id) ?? null;
+        return this.inputs[key.index];
     }
 
-    public getBlockElement(key: BlockPartInput): ScuffrElementBlockInstance | null {
-        const input = this.getInput(key);
-        if (input && input.element instanceof ScuffrElementBlockInstance)
-            return input.element;
-        return null;
-    }
-
-    public onChildDrag(key: BlockPartInput, event: MouseEvent): boolean {
-        const input = this.getInput(key);
-        if (!(input && input.element instanceof ScuffrElementBlockInstance)) {
+    public onChildDrag(index: number, event: MouseEvent): boolean {
+        const input = this.inputs[index];
+        if (!(input && input.rendered instanceof ScuffrElementBlockInstance)) {
             console.warn("Block instance recieved invalid key in onChildDrag.");
             return true;
         }
-        input.element.attachmentPoints.clear();
-        this.workspace.dragRenderedBlock(input.element, event);
-        this.parent.block.resetInput(key.id);
-        this._renderPart(input.index).updateAll();
+        input.rendered.attachmentPoints.clear();
+        this.workspace.dragRenderedBlock(input.rendered, event);
+        this.parent.block.resetInput(input.input);
+        this._renderPart(input.partIndex).updateAll();
         this.update(true);
         return true;
     }
 
     public getRoot(): ScuffrElementScriptRoot {
         return this.parent.root;
+    }
+
+    public getIndexValue(index: number): ScuffrElementInput {
+        const input = this.inputs[index];
+        if (input && input.rendered instanceof ScuffrElementBlockInstance)
+            return input.rendered;
+        throw new Error(`Invalid input index ${index}.`);
+    }
+
+    public getReference(): ScuffrReference<this> {
+        throw new Error("Method not implemented.");
     }
 }

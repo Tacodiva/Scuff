@@ -1,7 +1,7 @@
 import { ScuffrElementBlockInstance } from "../scuffr/ScuffrElementBlockInstance";
+import type { ScuffrReferenceBlock } from "../scuffr/ScuffrReferenceTypes";
 import type { BlockInput } from "./BlockInput";
 import type { BlockPartInput } from "./BlockPartInput";
-import type { ScuffrBlockReference } from "../scuffr/ScuffrBlockReference";
 import type { BlockType } from "./BlockType";
 
 class BlockInputInstanceInput<T extends BlockInput = BlockInput> {
@@ -11,13 +11,13 @@ class BlockInputInstanceInput<T extends BlockInput = BlockInput> {
 
     public constructor(block: BlockInstance, type: BlockPartInput<T>) {
         this.type = type;
-        this.block = block; 
+        this.block = block;
         this.value = type.defaultValueFactory(block);
     }
 
     public set(value: BlockInput) {
         const valid = this.type.isValidValue(this.block, value);
-        if (!valid) throw new Error(`Input valie ${value} not valid for input ${this.type.id}.`);
+        if (!valid) throw new Error(`Input valie ${value} not valid for input ${this.type.name}.`);
         this.value = valid;
     }
 
@@ -28,23 +28,23 @@ class BlockInputInstanceInput<T extends BlockInput = BlockInput> {
 
 export class BlockInstance implements BlockInput {
     public readonly type: BlockType;
-    private readonly _inputs: Map<string, BlockInputInstanceInput>;
+    private readonly _inputs: BlockInputInstanceInput[];
 
     public constructor(type: BlockType);
 
     public constructor(type: BlockType) {
         this.type = type;
-        this._inputs = new Map();
+        this._inputs = [];
 
         for (const input of type.inputs) {
-            this._inputs.set(input.id, new BlockInputInstanceInput(this, input));
+            this._inputs.push(new BlockInputInstanceInput(this, input));
         }
     }
 
     public clone(): BlockInstance {
         const clone = new BlockInstance(this.type);
-        for (const input of this._inputs.values()) {
-            clone._inputs.get(input.type.id)!.value = input.value.clone();
+        for (let i = 0; i < this._inputs.length; i++) {
+            clone._inputs[i].value = this._inputs[i].value.clone();
         }
         return clone;
     }
@@ -53,20 +53,10 @@ export class BlockInstance implements BlockInput {
         return false;
     }
 
-    private _getInputFromID(id: string): BlockInputInstanceInput {
-        const input = this._inputs.get(id);
-        if (!input) throw new Error(`No input ${id} on block ${this.type.id}.`);
-        return input;
-    }
-
-    public getInputByID(id: string): BlockInput {
-        return this._getInputFromID(id).value;
-    }
-
     private _getInput<T extends BlockInput>(inputType: BlockPartInput<T>): BlockInputInstanceInput<T> {
-        const input = this._getInputFromID(inputType.id);
+        const input = this._inputs[inputType.index];
         if (input.type !== inputType)
-            throw new Error(`Input of id ${inputType.id} on block ${this.type.id} is the wrong type.`);
+            throw new Error(`Input of id ${inputType.name} on block ${this.type.id} is the wrong type.`);
         // Should be safe thanks to the check above
         return <BlockInputInstanceInput<T>>input;
     }
@@ -75,19 +65,28 @@ export class BlockInstance implements BlockInput {
         return this._getInput(inputType).value;
     }
 
-    public setInputByID(inputID: string, value: BlockInput) {
-        this._getInputFromID(inputID).set(value);
+    public getInputByID(id: number): BlockInput {
+        return this._inputs[id].value;
     }
+
 
     public setInput<T extends BlockInput>(inputType: BlockPartInput<T>, value: T) {
         this._getInput(inputType).value = value;
     }
 
-    public resetInput(inputID: string) {
-        this._getInputFromID(inputID).reset();
+    public setInputByID(inputID: number, value: BlockInput) {
+        this._inputs[inputID].set(value);
     }
 
-    public render(parent: ScuffrElementBlockInstance | null, parentRef: ScuffrBlockReference<unknown>): ScuffrElementBlockInstance {
-        return new ScuffrElementBlockInstance(this, parentRef);
+    public resetInput(inputType: BlockPartInput) {
+        this._inputs[inputType.index].reset();
+    }
+
+    public resetInputByID(inputID: number) {
+        this._inputs[inputID].reset();
+    }
+
+    public render(reference: ScuffrReferenceBlock): ScuffrElementBlockInstance {
+        return new ScuffrElementBlockInstance(this, reference);
     }
 }

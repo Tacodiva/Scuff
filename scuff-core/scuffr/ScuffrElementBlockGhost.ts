@@ -2,49 +2,57 @@
 import { ScuffrElementShape } from './ScuffrElementShape';
 import type { ScuffrElementBlock } from './ScuffrElementBlock';
 import type { ScuffrElementBlockInstance } from './ScuffrElementBlockInstance';
-import type { ScuffrBlockReference, ScuffrBlockReferenceParent } from './ScuffrBlockReference';
 import { ScuffrElementDummy } from './ScuffrElementDummy';
 import { ScuffrElementScriptInput } from './ScuffrElementScriptInput';
 import type { ScuffrElementScriptRoot } from './ScuffrElementScriptRoot';
 import type { ScuffrElementScript } from './ScuffrElementScript';
 import type { ScuffrWrappingDescriptor } from './ScuffrWrappingDescriptor';
 import type { ScuffrShapeContentLine } from './shape/ScuffrShapeContentLine';
+import type { ScuffrLinkReference, ScuffrReference } from './ScuffrReference';
 
 export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDummy> implements ScuffrElementBlock {
 
-    public parentRef: ScuffrBlockReference<number, ScuffrElementScript>;
-    public get parent(): ScuffrElementScript { return this.parentRef.parent; }
-    public get index(): number { return this.parentRef.childKey; }
+    public reference: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>;
+    public get parent(): ScuffrElementScript { return this.reference.parent; }
+    public get index(): number { return this.reference.index; }
     public readonly sourceBlock: ScuffrElementBlockInstance;
 
     public readonly wrapping: ScuffrWrappingDescriptor | null;
 
-    public constructor(parentRef: ScuffrBlockReference<number, ScuffrElementScript>, sourceBlock: ScuffrElementBlockInstance, wrapping?: ScuffrWrappingDescriptor | null) {
+    public constructor(parentRef: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>, sourceBlock: ScuffrElementBlockInstance, wrapping?: ScuffrWrappingDescriptor | null) {
         super(parentRef.parent,
             {
                 shape: sourceBlock.getBackground().shape,
                 categoryClasses: sourceBlock.shape.categoryClasses,
                 typeClasses: ["scuff-block-ghost"]
             });
-        this.parentRef = parentRef;
+        this.reference = parentRef;
         this.sourceBlock = sourceBlock;
         this.wrapping = wrapping ?? null;
         this.updateAll();
+    }
+
+    public getIndexValue(index: number) {
+        throw new Error('Ghost blocks do not have any children.');
+    }
+
+    public getReference(): ScuffrReference<this> {
+        return this.reference as any;
     }
 
     protected createContent(): ScuffrElementDummy {
         return new ScuffrElementDummy(this);
     }
 
-    public setParent(parentRef: ScuffrBlockReference<number, ScuffrElementScript>): void {
-        this.parentRef = parentRef;
-        this.onAncestryChange(parentRef.parent.getRoot());
+    public setParent(reference: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>): void {
+        this.reference = reference;
+        this.onAncestryChange(reference.parent.getRoot());
     }
 
     public onAncestryChange(root: ScuffrElementScriptRoot | null): void { }
 
     public shouldAttachUp(): boolean {
-        return this.parentRef.childKey === 0;
+        return this.reference.index === 0;
     }
 
     public shouldAttachDown(): boolean {

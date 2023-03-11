@@ -6,32 +6,26 @@ import { OperatorBlockEquals, OperatorBlockPlus } from "./OperatorBlocks";
 import { SensingBlockKeyPressed } from "./SensingBlocks";
 
 export const ScratchBlocks = {
-
     motion: {
-        move_steps: new MotionBlockMoveSteps(),
+        move_steps: MotionBlockMoveSteps.create(),
     },
-
     looks: {
-        say: new LooksBlockSay(),
-        set_effect_to: new LooksBlockSetEffectTo()
+        say: LooksBlockSay.create(),
+        set_effect_to: LooksBlockSetEffectTo.create(),
     },
-
     event: {
-        flag_clicked: new EventGreenFlagClicked()
+        flag_clicked: EventGreenFlagClicked.create(),
     },
-    
     control: {
-        if: new ControlBlockIf(),
-        forever: new ControlBlockForever()
+        if: ControlBlockIf.create(),
+        forever: ControlBlockForever.create(),
     },
-
     sensing: {
-        key_pressed: new SensingBlockKeyPressed()
+        key_pressed: SensingBlockKeyPressed.create(),
     },
-
     operator: {
-        add: new OperatorBlockPlus(),
-        equals: new OperatorBlockEquals()
+        add: OperatorBlockPlus.create(),
+        equals: OperatorBlockEquals.create(),
     },
+};
 
-}

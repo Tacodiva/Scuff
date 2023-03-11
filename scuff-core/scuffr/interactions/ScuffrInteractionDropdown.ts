@@ -42,7 +42,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
         const menuDimensions = { x: 137, y: 20 };
 
         let contentWidth = 0;
-        this.allOptions = dropdown.value.provider.getOptions(dropdown.parent.parent.block);
+        this.allOptions = dropdown.value.provider.getOptions(dropdown.parent.block);
         this.displayedOptions = [];
 
         this._updateOptions();

@@ -1,12 +1,17 @@
 import { BlockScriptInput } from "./BlockScriptInput";
-import type { BlockType } from "./BlockType";
+import type { BlockPartInputFactory, BlockType } from "./BlockType";
 import { BlockPartInput } from "./BlockPartInput";
 import type { BlockInput } from "./BlockInput";
 import type { BlockInstance } from "./BlockInstance";
 
 export class BlockPartInputSubscript extends BlockPartInput<BlockScriptInput> {
-    public constructor(id: string, block: BlockType) {
-        super(id, block, () => new BlockScriptInput());
+
+    public static create(name: string): BlockPartInputFactory {
+        return (type, id) => new BlockPartInputSubscript(id, name, type);
+    }
+
+    public constructor(index: number, name: string, block: BlockType) {
+        super(index, name, block, () => new BlockScriptInput());
     }
 
     public isValidValue(block: BlockInstance, value: BlockInput): BlockScriptInput | false {

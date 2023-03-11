@@ -1,4 +1,3 @@
-import { BlockScriptInput } from "./BlockScriptInput";
 import type { BlockType } from "./BlockType";
 import { BlockPartInput } from "./BlockPartInput";
 import type { BlockInput } from "./BlockInput";
@@ -6,11 +5,11 @@ import type { BlockDropdownProvider } from "./BlockDropdownProvider";
 import { BlockDropdownOption } from "./BlockDropdownOption";
 import type { BlockInstance } from "./BlockInstance";
 
-export class BlockPartInputDropdown<T extends BlockInput = BlockDropdownOption> extends BlockPartInput<T | BlockDropdownOption> {
+export abstract class BlockPartInputDropdown<T extends BlockInput = BlockDropdownOption> extends BlockPartInput<T | BlockDropdownOption> {
     public readonly dropdownProvider: BlockDropdownProvider;
 
-    public constructor(id: string, block: BlockType, optionProvider: BlockDropdownProvider) {
-        super(id, block, (blockInst) => optionProvider.getOptions(blockInst)[0]);
+    public constructor(index: number, name: string, block: BlockType, optionProvider: BlockDropdownProvider) {
+        super(index, name, block, (blockInst) => optionProvider.getOptions(blockInst)[0]);
         this.dropdownProvider = optionProvider;
     }
 

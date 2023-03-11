@@ -1,10 +1,7 @@
-import type { ScuffrElementBlockInstance } from "../scuffr/ScuffrElementBlockInstance";
-import type { ScuffrBlockReference } from "../scuffr/ScuffrBlockReference";
 import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
-import type { BlockPartInput } from "./BlockPartInput";
-import type { ScuffrElementBlockContent } from "../scuffr";
+import type { ScuffrReferenceBlock } from "../scuffr/ScuffrReferenceTypes";
 
 export interface BlockInput {
-    render(parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput;
+    render(reference: ScuffrReferenceBlock): ScuffrElementInput;
     clone() : BlockInput;
 }

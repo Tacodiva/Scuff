@@ -1,11 +1,9 @@
-import type { ScuffrElementBlockContent, ScuffrElementBlockInstance, ScuffrElementInput } from "../scuffr";
-import type { ScuffrBlockReference, ScuffrBlockReferenceParent } from "../scuffr/ScuffrBlockReference";
+import type { ScuffrElementInput } from "../scuffr";
+import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 import type { BlockDropdownOption } from "./BlockDropdownOption";
-import type { BlockInput } from "./BlockInput";
 import type { BlockInstance } from "./BlockInstance";
-import type { BlockPartInput } from "./BlockPartInput";
 
 export interface BlockDropdownProvider {
-    renderOption(option: BlockDropdownOption, parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput;
+    renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrElementInput;
     getOptions(block: BlockInstance): BlockDropdownOption[];
 }

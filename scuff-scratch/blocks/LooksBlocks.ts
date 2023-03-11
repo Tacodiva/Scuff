@@ -6,37 +6,40 @@ import { ScratchInputTypeDropdownSquare } from "../block/input-types/ScratchInpu
 import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNumber";
 
 export class LooksBlockSay extends ScratchBlockTypeStackable {
-
-    constructor() {
-        super("looks_say")
-        this.init({
-            text: l10n.raw("say %"),
-            inputs: [
-                new ScratchInputTypeString("test", this, "Hello, World!")
-            ],
-            category: ScratchBlockCategory.LOOKS
-        });
+    static create(): LooksBlockSay {
+        return new LooksBlockSay(
+            ScratchBlockTypeStackable.parseDescription({
+                id: "looks_say",
+                text: l10n.raw("say %"),
+                inputs: [
+                    ScratchInputTypeString.create("test", "Hello, World!")
+                ],
+                category: ScratchBlockCategory.LOOKS,
+            })
+        );
     }
 }
 
 export class LooksBlockSetEffectTo extends ScratchBlockTypeStackable {
-    constructor() {
-        super("set_effect_to")
-        this.init({
-            text: l10n.raw("set % effect to %"),
-            inputs: [
-                new ScratchInputTypeDropdownSquare("testI", this, [
-                    ["color", "color"],
-                    ["fisheye", "fisheye"],
-                    ["whirl", "whirl"],
-                    ["pixelate", "pixelate"],
-                    ["mosaic", "mosaic"],
-                    ["brightness", "brightness"],
-                    ["ghost", "ghost"],
-                ]),
-                new ScratchInputTypeNumber("test", this, 0)
-            ],
-            category: ScratchBlockCategory.LOOKS
-        });
+    static create(): LooksBlockSetEffectTo {
+        return new LooksBlockSetEffectTo(
+            ScratchBlockTypeStackable.parseDescription({
+                id: "set_effect_to",
+                text: l10n.raw("set % effect to %"),
+                inputs: [
+                    ScratchInputTypeDropdownSquare.create("testI", [
+                        ["color", "color"],
+                        ["fisheye", "fisheye"],
+                        ["whirl", "whirl"],
+                        ["pixelate", "pixelate"],
+                        ["mosaic", "mosaic"],
+                        ["brightness", "brightness"],
+                        ["ghost", "ghost"],
+                    ]),
+                    ScratchInputTypeNumber.create("test", 0),
+                ],
+                category: ScratchBlockCategory.LOOKS,
+            })
+        );
     }
 }

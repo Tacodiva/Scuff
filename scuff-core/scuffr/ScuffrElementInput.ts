@@ -1,12 +1,11 @@
-import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { IScuffrPointAttachable } from "./attachment-points/ScuffrAttachmentPoint";
 import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
-import type { ScuffrBlockReference } from "./ScuffrBlockReference";
 import type { ScuffrElement } from "./ScuffrElement";
-import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
+import type { ScuffrReferenceable } from "./ScuffrReference";
+import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 
-export interface ScuffrElementInput extends IScuffrPointAttachable, ScuffrElementBlockPart, ScuffrElement {
+export interface ScuffrElementInput extends IScuffrPointAttachable, ScuffrElementBlockPart, ScuffrElement, ScuffrReferenceable {
     asInput(): BlockInput;
-    setParent(parentRef: ScuffrBlockReference<BlockPartInput<BlockInput>, ScuffrElementBlockContent>): void;
+    setParent(reference: ScuffrReferenceInput): void;
 }

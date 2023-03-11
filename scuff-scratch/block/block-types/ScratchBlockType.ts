@@ -1,26 +1,28 @@
 import { ScratchBlockCategory } from "../ScratchBlockCategory";
-import { BlockType, BlockTypeDescription } from "scuff";
+import { BlockType, BlockTypeData, BlockTypeDescription } from "scuff";
 
 
-export interface ScratchBlockTypeDescriptor extends BlockTypeDescription {
+export interface ScratchBlockTypeDescription extends BlockTypeDescription {
+    category: ScratchBlockCategory;
+}
+
+export interface ScratchBlockTypeData extends BlockTypeData {
     category: ScratchBlockCategory;
 }
 
 export abstract class ScratchBlockType extends BlockType {
-    private _category: ScratchBlockCategory | null;
 
-    constructor(id: string) {
-        super(id);
-        this._category = null;
+    public static override parseDescription(desc: ScratchBlockTypeDescription): ScratchBlockTypeData {
+        return {
+            ...BlockType.parseDescription(desc),
+            category: desc.category
+        };
     }
 
-    protected override init(desc: ScratchBlockTypeDescriptor): void {
-        super.init(desc);
-        this._category = desc.category;
-    }
+    public readonly category: ScratchBlockCategory;
 
-    public get category() {
-        this.checkInited();
-        return this._category!;
+    constructor(data: ScratchBlockTypeData) {
+        super(data);
+        this.category = data.category;
     }
 }

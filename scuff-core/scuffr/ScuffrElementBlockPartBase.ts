@@ -5,10 +5,9 @@ import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
 import type { ScuffrElement } from "./ScuffrElement";
 import type { ScuffrElementParent } from "./ScuffrElementParent";
 import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
-import type { ScuffrShape } from "./shape/ScuffrShape";
 import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
 
-export abstract class ScuffrElementBlockPartBackground<TContent extends ScuffrElement> extends ScuffrElementShape<TContent> implements ScuffrElementBlockPart, IScuffrPointAttachable {
+export abstract class ScuffrElementBlockPartBase<TContent extends ScuffrElement> extends ScuffrElementShape<TContent> implements ScuffrElementBlockPart, IScuffrPointAttachable {
     public readonly attachmentPoints: ScuffrAttachmentPointList;
     public root: ScuffrElementScriptRoot;
 

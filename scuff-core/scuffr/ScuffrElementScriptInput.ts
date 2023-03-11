@@ -8,26 +8,29 @@ import type { ScuffrShapeModifier } from "./shape/ScuffrShapeModifier";
 import type { ScuffrElementBlock } from "./ScuffrElementBlock";
 import type { ScuffrElementInput } from "./ScuffrElementInput";
 import type { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
-import type { ScuffrBlockReference } from "./ScuffrBlockReference";
 import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
 import { ScuffrElementScript } from "./ScuffrElementScript";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
 import { ScuffrShapeStackBody, ScuffrShapeStackHead, ScuffrShapeStackTail } from "./shape";
+import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
+import type { ScuffrReference } from "./ScuffrReference";
 
 export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInput> implements ScuffrElementInput, ScuffrShapeModifier {
+
     public static readonly MIN_HEIGHT = 32;
     public get isSubscript(): boolean { return true; }
 
-    private _parent: ScuffrElementBlockContent;
-    public get parent(): ScuffrElementBlockContent { return this._parent; }
+    private _reference : ScuffrReferenceInput;
+    public get parent(): ScuffrElementBlockContent { return this._reference.parent; }
 
-    public constructor(parent: ScuffrElementBlockInstance, script: BlockScriptInput | null, blocks?: ScuffrElementBlock[]) {
+    public constructor(reference: ScuffrReferenceInput, script: BlockScriptInput | null, blocks?: ScuffrElementBlock[]) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
             script = new BlockScriptInput(ScuffrElementScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
         }
-        super(parent.content.dom, parent.root, parent.workspace, script, blocks);
-        this._parent = parent.content;
+        super(reference.parent.dom, reference.parent.root, reference.parent.workspace, script);
+        this._reference = reference;
+        this._init(blocks);
     }
 
     protected override _updateAttachmentPoints(): void {
@@ -96,9 +99,13 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
         this.attachmentPoints.onAncestryChange(root);
     }
 
-    public setParent(parentRef: ScuffrBlockReference<BlockPartInput<BlockInput>, ScuffrElementBlockContent>) {
-        this._parent = parentRef.parent;
-        this.onAncestryChange(parentRef.parent.getRoot());
+    public setParent(reference: ScuffrReferenceInput) {
+        this._reference = reference;
+        this.onAncestryChange(reference.parent.getRoot());
+    }
+
+    public getReference(): ScuffrReference<any> {
+        return this._reference;
     }
 
     public asInput(): BlockInput {

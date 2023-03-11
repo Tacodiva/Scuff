@@ -1,5 +1,4 @@
 import { ScuffrAttachmentPointBlockInput } from "../scuffr/attachment-points/ScuffrAttachmentPointBlockInput";
-import { ScuffrBlockReference } from "../scuffr/ScuffrBlockReference";
 import type { BlockPart } from "./BlockPart";
 import type { BlockType } from "./BlockType";
 import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
@@ -8,19 +7,21 @@ import type { ScuffrElementBlockContent } from "../scuffr/ScuffrElementBlockCont
 import type { BlockInstance } from "./BlockInstance";
 
 export abstract class BlockPartInput<T extends BlockInput = BlockInput> implements BlockPart {
-    public readonly id: string;
+    public readonly name: string;
+    public readonly index: number;
     public readonly defaultValueFactory: (block: BlockInstance) => T;
 
-    public readonly block: BlockType;
+    public readonly blockType: BlockType;
 
-    public constructor(id: string, block: BlockType, defaultValueFactory: (block: BlockInstance) => T) {
-        this.id = id;
+    public constructor(index: number, name: string, blockType: BlockType, defaultValueFactory: (block: BlockInstance) => T) {
+        this.name = name;
+        this.index = index;
         this.defaultValueFactory = defaultValueFactory;
-        this.block = block;
+        this.blockType = blockType;
     }
 
     public render(block: ScuffrElementBlockContent): ScuffrElementInput {
-        return block.parent.block.getInput(this).render(block.parent, new ScuffrBlockReference(this, block));
+        return block.block.getInput(this).render({ index: this.index, parent: block });
     }
 
     public createAttachmentPoints(block: ScuffrElementBlockContent, rendered: ScuffrElementInput): void {
@@ -34,5 +35,3 @@ export abstract class BlockPartInput<T extends BlockInput = BlockInput> implemen
 
     public abstract isValidValue(block: BlockInstance, value: BlockInput): T | false;
 }
-
-

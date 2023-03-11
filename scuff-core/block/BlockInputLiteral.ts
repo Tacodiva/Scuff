@@ -1,10 +1,7 @@
-import type { ScuffrElementBlockInstance } from "../scuffr/ScuffrElementBlockInstance";
-import type { ScuffrBlockReference } from "../scuffr/ScuffrBlockReference";
 import { ScuffrElementInputLiteral } from "../scuffr/ScuffrElementInputLiteral";
 import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
-import type { BlockPartInput } from "./BlockPartInput";
 import type { BlockInput } from "./BlockInput";
-import type { ScuffrElementBlockContent } from "../scuffr";
+import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 
 export abstract class BlockInputLiteral implements BlockInput {
     protected _value: string;
@@ -23,7 +20,7 @@ export abstract class BlockInputLiteral implements BlockInput {
         this._value = value;
     }
 
-    public render(parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput {
-        return new ScuffrElementInputLiteral(parent.content, parentRef.childKey, this);
+    public render(reference: ScuffrReferenceInput): ScuffrElementInput {
+        return new ScuffrElementInputLiteral(reference, this);
     }
 }

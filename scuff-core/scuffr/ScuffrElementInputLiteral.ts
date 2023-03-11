@@ -1,31 +1,26 @@
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { ScuffrElementInput } from "./ScuffrElementInput";
-import { ScuffrElementBlockPartBackground } from "./ScuffrElementBlockPartBackground";
-import type { ScuffrBlockReference } from "./ScuffrBlockReference";
+import { ScuffrElementInputBase } from "./ScuffrElementBlockInputBase";
 import { ScuffrElementText } from "./ScuffrElementText";
 import type { BlockInputLiteral } from "../block/BlockInputLiteral";
 import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
 import { ScuffrShapeInputRound } from "./shape/ScuffrShapeInputRound";
 import type { ScuffrShape } from "./shape";
 import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";
+import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 
-export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<ScuffrElementText> implements ScuffrElementInput {
+export class ScuffrElementInputLiteral extends ScuffrElementInputBase<ScuffrElementText> implements ScuffrElementInput {
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
 
-    private _parent: ScuffrElementBlockContent;
-    public override get parent(): ScuffrElementBlockContent { return this._parent; }
-    public readonly inputType: BlockPartInput;
     private _input: BlockInputLiteral;
 
-    public constructor(parent: ScuffrElementBlockContent, input: BlockPartInput, value: BlockInputLiteral) {
-        super(parent.root, parent, {
+    public constructor(reference: ScuffrReferenceInput, value: BlockInputLiteral) {
+        super(reference, {
             shape: ScuffrElementInputLiteral.shape,
             categoryClasses: [],
             typeClasses: ["scuff-input"]
         });
-        this._parent = parent;
-        this.inputType = input;
         this._input = value;
         this.content.text = this._input.value;
     }
@@ -44,7 +39,7 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
     }
 
     public isValueValid(): boolean {
-        return !!this.inputType.isValidValue(this.parent.parent.block, this._input);
+        return !!this.inputType.isValidValue(this.parent.block, this._input);
     }
 
     public override onClick(event: MouseEvent): boolean {
@@ -55,10 +50,5 @@ export class ScuffrElementInputLiteral extends ScuffrElementBlockPartBackground<
 
     public asInput(): BlockInput {
         return this._input;
-    }
-
-    public setParent(parentRef: ScuffrBlockReference<BlockPartInput<BlockInput>, ScuffrElementBlockContent>): void {
-        this._parent = parentRef.parent;
-        this.onAncestryChange(this._parent.root);
     }
 }

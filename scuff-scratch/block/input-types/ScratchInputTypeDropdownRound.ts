@@ -1,4 +1,4 @@
-import { BlockDropdownOption, BlockInput, BlockInstance, BlockPartInput, BlockPartInputDropdown, BlockType, ScuffrBlockReference, ScuffrElementBlockContent, ScuffrElementBlockInstance, ScuffrElementInput, ScuffrElementInputBlank, ScuffrElementInputDropdown, ScuffrShape, ScuffrShapeInputRound, ScuffrShapeInputSquare } from "scuff";
+import { BlockDropdownOption, BlockInput, BlockInstance, BlockPartInputFactory, BlockType, ScuffrElementInput, ScuffrElementInputDropdown, ScuffrReferenceInput, ScuffrShape, ScuffrShapeInputRound } from "scuff";
 import { ScratchBlockTypeInput } from "../block-types/ScratchBlockTypeInput";
 import { ScratchDropdownOptionProvider, ScratchDropdownOptionRenderer, ScratchDropdownOptionShorthand, ScratchInputTypeDropdown } from "./ScratchInputTypeDropdown";
 
@@ -6,13 +6,17 @@ export class ScratchInputTypeDropdownRound extends ScratchInputTypeDropdown<Bloc
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
 
     public static readonly optionRenderer: ScratchDropdownOptionRenderer = {
-        renderOption(option: BlockDropdownOption, parent: ScuffrElementBlockInstance, parentRef: ScuffrBlockReference<BlockPartInput, ScuffrElementBlockContent>): ScuffrElementInput {
-            return new ScuffrElementInputDropdown(parent.content, ScratchInputTypeDropdownRound.shape, ["scuff-block-input-round"], parentRef.childKey, option);
+        renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrElementInput {
+            return new ScuffrElementInputDropdown(reference, ScratchInputTypeDropdownRound.shape, ["scuff-block-input-round"], option);
         }
     };
 
-    public constructor(id: string, block: BlockType, optionProvider: ScratchDropdownOptionProvider | ScratchDropdownOptionShorthand[]) {
-        super(id, block, ScratchInputTypeDropdownRound.optionRenderer, optionProvider);;
+    public static create(name: string, optionProvider: ScratchDropdownOptionProvider | ScratchDropdownOptionShorthand[]): BlockPartInputFactory {
+        return (type, id) => new ScratchInputTypeDropdownRound(id, name, type, optionProvider);
+    }
+
+    public constructor(id: number, name: string, block: BlockType, optionProvider: ScratchDropdownOptionProvider | ScratchDropdownOptionShorthand[]) {
+        super(id, name, block, ScratchInputTypeDropdownRound.optionRenderer, optionProvider);;
     }
 
     public override isValidValue(block: BlockInstance, value: BlockInput): BlockDropdownOption | BlockInstance | false {

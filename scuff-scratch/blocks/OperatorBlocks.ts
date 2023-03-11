@@ -6,31 +6,33 @@ import { l10n } from "scuff";
 import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNumber";
 
 export class OperatorBlockPlus extends ScratchBlockTypeRound {
-
-    constructor() {
-        super("op_add")
-        this.init({
-            text: l10n.raw("% + %"),
-            inputs: [
-                new ScratchInputTypeNumber("test", this, 5),
-                new ScratchInputTypeNumber("testII", this, 10),
-            ],
-            category: ScratchBlockCategory.OPERATORS
-        });
+    static create(): OperatorBlockPlus {
+        return new OperatorBlockPlus(
+            ScratchBlockTypeRound.parseDescription({
+                id: "op_add",
+                text: l10n.raw("% + %"),
+                inputs: [
+                    ScratchInputTypeNumber.create("test", 5),
+                    ScratchInputTypeNumber.create("testII", 10),
+                ],
+                category: ScratchBlockCategory.OPERATORS,
+            })
+        );
     }
 }
 
 export class OperatorBlockEquals extends ScratchBlockTypeTriangle {
-
-    constructor() {
-        super("op_equals")
-        this.init({
-            text: l10n.raw("% = %"),
-            inputs: [
-                new ScratchInputTypeString("test", this, ""),
-                new ScratchInputTypeString("testII", this, "50"),
-            ],
-            category: ScratchBlockCategory.OPERATORS
-        });
+    static create(): OperatorBlockEquals {
+        return new OperatorBlockEquals(
+            ScratchBlockTypeTriangle.parseDescription({
+                id: "op_equals",
+                text: l10n.raw("% = %"),
+                inputs: [
+                    ScratchInputTypeString.create("test", ""),
+                    ScratchInputTypeString.create("testII", "50"),
+                ],
+                category: ScratchBlockCategory.OPERATORS,
+            })
+        );
     }
 }

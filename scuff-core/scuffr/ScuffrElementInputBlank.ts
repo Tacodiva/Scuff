@@ -1,39 +1,28 @@
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { ScuffrElementInput } from "./ScuffrElementInput";
-import { ScuffrElementBlockPartBackground } from "./ScuffrElementBlockPartBackground";
-import type { ScuffrBlockReference } from "./ScuffrBlockReference";
+import { ScuffrElementInputBase } from "./ScuffrElementBlockInputBase";
 import { ScuffrElementDummy } from "./ScuffrElementDummy";
 import type { ScuffrShape } from "./shape/ScuffrShape";
-import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
+import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 
-export class ScuffrElementInputBlank extends ScuffrElementBlockPartBackground<ScuffrElementDummy> implements ScuffrElementInput {
-    private _parent: ScuffrElementBlockContent;
-    public override get parent(): ScuffrElementBlockContent { return this._parent; }
-    public readonly inputType: BlockPartInput;
+export class ScuffrElementInputBlank extends ScuffrElementInputBase<ScuffrElementDummy> implements ScuffrElementInput {
     public readonly input: BlockInput;
 
-    public constructor(parent: ScuffrElementBlockContent, shape: ScuffrShape, inputType: BlockPartInput, value: BlockInput) {
-        super(parent.root, parent, {
+    public constructor(reference: ScuffrReferenceInput, shape: ScuffrShape, value: BlockInput) {
+        super(reference, {
             shape,
             categoryClasses: [],
             typeClasses: ["scuff-block-empty"]
         });
-        this._parent = parent;
-        this.inputType = inputType;
         this.input = value;
     }
-
+    
     protected createContent(): ScuffrElementDummy {
         return new ScuffrElementDummy(this);
     }
 
     public asInput(): BlockInput {
         return this.input;
-    }
-
-    public setParent(parentRef: ScuffrBlockReference<BlockPartInput<BlockInput>, ScuffrElementBlockContent>): void {
-        this._parent = parentRef.parent;
-        this.onAncestryChange(this._parent.root);
     }
 }

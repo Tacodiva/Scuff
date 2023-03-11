@@ -12,10 +12,10 @@ export class ScuffrWrappingDescriptor {
             return null;
 
         for (const input of wrapper.content.inputs) {
-            const inputElement = wrapper.content.children[input[1].index];
+            const inputElement = wrapper.content.children[input.partIndex];
             if (inputElement instanceof ScuffrElementScriptInput) {
                 if (inputElement.children.length !== 0) return null;
-                return new ScuffrWrappingDescriptor(targetScript, targetIndex, wrapper, input[1].part, input[1].element as ScuffrElementScriptInput);
+                return new ScuffrWrappingDescriptor(targetScript, targetIndex, wrapper, input.input, input.rendered as ScuffrElementScriptInput);
             }
         }
 

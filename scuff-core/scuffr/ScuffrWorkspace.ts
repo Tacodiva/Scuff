@@ -15,8 +15,10 @@ import { writable } from "svelte/store";
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
 import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
 import type { ScuffrInteraction } from "./interactions/ScuffrInteraction";
-import { ScuffrInteractionContextMenu, type ScuffrContextMenuItem } from "./interactions/ScuffrInteractionContextMenu";
-import { l10n, l10nString } from "../l10n";
+import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionContextMenu";
+import { l10n } from "../l10n";
+import type { ScuffrReference } from "./ScuffrReference";
+import type { ScuffrElementScript } from ".";
 
 export class ScuffrWorkspace extends ScuffrElementParent {
     public parent: null;
@@ -100,6 +102,14 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this._scrollBottomRight = { x: 0, y: 0 };
 
         this.findWorkspaceCorners();
+    }
+
+    public getScript(index: number): ScuffrElementScriptRoot {
+        return this.children[index];
+    }
+
+    public getScriptReference(script: ScuffrElementScriptRoot): ScuffrReference<ScuffrElementScriptRoot> {
+        return { index: this.children.indexOf(script), parent: this };
     }
 
     public debugRender() {

@@ -38,7 +38,7 @@ export interface ScuffCore {
 
 export class ScuffCoreImpl implements ScuffCore {
 
-    public static readonly version: Version = [0, 17];
+    public static readonly version: Version = [0, 18];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;

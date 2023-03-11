@@ -3,9 +3,9 @@ import type { ScuffrElementBlock } from "./ScuffrElementBlock";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import { ScuffrElementScript } from "./ScuffrElementScript";
 import type { Vec2 } from "../utils/Vec2";
+import type { ScuffrReference } from "./ScuffrReference";
 
 export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot> {
-
     public readonly parent: ScuffrWorkspace;
     public get isSubscript(): boolean { return false; }
 
@@ -15,12 +15,17 @@ export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot
             script = new BlockScriptRoot(ScuffrElementScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
             if (translation) script.translation = translation;
         }
-        super(workspace.svgScriptContainer, null, workspace, script, blocks, script ? script.translation : translation);
+        super(workspace.svgScriptContainer, null, workspace, script, script ? script.translation : translation);
         this.parent = workspace;
+        this._init(blocks);
     }
 
     public override getRoot(): ScuffrElementScriptRoot {
         return this;
+    }
+
+    public getReference(): ScuffrReference<ScuffrElementScriptRoot> {
+        return this.workspace.getScriptReference(this);
     }
 
     public override updateTranslation(propgrateDown?: boolean) {

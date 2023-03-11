@@ -2,7 +2,6 @@ import { ScuffrElementScriptInput } from "./ScuffrElementScriptInput";
 import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import { ScuffrElementParent } from "./ScuffrElementParent";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
-import { ScuffrBlockReference, type ScuffrBlockReferenceParent } from "./ScuffrBlockReference";
 import { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
 import type { ScuffrElementBlock } from "./ScuffrElementBlock";
@@ -13,8 +12,10 @@ import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttach
 import { ScuffrWrappingDescriptor } from "./ScuffrWrappingDescriptor";
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
+import type { ScuffrReference } from "./ScuffrReference";
+import type { ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
 
-export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScript> extends ScuffrElementParent implements ScuffrBlockReferenceParent<number> {
+export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScript> extends ScuffrElementParent implements ScuffrReferenceParentBlock<ScuffrElementBlock> {
     public children: ScuffrElementBlock[];
     public readonly script: TScript;
     protected _root: ScuffrElementScriptRoot | null;
@@ -24,7 +25,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
     public readonly attachmentPoints: ScuffrAttachmentPointList;
     public abstract readonly isSubscript: boolean;
 
-    public constructor(container: SVGElement, root: ScuffrElementScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, blocks?: ScuffrElementBlock[], translation?: Vec2) {
+    public constructor(container: SVGElement, root: ScuffrElementScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, translation?: Vec2) {
         super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace, translation);
         if (root) this._root = root;
         else this._root = this.getRoot();
@@ -32,33 +33,37 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         this.attachmentPoints = new ScuffrAttachmentPointList(this._root);
         this.script = script;
         this._ghost = null;
+        this.children = [];
 
+    }
+
+    protected _init(blocks?: ScuffrElementBlock[]) {
         if (blocks) {
             this.children = blocks;
 
             for (let i = 0; i < this.children.length; i++) {
                 const block = this.children[i];
                 this.dom.appendChild(block.dom);
-                block.setParent(new ScuffrBlockReference(i, this));
+                block.setParent({ index: i, parent: this });
             }
 
             this.updateTranslation();
             this.update(true);
         } else {
-            this.children = [];
-
             for (let i = 0; i < this.script.blocks.length; i++)
                 this.children.push(this._renderBlock(i));
         }
     }
 
+    public getIndexValue(index: number): ScuffrElementBlock {
+        return this.children[index];
+    }
+
+    public abstract getReference(): ScuffrReference<any>;
+
     public getRoot(): ScuffrElementScriptRoot {
         if (!this._root) throw new Error("Script has no root!");
         return this._root;
-    }
-
-    public getBlockElement(key: number): ScuffrElementBlock {
-        return this.children[key];
     }
 
     public static getBlockInstanceElements(blocks: ScuffrElementBlock[]): ScuffrElementBlockInstance[] {
@@ -84,11 +89,11 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
             this.script.blocks.splice(index, Infinity, ...script.script.blocks);
             const newChildren = this.children.splice(index, Infinity, ...script.children);
             for (let i = 0; i < script.children.length; i++) {
-                script.children[i].setParent(new ScuffrBlockReference(i + index, this));
+                script.children[i].setParent({ index: i + index, parent: this });
                 this.dom.appendChild(script.children[i].dom);
             }
             if (newChildren.length !== 0) {
-                const newScript = new ScuffrElementScriptInput(wrap.wrapperBlock, null, newChildren);
+                const newScript = new ScuffrElementScriptInput({ index: wrap.wrapperInput.index, parent: wrap.wrapperBlock.content }, null, newChildren);
                 wrap.wrapperBlock.setInput(wrap.wrapperInput, newScript);
             }
             this.update(true);
@@ -102,7 +107,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
             this.script.blocks.splice(index, 0, ...script.script.blocks);
             this.children.splice(index, 0, ...script.children);
             for (let i = 0; i < script.children.length; i++) {
-                script.children[i].setParent(new ScuffrBlockReference(i + index, this));
+                script.children[i].setParent({ index: i + index, parent: this });
                 this.dom.appendChild(script.children[i].dom);
             }
             this.update(true);
@@ -115,7 +120,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
     }
 
     public addGhost(index: number, source: ScuffrElementBlockInstance, wrap?: ScuffrWrappingDescriptor | null) {
-        this._ghost = new ScuffrElementBlockGhost(new ScuffrBlockReference(index, this), source, wrap);
+        this._ghost = new ScuffrElementBlockGhost({ index, parent: this }, source, wrap);
         this.children.splice(index, 0, this._ghost);
         this._updateBlocks();
         super.update(true);
@@ -131,8 +136,8 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         }
     }
 
-    private _renderBlock(index: number) {
-        return this.script.blocks[index].render(null, new ScuffrBlockReference(index, this));
+    private _renderBlock(index: number): ScuffrElementBlockInstance {
+        return this.script.blocks[index].render({ index, parent: this });
     }
 
     public override update(propagateUp: boolean) {
@@ -168,7 +173,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
 
             for (let blockIdx = 0; blockIdx < this.children.length; blockIdx++) {
                 const renderedBlock = this.children[blockIdx];
-                renderedBlock.parentRef.childKey = blockIdx;
+                renderedBlock.getReference().index = blockIdx;
 
                 renderedBlock.translationParent.x = x;
                 renderedBlock.translationParent.y = y - renderedBlock.topOffset;

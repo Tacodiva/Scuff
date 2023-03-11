@@ -5,31 +5,31 @@ import { ScratchInputTypeBoolean } from "../block/input-types/ScratchInputTypeBo
 
 export class ControlBlockIf extends ScratchBlockTypeStackable {
 
-    constructor() {
-        super("control_if")
-        this.init({
-            text: l10n.raw("if % then %"),
-            inputs: [
-                new ScratchInputTypeBoolean("idk", this),
-                new BlockPartInputSubscript("testI", this)
-            ],
-            category: ScratchBlockCategory.CONTROL
-        });
+    public static create(): ControlBlockIf {
+        return new ControlBlockIf(
+            ScratchBlockTypeStackable.parseDescription({
+                id: "control_if",
+                text: l10n.raw("if % then %"),
+                inputs: [
+                    ScratchInputTypeBoolean.create("idk"),
+                    BlockPartInputSubscript.create("testI")
+                ],
+                category: ScratchBlockCategory.CONTROL
+            }));
     }
 }
 
 
 export class ControlBlockForever extends ScratchBlockTypeStackable {
-
-    constructor() {
-        super("control_forever")
-        this.init({
-            text: l10n.raw("forever %"),
-            inputs: [
-                new BlockPartInputSubscript("testI", this),
-            ],
-            category: ScratchBlockCategory.CONTROL,
-            shape: ScratchStackableBlockShape.TAIL
-        });
+    static create(): ControlBlockForever {
+        return new ControlBlockForever(
+            ScratchBlockTypeStackable.parseDescription({
+                id: "control_forever",
+                text: l10n.raw("forever %"),
+                inputs: [BlockPartInputSubscript.create("testI")],
+                category: ScratchBlockCategory.CONTROL,
+                shape: ScratchStackableBlockShape.TAIL,
+            })
+        );
     }
 }
