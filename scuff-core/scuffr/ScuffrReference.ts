@@ -1,12 +1,17 @@
-import type { ScuffrWorkspace } from ".";
+import type { ScuffrElementScriptRoot, ScuffrWorkspace } from ".";
 
 export interface ScuffrReferenceable {
-    getReference(): ScuffrReference<any>;
+    getReference(): ScuffrReference;
 }
 
-export interface ScuffrReference<TValue extends ScuffrReferenceable> {
+export interface ScuffrReference<TValue extends ScuffrReferenceable = ScuffrReferenceable> {
     index: number;
     parent: ScuffrReferenceParent<TValue>;
+}
+
+export interface ScuffrRootReference extends ScuffrReference<ScuffrElementScriptRoot> {
+    index: number;
+    parent: ScuffrWorkspace;
 }
 
 export interface ScuffrLinkReference<TValue extends ScuffrReferenceable, TParent extends ScuffrReferenceLink<TValue>> extends ScuffrReference<TValue> {
@@ -14,8 +19,9 @@ export interface ScuffrLinkReference<TValue extends ScuffrReferenceable, TParent
     parent: TParent;
 }
 
-export interface ScuffrReferenceLink<TChild extends ScuffrReferenceable> extends ScuffrReferenceable {
-    getIndexValue(index: number): TChild;
+interface ScuffrReferenceParentMethod<TChild extends ScuffrReferenceable> {
+    getReferenceValue(index: number): TChild;
 }
 
-export type ScuffrReferenceParent<T extends ScuffrReferenceable> = ScuffrWorkspace | ScuffrReferenceLink<T>;
+export type ScuffrReferenceLink<TChild extends ScuffrReferenceable> = ScuffrReferenceable & ScuffrReferenceParentMethod<TChild>;
+export type ScuffrReferenceParent<T extends ScuffrReferenceable> = (ScuffrWorkspace & ScuffrReferenceParentMethod<T>) | ScuffrReferenceLink<T>;

@@ -3,8 +3,9 @@ import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrElementBlockInstance } from "../ScuffrElementBlockInstance";
 import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
 import type { ScuffrElementScript } from "../ScuffrElementScript";
-import type { ScuffrWrappingDescriptor } from "../ScuffrWrappingDescriptor";
 import { ScuffrAttachmentPointScript } from "./ScuffrAttachmentPointScript";
+import type { ScuffrCmd } from "../commands/ScuffrCmd";
+import { ScuffrCmdAttchScriptTakeScript } from "../commands/ScuffrCmdAttchScriptTakeScript";
 
 export class ScuffrAttachmentPointScriptTop extends ScuffrAttachmentPointScript {
 
@@ -18,11 +19,11 @@ export class ScuffrAttachmentPointScriptTop extends ScuffrAttachmentPointScript 
         return delta;
     }
 
-    public override highlight(script: ScuffrElementScriptRoot): void {
-        this.parent.addGhost(this.index, script.children[script.children.length - 1] as ScuffrElementBlockInstance);
+    public override takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd {
+        return new ScuffrCmdAttchScriptTakeScript(script, this.parent.getReference(), this.index, false);
     }
 
-    protected override _getWrapping(script: ScuffrElementScriptRoot): ScuffrWrappingDescriptor | null {
-        return null;
+    public override highlight(script: ScuffrElementScriptRoot): void {
+        this.parent.addGhost(this.index, script.children[script.children.length - 1] as ScuffrElementBlockInstance, false);
     }
 }

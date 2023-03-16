@@ -1,9 +1,15 @@
 import { BlockScriptRoot } from "../block/BlockScriptRoot";
+import { ScuffrElementScript } from "./ScuffrElementScript";
+import { ScuffrCmdScriptSelectRoot } from "./commands/ScuffrCmdScriptSelectRoot";
+
 import type { ScuffrElementBlock } from "./ScuffrElementBlock";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
-import { ScuffrElementScript } from "./ScuffrElementScript";
 import type { Vec2 } from "../utils/Vec2";
-import type { ScuffrReference } from "./ScuffrReference";
+import type { ScuffrRootReference } from "./ScuffrReference";
+import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
+import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
+import { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
+import type { ScuffrElementScriptInput } from "./ScuffrElementScriptInput";
 
 export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot> {
     public readonly parent: ScuffrWorkspace;
@@ -24,7 +30,7 @@ export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot
         return this;
     }
 
-    public getReference(): ScuffrReference<ScuffrElementScriptRoot> {
+    public getReference(): ScuffrRootReference {
         return this.workspace.getScriptReference(this);
     }
 
@@ -34,7 +40,18 @@ export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot
         super.updateTranslation(propgrateDown);
     }
 
-    public toRootScript(): ScuffrElementScriptRoot {
-        return this;
+    public override onChildBlockDrag(reference: ScuffrReferenceBlock, event: MouseEvent): boolean {
+        if (reference.index === 0) {
+            this.workspace.startInteraction(new ScuffrInteractionDragScript(new ScuffrCmdScriptSelectRoot(this.getReference()), event));
+            return true;
+        }
+        return super.onChildBlockDrag(reference, event);
+    }
+
+    public getWrapperInput(checkEmpty: boolean = true): ScuffrElementScriptInput | null {
+        const firstChild = this.children[0];
+        if (!(firstChild instanceof ScuffrElementBlockInstance))
+            return null;
+        return firstChild.getWrapperInput(checkEmpty);
     }
 }

@@ -23,3 +23,4 @@ export * from './ScuffrReferenceTypes';
 export * from './ScuffrReference';
 
 export * from './shape';
+export * from './commands';

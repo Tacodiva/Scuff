@@ -7,7 +7,7 @@ import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import type { ScuffrLinkReference, ScuffrReferenceable, ScuffrReferenceLink } from "./ScuffrReference";
 
 export interface ScuffrReferenceParentBlock<TChild extends ScuffrReferenceable = ScuffrReferenceable> extends ScuffrElementParent, ScuffrReferenceLink<TChild> {
-    onChildDrag?(index: number, event: MouseEvent): boolean;
+    onChildBlockDrag(reference: ScuffrReferenceBlock, event: MouseEvent): boolean;
     getRoot(): ScuffrElementScriptRoot;
 }
 

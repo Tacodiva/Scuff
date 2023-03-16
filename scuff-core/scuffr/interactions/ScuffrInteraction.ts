@@ -25,6 +25,8 @@ export abstract class ScuffrInteraction {
         this.end();
     }
 
+    public onKeyDown(event: KeyboardEvent): void { }
+
     public onMouseMove(event: MouseEvent): void {
         if ((event.buttons & 1) !== 0)
             this.end();

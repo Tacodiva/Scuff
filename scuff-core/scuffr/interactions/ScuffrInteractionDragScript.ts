@@ -2,30 +2,36 @@ import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrAttachmentPoint } from "../attachment-points/ScuffrAttachmentPoint";
 import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
 import { ScuffrInteraction } from "./ScuffrInteraction";
-import type { ScuffrWorkspace } from "../ScuffrWorkspace";
+import type { ScuffrCmdScriptSelect } from "../commands/ScuffrCmdScriptSelect";
+import { ScuffrCmdCompound } from "../commands";
 
 export class ScuffrInteractionDragScript extends ScuffrInteraction {
     public static readonly ATTACH_RADIUS = 60;
 
     public readonly script: ScuffrElementScriptRoot;
+    public readonly scriptSelector: ScuffrCmdScriptSelect;
     public readonly offset: Vec2;
     public readonly startPos: Vec2;
 
     private _attachmentPoint: ScuffrAttachmentPoint | null;
 
-    public constructor(script: ScuffrElementScriptRoot, startPos: Vec2) {
-        super(script.workspace);
+    public constructor(scriptSelector: ScuffrCmdScriptSelect, startPos: Vec2) {
+        super(scriptSelector.workspace);
         this.startPos = startPos;
-        this.script = script;
+
+        this.scriptSelector = scriptSelector;
+        scriptSelector.do();
+        this.script = this.workspace.getSelectedScript();
+
         const startPosWorkspace = this.workspace.toWorkspaceCoords(startPos);
         this.offset = {
-            x: script.translationX - startPosWorkspace.x,
-            y: script.translationY - startPosWorkspace.y,
+            x: this.script.translationX - startPosWorkspace.x,
+            y: this.script.translationY - startPosWorkspace.y,
         };
         this._attachmentPoint = null;
         this.script.dom.classList.add("scuff-block-dragging");
         // Move the script to the bottom of the container so it renders on top of everything else
-        this.workspace.svgScriptContainer.appendChild(script.dom);
+        this.workspace.svgScriptContainer.appendChild(this.script.dom);
     }
 
     public override onMouseMove(event: MouseEvent): void {
@@ -57,7 +63,13 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
         this.script.dom.classList.remove("scuff-block-dragging");
         if (this._attachmentPoint) {
             this._attachmentPoint.unhighlight(this.script);
-            this._attachmentPoint.takeScript(this.script);
+
+            const takeCommand = this._attachmentPoint.takeScriptCommand(this.script);
+            takeCommand.do();
+            this.workspace.submitCommand(new ScuffrCmdCompound(this.scriptSelector, takeCommand), false);
+        } else {
+            this.scriptSelector.targetPosition = this.script.getAbsoluteTranslation();
+            this.workspace.submitCommand(this.scriptSelector, false);
         }
     }
 
@@ -80,7 +92,7 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
         return closest;
     }
 
-    public override onMouseUp(event: MouseEvent): boolean { 
+    public override onMouseUp(event: MouseEvent): boolean {
         this.end();
         return true;
     }

@@ -11,6 +11,7 @@ import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionCo
 import { l10n } from "../l10n";
 import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
 import { ScuffrElementBlockPartBase } from "./ScuffrElementBlockPartBase";
+import { ScuffrElementScriptInput } from "./ScuffrElementScriptInput";
 
 export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<ScuffrElementBlockContent> implements ScuffrElementBlock, ScuffrElementInput {
     public readonly block: BlockInstance;
@@ -24,8 +25,8 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
         this.content.renderAll();
     }
 
-    getIndexValue(index: number){
-        throw new Error("Method not implemented.");
+    public getReferenceValue(index: number): ScuffrElementInput {
+        return this.content.getReferenceValue(index);
     }
 
     public getReference(): ScuffrReferenceBlock {
@@ -49,7 +50,7 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
     }
 
     public override onDrag(event: MouseEvent): boolean {
-        return (this.parent.onChildDrag && this.parent.onChildDrag(this.reference.index, event)) ?? false;
+        return this.parent.onChildBlockDrag(this.reference, event);
     }
 
     public getInput(key: BlockPartInput): ScuffrElementInput | null {
@@ -97,7 +98,7 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
                 type: "action",
                 text: l10n.raw("Duplicate"),
                 action: (event) => {
-                    this.workspace.dragBlock(this.block.clone(), event);
+                    // this.workspace.dragBlock(this.block.clone(), event);
                 }
             },
             {
@@ -161,5 +162,17 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
             }
         ], [...this.shape.categoryClasses, "scuff-context-menu-block"]));
         return true;
+    }
+
+    public getWrapperInput(checkEmpty: boolean = true): ScuffrElementScriptInput | null {
+        for (const input of this.content.inputs) {
+            const inputElement = this.content.children[input.partIndex];
+            if (inputElement instanceof ScuffrElementScriptInput) {
+                if (checkEmpty && inputElement.children.length !== 0)
+                    return null;
+                return inputElement;
+            }
+        }
+        return null;
     }
 }

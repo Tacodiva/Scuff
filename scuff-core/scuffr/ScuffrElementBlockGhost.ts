@@ -6,7 +6,7 @@ import { ScuffrElementDummy } from './ScuffrElementDummy';
 import { ScuffrElementScriptInput } from './ScuffrElementScriptInput';
 import type { ScuffrElementScriptRoot } from './ScuffrElementScriptRoot';
 import type { ScuffrElementScript } from './ScuffrElementScript';
-import type { ScuffrWrappingDescriptor } from './ScuffrWrappingDescriptor';
+import { ScuffrWrapInfo } from './ScuffrWrappingDescriptor';
 import type { ScuffrShapeContentLine } from './shape/ScuffrShapeContentLine';
 import type { ScuffrLinkReference, ScuffrReference } from './ScuffrReference';
 
@@ -17,9 +17,9 @@ export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDum
     public get index(): number { return this.reference.index; }
     public readonly sourceBlock: ScuffrElementBlockInstance;
 
-    public readonly wrapping: ScuffrWrappingDescriptor | null;
+    public readonly wrapping: ScuffrWrapInfo | null;
 
-    public constructor(parentRef: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>, sourceBlock: ScuffrElementBlockInstance, wrapping?: ScuffrWrappingDescriptor | null) {
+    public constructor(parentRef: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>, sourceBlock: ScuffrElementBlockInstance, tryWrap: boolean) {
         super(parentRef.parent,
             {
                 shape: sourceBlock.getBackground().shape,
@@ -28,11 +28,16 @@ export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDum
             });
         this.reference = parentRef;
         this.sourceBlock = sourceBlock;
-        this.wrapping = wrapping ?? null;
+
+        if (tryWrap) {
+            const input = this.sourceBlock.getWrapperInput();
+            this.wrapping = (input === null) ? null : new ScuffrWrapInfo(input);
+        } else this.wrapping = null;
+        
         this.updateAll();
     }
 
-    public getIndexValue(index: number) {
+    public getReferenceValue(index: number) {
         throw new Error('Ghost blocks do not have any children.');
     }
 
@@ -72,7 +77,7 @@ export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDum
             const part = sourceLine.part;
             if (part instanceof ScuffrElementScriptInput) {
                 let dimensions;
-                if (part === this.wrapping?.wrapperElement) {
+                if (part === this.wrapping?.wrappingInput) {
                     let wrapHeight = 0;
                     for (let i = this.index; i < this.parent.children.length; i++) {
                         wrapHeight += this.parent.children[i].dimensions.y;

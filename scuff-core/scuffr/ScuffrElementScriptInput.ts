@@ -1,8 +1,8 @@
-import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
-import type { BlockPartInput } from "../block/BlockPartInput";
+import { ScuffrCmdScriptSelectScriptBlocks } from "./commands/ScuffrCmdScriptSelectScriptInput";
 import { BlockScriptInput } from "../block/BlockScriptInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { Vec2 } from "../utils/Vec2";
+import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
 import type { ScuffrShapeModifier } from "./shape/ScuffrShapeModifier";
 import type { ScuffrElementBlock } from "./ScuffrElementBlock";
@@ -13,14 +13,14 @@ import { ScuffrElementScript } from "./ScuffrElementScript";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
 import { ScuffrShapeStackBody, ScuffrShapeStackHead, ScuffrShapeStackTail } from "./shape";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
-import type { ScuffrReference } from "./ScuffrReference";
+import type { ScuffrCmdScriptSelect } from "./commands/ScuffrCmdScriptSelect";
 
 export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInput> implements ScuffrElementInput, ScuffrShapeModifier {
 
     public static readonly MIN_HEIGHT = 32;
     public get isSubscript(): boolean { return true; }
 
-    private _reference : ScuffrReferenceInput;
+    private _reference: ScuffrReferenceInput;
     public get parent(): ScuffrElementBlockContent { return this._reference.parent; }
 
     public constructor(reference: ScuffrReferenceInput, script: BlockScriptInput | null, blocks?: ScuffrElementBlock[]) {
@@ -63,16 +63,10 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
         }
     }
 
-    public toRootScript(): ScuffrElementScriptRoot {
-        const translation = this.children[0].getAbsoluteTranslation();
-        const rootScript = new ScuffrElementScriptRoot(this.workspace, null, this.children,
-            { x: translation.x + this.children[0].leftOffset, y: translation.y }
-        );
-        this.workspace.addRenderedScript(rootScript);
+    public clear() {
         this.children = [];
         this.script.blocks.length = 0;
         this.update(true);
-        return rootScript;
     }
 
     public getBackgroundModifier(): ScuffrShapeModifier {
@@ -84,7 +78,7 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
             (ghost && size.y === ScuffrElementScriptInput.MIN_HEIGHT) ||
             (this.children.length !== 0 &&
                 (!this._ghost?.wrapping && this.children[this.children.length - 1].shape.shape instanceof ScuffrShapeStackTail) ||
-                (this._ghost?.wrapping && this._ghost.wrapping.wrapperBlock.shape.shape instanceof ScuffrShapeStackTail)
+                (this._ghost?.wrapping && this._ghost.wrapping.wrappingBlock.shape.shape instanceof ScuffrShapeStackTail)
             ))
             // end at 12
             // return `a 4 4 0 0 1 -4 4 H 56 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 h -8 a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 H ${size.x + 4} a 4 4 0 0 1 4 4 `;
@@ -104,7 +98,7 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
         this.onAncestryChange(reference.parent.getRoot());
     }
 
-    public getReference(): ScuffrReference<any> {
+    public getReference(): ScuffrReferenceInput {
         return this._reference;
     }
 

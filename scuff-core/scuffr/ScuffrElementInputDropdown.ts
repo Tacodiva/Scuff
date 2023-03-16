@@ -25,7 +25,8 @@ class Content extends ScuffrElementParent {
 }
 
 export class ScuffrElementInputDropdown extends ScuffrElementInputBase<Content> implements ScuffrElementInput {
-    public value: BlockDropdownOption;
+    private _value: BlockDropdownOption;
+    public get value() { return this._value; }
 
     public constructor(reference: ScuffrReferenceInput, shape: ScuffrShape, typeClasses: string[], value: BlockDropdownOption) {
         super(reference, {
@@ -33,8 +34,8 @@ export class ScuffrElementInputDropdown extends ScuffrElementInputBase<Content> 
             categoryClasses: [],
             typeClasses
         });
-        this.value = value;
-        this.content.children[0].text = this.value.text;
+        this._value = value;
+        this.content.children[0].text = this._value.text;
     }
 
     protected createContent(): Content {
@@ -42,11 +43,11 @@ export class ScuffrElementInputDropdown extends ScuffrElementInputBase<Content> 
     }
 
     public asInput(): BlockInput {
-        return this.value;
+        return this._value;
     }
 
     public setValue(value: BlockDropdownOption) {
-        this.value = value;
+        this._value = value;
         this.parent.block.setInput(this.inputType, value);
         this.content.children[0].setText(value.text);
     }

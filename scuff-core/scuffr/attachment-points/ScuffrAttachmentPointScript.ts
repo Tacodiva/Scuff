@@ -3,7 +3,9 @@ import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 import type { ScuffrElementScript } from "../ScuffrElementScript";
 import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
 import type { ScuffrElementBlockInstance } from "../ScuffrElementBlockInstance";
-import type { ScuffrWrappingDescriptor } from "../ScuffrWrappingDescriptor";
+import type { ScuffrWrapInfo } from "../ScuffrWrappingDescriptor";
+import type { ScuffrCmd } from "../commands/ScuffrCmd";
+import { ScuffrCmdAttchScriptTakeScript } from "../commands/ScuffrCmdAttchScriptTakeScript";
 
 export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
     public readonly parent: ScuffrElementScript;
@@ -21,7 +23,7 @@ export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
     }
 
     public canTakeScript(script: ScuffrElementScriptRoot): boolean {
-        if (this._getWrapping(script))
+        if (script.getWrapperInput())
             return true;
         if (this.requireStackUp) {
             const firstBlock = script.script.blocks[0];
@@ -36,8 +38,8 @@ export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
         return true;
     }
 
-    public takeScript(script: ScuffrElementScriptRoot): void {
-        this.parent.insertScript(this.index, script, this._getWrapping(script));
+    public takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd {
+        return new ScuffrCmdAttchScriptTakeScript(script, this.parent.getReference(), this.index, true);
     }
 
     public override calculateDelta(source: ScuffrElementScriptRoot): Vec2 {
@@ -51,14 +53,10 @@ export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
     }
 
     public highlight(script: ScuffrElementScriptRoot): void {
-        this.parent.addGhost(this.index, script.children[0] as ScuffrElementBlockInstance, this._getWrapping(script));
+        this.parent.addGhost(this.index, script.children[0] as ScuffrElementBlockInstance, true);
     }
 
     public unhighlight(script: ScuffrElementScriptRoot): void {
         this.parent.removeGhost();
-    }
-
-    protected _getWrapping(script: ScuffrElementScriptRoot): ScuffrWrappingDescriptor | null {
-        return this.parent.tryWrap(this.index, script.children[0]);
     }
 }

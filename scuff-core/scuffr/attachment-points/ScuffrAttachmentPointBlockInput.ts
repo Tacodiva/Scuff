@@ -1,9 +1,14 @@
 import type { BlockPartInput } from "../../block/BlockPartInput";
 import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 import type { ScuffrElementInput } from "../ScuffrElementInput";
+import { ScuffrCmdAttchInputTakeScript } from "../commands/ScuffrCmdAttchInputTakeScript";
 import { ScuffrElementBlockInstance } from "../ScuffrElementBlockInstance";
 import { ScuffrElementBlockContent } from "../ScuffrElementBlockContent";
-import { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import { ScuffrCmdScriptSelectBlockInput } from "../commands/ScuffrCmdScriptSelectBlockInput";
+import { ScuffrCmdCompound } from "../commands/ScuffrCmdCompound";
+import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import type { ScuffrCmd } from "../commands/ScuffrCmd";
+import { ScuffrCmdScriptSwapSelected } from "../commands/ScuffrCmdScriptSwapSelected";
 
 export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
     public readonly block: ScuffrElementBlockInstance;
@@ -23,25 +28,25 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
         return !!this.input.isValidValue(this.block.block, script.script.blocks[0]);
     }
 
-    public takeScript(script: ScuffrElementScriptRoot): void {
-        const replacedInput = this.block.getInput(this.input);
-        this.block.setInput(this.input, script.children[0] as ScuffrElementBlockInstance);
+    public takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd {
+        let cmd: ScuffrCmd = new ScuffrCmdAttchInputTakeScript(this.parent.getReference());
 
+        const replacedInput = this.block.getInput(this.input);
         if (replacedInput instanceof ScuffrElementBlockInstance) {
             let rootBlock = this.block;
             while (rootBlock.parent instanceof ScuffrElementBlockContent)
                 rootBlock = rootBlock.parent.parent;
             replacedInput.attachmentPoints.clear();
-            const rootTranslation = rootBlock.getAbsoluteTranslation();
-            const renderedScript = new ScuffrElementScriptRoot(replacedInput.workspace, null, [replacedInput], {
-                x: rootTranslation.x + rootBlock.rightOffset + 25,
-                y: rootTranslation.y
-            });
-            renderedScript.updateTranslation();
-            replacedInput.workspace.addRenderedScript(renderedScript);
+            const rootTranslation = { ...rootBlock.getAbsoluteTranslation() };
+            rootTranslation.x += rootBlock.leftOffset - replacedInput.rightOffset - 40;
+            cmd = new ScuffrCmdCompound(
+                new ScuffrCmdScriptSelectBlockInput(replacedInput.getReference(), rootTranslation),
+                new ScuffrCmdScriptSwapSelected(1, cmd.workspace),
+                cmd
+            );
         }
 
-        script.workspace.deleteRenderedScript(script, false);
+        return cmd;
     }
 
     public get root() {

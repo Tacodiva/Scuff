@@ -1,7 +1,7 @@
 import { ScuffrWorkspace } from ".";
-import type { ScuffrReference, ScuffrReferenceable, ScuffrReferenceLink, ScuffrReferenceParent } from "./ScuffrReference";
+import type { ScuffrLinkReference, ScuffrReference, ScuffrReferenceable, ScuffrReferenceLink, ScuffrReferenceParent } from "./ScuffrReference";
 
-export class ScuffrReferneceChain<TValue extends ScuffrReferenceable> {
+export class ScuffrReferenceChain<TValue extends ScuffrReferenceable = ScuffrReferenceable> {
     public readonly indices: readonly number[];
     public readonly workspace: ScuffrWorkspace;
 
@@ -21,14 +21,10 @@ export class ScuffrReferneceChain<TValue extends ScuffrReferenceable> {
         this.indices = indices;
     }
 
-    public getValue(): TValue {
-        let i = this.indices.length - 1;
-
-        let value: ScuffrReferenceLink<any> = this.workspace.getScript(this.indices[i--]);
-
-        for (; i >= 0; i--)
-            value = value.getIndexValue(this.indices[i]);
-
-        return value as any as TValue;
+    public getTerminalReference(): ScuffrReference<TValue> {
+        let value: ScuffrReferenceParent<any> = this.workspace;
+        for (let i = this.indices.length - 1; i >= 1; i--)
+            value = value.getReferenceValue(this.indices[i]);
+        return { index: this.indices[0], parent: value };
     }
 }

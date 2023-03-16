@@ -112,7 +112,7 @@
             <tspan x="2" dy="1.2em">[X] Add support for icons in blocks</tspan>
             <tspan x="2" dy="1.2em">[X] Add dropdown block inputs</tspan>
             <tspan x="2" dy="1.2em">[ ] Fix nested block spacing</tspan>
-            <tspan x="2" dy="1.2em">[ ] Undo / Redo support</tspan>
+            <tspan x="2" dy="1.2em">[X] Undo / Redo support</tspan>
             <tspan x="2" dy="1.2em">[ ] Make tab move to the next input</tspan>
             <tspan x="2" dy="1.2em">[ ] Add block palette sidebar</tspan>
             <tspan x="2" dy="1.2em">[X] Right click menu</tspan>

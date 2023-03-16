@@ -2,6 +2,7 @@ import type { ScuffrElement } from "../ScuffrElement";
 import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
 import type { ScuffrAttachmentPointList } from "./ScuffrAttachmentPointList";
+import type { ScuffrCmd } from "../commands";
 
 export abstract class ScuffrAttachmentPoint {
     public abstract readonly parent: ScuffrElement;
@@ -42,7 +43,7 @@ export abstract class ScuffrAttachmentPoint {
     public abstract get root(): ScuffrElementScriptRoot;
 
     public abstract canTakeScript(script: ScuffrElementScriptRoot): boolean;
-    public abstract takeScript(script: ScuffrElementScriptRoot): void;
+    public abstract takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd;
 
     public abstract highlight(script: ScuffrElementScriptRoot) : void;
     public abstract unhighlight(script: ScuffrElementScriptRoot) : void;

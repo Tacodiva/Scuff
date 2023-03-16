@@ -1,4 +1,5 @@
 import type { BlockDropdownOption } from "../../block";
+import { ScuffrCmdSetInputDropdown } from "../commands/ScuffrCmdSetInputDropdown";
 import type { ScuffrElementInputDropdown } from "../ScuffrElementInputDropdown";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import { ScuffrInteraction } from "./ScuffrInteraction";
@@ -89,6 +90,14 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
         window.addEventListener("keydown", this._keypressListener);
     }
 
+    private _setOption(option: BlockDropdownOption) {
+        if (this.scuffrInput.value.id !== option.id) {
+            this.workspace.submitCommand(
+                new ScuffrCmdSetInputDropdown(this.scuffrInput, option)
+            );
+        }
+    }
+
     private _keypressListener = (e: KeyboardEvent) => {
         if (e.key === "ArrowUp") {
             if (this.highlightIndex > 0)
@@ -98,8 +107,9 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
         } else if (e.key === "Enter") {
             let idx = 0;
             if (this.highlightIndex !== -1) idx = this.highlightIndex;
-            if (idx < this.displayedOptions.length)
-                this.scuffrInput.setValue(this.displayedOptions[idx]);
+            if (idx < this.displayedOptions.length) {
+                this._setOption(this.displayedOptions[idx]);
+            }
             this.end();
         }
     }
@@ -129,7 +139,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
             }
             optionDom.appendChild(document.createTextNode(option.text));
             optionDom.addEventListener("click", e => {
-                this.scuffrInput.setValue(option);
+                this._setOption(option);
                 this.end();
             });
             optionDom.addEventListener("mousemove", e => {

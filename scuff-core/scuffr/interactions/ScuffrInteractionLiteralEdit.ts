@@ -1,4 +1,5 @@
 import type { ScuffrElementInputLiteral } from "..";
+import { ScuffrCmdSetInputLiteral } from "../commands/ScuffrCmdSetInputLiteral";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import { ScuffrInteraction } from "./ScuffrInteraction";
 
@@ -61,8 +62,14 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
     };
 
     public override onEnd(): void {
-        if (!this.inputValid)
+        if (!this.inputValid) {
             this.scuffrInput.setValue(this.initalValue);
+        } else if (this.scuffrInput.getValue() !== this.initalValue) {
+            this.workspace.submitCommand(
+                new ScuffrCmdSetInputLiteral(this.scuffrInput, this.scuffrInput.getValue(), this.initalValue),
+                false
+            );
+        }
         this.svgForeignObject.remove();
         this.scuffrInput.content.dom.style.display = "";
         this.scuffrInput.shapeDOM.classList.remove("scuff-input-selected");

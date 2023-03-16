@@ -17,7 +17,7 @@ class BlockInputInstanceInput<T extends BlockInput = BlockInput> {
 
     public set(value: BlockInput) {
         const valid = this.type.isValidValue(this.block, value);
-        if (!valid) throw new Error(`Input valie ${value} not valid for input ${this.type.name}.`);
+        if (!valid) throw new Error(`Input value ${value} not valid for input ${this.type.name}.`);
         this.value = valid;
     }
 
@@ -65,8 +65,8 @@ export class BlockInstance implements BlockInput {
         return this._getInput(inputType).value;
     }
 
-    public getInputByID(id: number): BlockInput {
-        return this._inputs[id].value;
+    public getInputByIndex(index: number): BlockInput {
+        return this._inputs[index].value;
     }
 
 
@@ -74,16 +74,16 @@ export class BlockInstance implements BlockInput {
         this._getInput(inputType).value = value;
     }
 
-    public setInputByID(inputID: number, value: BlockInput) {
-        this._inputs[inputID].set(value);
+    public setInputByIndex(index: number, value: BlockInput) {
+        this._inputs[index].set(value);
     }
 
     public resetInput(inputType: BlockPartInput) {
         this._inputs[inputType.index].reset();
     }
 
-    public resetInputByID(inputID: number) {
-        this._inputs[inputID].reset();
+    public resetInputByIndex(index: number) {
+        this._inputs[index].reset();
     }
 
     public render(reference: ScuffrReferenceBlock): ScuffrElementBlockInstance {

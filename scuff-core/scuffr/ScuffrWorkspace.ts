@@ -1,10 +1,8 @@
-import { BlockScriptRoot } from "../block/BlockScriptRoot";
+import type { BlockScriptRoot } from "../block/BlockScriptRoot";
 import type { Vec2 } from "../utils/Vec2";
-import type { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
 import { ScuffrElement } from "./ScuffrElement";
 import { ScuffrElementParent } from "./ScuffrElementParent";
 import type { BlockScripts } from "../block/BlockScripts";
-import type { BlockInstance } from "../block/BlockInstance";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
 import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
@@ -13,12 +11,11 @@ import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
 import type { ScrollablePane } from "../editor/scrollbar/ScrollablePaneInfo";
 import { writable } from "svelte/store";
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
-import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
 import type { ScuffrInteraction } from "./interactions/ScuffrInteraction";
 import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionContextMenu";
 import { l10n } from "../l10n";
-import type { ScuffrReference } from "./ScuffrReference";
-import type { ScuffrElementScript } from ".";
+import type { ScuffrRootReference } from "./ScuffrReference";
+import type { ScuffrCmd } from "./commands/ScuffrCmd";
 
 export class ScuffrWorkspace extends ScuffrElementParent {
     public parent: null;
@@ -48,6 +45,9 @@ export class ScuffrWorkspace extends ScuffrElementParent {
 
     private _interaction: ScuffrInteraction | null;
     private _mouseDownPos: Vec2 | null;
+
+    private readonly _commandHistory: ScuffrCmd[];
+    private _commandHistoryPresent: number;
 
     public constructor(root: SVGSVGElement, svgWorkspace: SVGGElement, backgroundPattern: SVGPatternElement, blockScripts: BlockScripts) {
         super(svgWorkspace);
@@ -102,14 +102,57 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this._scrollBottomRight = { x: 0, y: 0 };
 
         this.findWorkspaceCorners();
+
+        this._commandHistory = [];
+        this._commandHistoryPresent = 0;
+    }
+
+    public submitCommand(command: ScuffrCmd, execute: boolean = true) {
+        if (execute) command.do();
+        if (this._commandHistoryPresent === this._commandHistory.length) {
+            this._commandHistory.push(command);
+            ++this._commandHistoryPresent;
+        } else {
+            this._commandHistory.splice(this._commandHistoryPresent);
+            this._commandHistory.push(command);
+            this._commandHistoryPresent = this._commandHistory.length;
+        }
+    }
+
+    public peekUndo() : ScuffrCmd | undefined {
+        return this._commandHistory[this._commandHistoryPresent - 1];
+    }
+
+    public peekRedo() : ScuffrCmd | undefined {
+        return this._commandHistory[this._commandHistoryPresent];
+    }
+
+    public undo(): boolean {
+        if (this._commandHistoryPresent === 0)
+            return false;
+        --this._commandHistoryPresent;
+        this._commandHistory[this._commandHistoryPresent].undo();
+        return true;
+    }
+
+    public redo(): boolean {
+        if (this._commandHistoryPresent === this._commandHistory.length)
+            return false;
+        this._commandHistory[this._commandHistoryPresent].do();
+        ++this._commandHistoryPresent;
+        return true;
     }
 
     public getScript(index: number): ScuffrElementScriptRoot {
         return this.children[index];
     }
 
-    public getScriptReference(script: ScuffrElementScriptRoot): ScuffrReference<ScuffrElementScriptRoot> {
+    public getScriptReference(script: ScuffrElementScriptRoot): ScuffrRootReference {
         return { index: this.children.indexOf(script), parent: this };
+    }
+
+    public getReferenceValue(index: number): ScuffrElementScriptRoot {
+        return this.children[index];
     }
 
     public debugRender() {
@@ -165,6 +208,27 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         else console.error(`Point Count FAIL ${beforePoints} -> ${afterPoints}`);
     }
 
+    public getSelectedScript(): ScuffrElementScriptRoot {
+        return this.children[this, this.children.length - 1];
+    }
+
+    public swapSelected(index: number): ScuffrElementScriptRoot {
+        if (index === this.children.length - 1)
+            return this.getSelectedScript();
+        const currentSelect = this.children[this.children.length - 1];
+        const currentSelectScript = this.blockScripts.scripts[this.children.length - 1];
+
+        const newSelect = this.children[index];
+        const newSelectScript = this.blockScripts.scripts[index];
+
+        this.children[index] = currentSelect;
+        this.blockScripts.scripts[index] = currentSelectScript
+
+        this.children[this.children.length - 1] = newSelect;
+        this.blockScripts.scripts[this.children.length - 1] = newSelectScript;
+        return this.getSelectedScript();
+    }
+
     public addScript(script: BlockScriptRoot): ScuffrElementScriptRoot {
         const rendered = new ScuffrElementScriptRoot(this, script);
         rendered.updateAll();
@@ -202,28 +266,6 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return true;
     }
 
-    public dragBlock(block: BlockInstance, mousePos: Vec2, offset?: Vec2) {
-        const script = new BlockScriptRoot([block]);
-        const renderedScript = this.addScript(script);
-        let pos = this.toWorkspaceCoords(mousePos);
-        if (offset) {
-            pos.x += offset.x;
-            pos.y += offset.y;
-        } else {
-            pos.x -= renderedScript.dimensions.x / 2;
-        }
-        renderedScript.translationSelf = pos;
-        renderedScript.updateTranslation();
-        this.startInteraction(new ScuffrInteractionDragScript(renderedScript, mousePos));
-    }
-
-    public dragRenderedBlock(block: ScuffrElementBlockInstance, mousePos: Vec2) {
-        const translation = block.getAbsoluteTranslation();
-        const renderedScript = new ScuffrElementScriptRoot(this, null, [block], { x: translation.x + block.leftOffset, y: translation.y });
-        this.addRenderedScript(renderedScript);
-        this.startInteraction(new ScuffrInteractionDragScript(renderedScript, mousePos));
-    }
-
     public toWorkspaceCoords(pos: Vec2): Vec2 {
         return {
             x: pos.x / this.blockScripts.transformScale - this.blockScripts.transformPosition.x,
@@ -252,15 +294,17 @@ export class ScuffrWorkspace extends ScuffrElementParent {
             {
                 type: "action",
                 text: l10n.raw("Undo"),
-                action() {
-                    console.log("Undo");
-                }
+                disabled: !this.peekUndo(),
+                action: () => {
+                    this.undo();
+                },
             },
             {
                 type: "action",
                 text: l10n.raw("Redo"),
-                action() {
-                    console.log("Redo");
+                disabled: !this.peekRedo(),
+                action: () => {
+                    this.redo();
                 }
             },
             {
@@ -359,6 +403,24 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return false;
     }
 
+    public onKeyDown(event: KeyboardEvent): boolean {
+        switch (event.key) {
+            case 'z':
+                if (event.ctrlKey) {
+                    this.undo();
+                    return true;
+                }
+                break;
+            case 'y':
+                if (event.ctrlKey) {
+                    this.redo();
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
     public findWorkspaceCorners() {
         this._scrollTopLeft.x = 0;
         this._scrollTopLeft.y = 0;
@@ -412,6 +474,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     public addListeners() {
+        window.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
         window.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
         window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
         window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
@@ -420,6 +483,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
     }
 
     public removeListeners() {
+        window.removeEventListener("keydown", this.eventKeyDownListener);
         window.removeEventListener("mousedown", this.eventMouseDownListener);
         window.removeEventListener("mouseup", this.eventMouseUpListener);
         window.removeEventListener("mousemove", this.eventMouseMoveListener);
@@ -456,6 +520,15 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         } while (renderedElement = renderedElement.parent);
 
         return false;
+    }
+
+    private readonly eventKeyDownListener = (event: KeyboardEvent) => {
+        if (this._interaction) {
+            this._interaction.onKeyDown(event);
+        }
+        if (!this._interaction) {
+            this.onKeyDown(event);
+        }
     }
 
     private readonly eventMouseDownListener = (event: MouseEvent) => {
@@ -505,7 +578,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
                 (this._interaction as ScuffrInteraction).onMouseMove(event);
             }
         }
-        // this.debugRender();
+        this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {
