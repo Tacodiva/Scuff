@@ -1,9 +1,9 @@
 import { ScuffrAttachmentPointBlockInput } from "../scuffr/attachment-points/ScuffrAttachmentPointBlockInput";
 import type { BlockPart } from "./BlockPart";
 import type { BlockType } from "./BlockType";
-import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
+import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
 import type { BlockInput } from "./BlockInput";
-import type { ScuffrElementBlockContent } from "../scuffr/ScuffrElementBlockContent";
+import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
 import type { BlockInstance } from "./BlockInstance";
 
 export abstract class BlockPartInput<T extends BlockInput = BlockInput> implements BlockPart {
@@ -20,11 +20,11 @@ export abstract class BlockPartInput<T extends BlockInput = BlockInput> implemen
         this.blockType = blockType;
     }
 
-    public render(block: ScuffrElementBlockContent): ScuffrElementInput {
+    public render(block: ScuffrSvgBlockContent): ScuffrSvgInput {
         return block.block.getInput(this).render({ index: this.index, parent: block });
     }
 
-    public createAttachmentPoints(block: ScuffrElementBlockContent, rendered: ScuffrElementInput): void {
+    public createAttachmentPoints(block: ScuffrSvgBlockContent, rendered: ScuffrSvgInput): void {
         if (this.hasInputAttachmentPoint())
             new ScuffrAttachmentPointBlockInput(block.parent, this, rendered);
     }

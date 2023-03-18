@@ -1,4 +1,4 @@
-import { ScuffrElementBlockInstance } from "../scuffr/ScuffrElementBlockInstance";
+import { ScuffrSvgBlockInstance } from "../scuffr/ScuffrSvgBlockInstance";
 import type { ScuffrReferenceBlock } from "../scuffr/ScuffrReferenceTypes";
 import type { BlockInput } from "./BlockInput";
 import type { BlockPartInput } from "./BlockPartInput";
@@ -86,7 +86,7 @@ export class BlockInstance implements BlockInput {
         this._inputs[index].reset();
     }
 
-    public render(reference: ScuffrReferenceBlock): ScuffrElementBlockInstance {
-        return new ScuffrElementBlockInstance(this, reference);
+    public render(reference: ScuffrReferenceBlock): ScuffrSvgBlockInstance {
+        return new ScuffrSvgBlockInstance(this, reference);
     }
 }

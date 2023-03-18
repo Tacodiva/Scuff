@@ -1,6 +1,6 @@
-import type { ScuffrElementBlockContent } from "../scuffr/ScuffrElementBlockContent";
-import type { ScuffrElementBlockPart } from "../scuffr/ScuffrElementBlockPart";
+import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
+import type { ScuffrSvgBlockPart } from "../scuffr/ScuffrSvgBlockPart";
 
 export interface BlockPart {
-    render(block: ScuffrElementBlockContent): ScuffrElementBlockPart;
+    render(block: ScuffrSvgBlockContent): ScuffrSvgBlockPart;
 }

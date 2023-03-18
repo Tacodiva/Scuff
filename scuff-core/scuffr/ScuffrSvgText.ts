@@ -1,13 +1,13 @@
-import { ScuffrElement } from "./ScuffrElement";
-import type { ScuffrElementParent } from "./ScuffrElementParent";
+import { ScuffrSvgElement } from "./ScuffrSvgElement";
+import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 
-export class ScuffrElementText extends ScuffrElement {
-    public readonly parent: ScuffrElementParent;
+export class ScuffrSvgText extends ScuffrSvgElement {
+    public readonly parent: ScuffrSvgElementParent;
 
     public text: string;
     private _textNode: Text | null;
 
-    public constructor(parent: ScuffrElementParent, text: string) {
+    public constructor(parent: ScuffrSvgElementParent, text: string) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.workspace);
         this.parent = parent;
         this.text = text;

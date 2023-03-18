@@ -1,5 +1,5 @@
-import { ScuffrElementInputLiteral } from "../scuffr/ScuffrElementInputLiteral";
-import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
+import { ScuffrSvgInputLiteral } from "../scuffr/ScuffrSvgInputLiteral";
+import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
 import type { BlockInput } from "./BlockInput";
 import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 
@@ -20,7 +20,7 @@ export abstract class BlockInputLiteral implements BlockInput {
         this._value = value;
     }
 
-    public render(reference: ScuffrReferenceInput): ScuffrElementInput {
-        return new ScuffrElementInputLiteral(reference, this);
+    public render(reference: ScuffrReferenceInput): ScuffrSvgInput {
+        return new ScuffrSvgInputLiteral(reference, this);
     }
 }

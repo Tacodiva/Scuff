@@ -1,9 +1,9 @@
 import { BlockPartInput } from "../block/BlockPartInput";
-import { ScuffrElementParent } from "./ScuffrElementParent";
-import { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
-import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
+import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
+import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
+import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
 import type { ScuffrReferenceLink } from "./ScuffrReference";
 import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
@@ -11,19 +11,19 @@ import { ScuffrCmdScriptSelectBlockInput } from "./commands/ScuffrCmdScriptSelec
 
 interface ScuffrBlockContentInput {
     input: BlockPartInput;
-    rendered: ScuffrElementInput;
+    rendered: ScuffrSvgInput;
     partIndex: number;
 }
 
-export class ScuffrElementBlockContent extends ScuffrElementParent implements ScuffrReferenceParentBlock<ScuffrElementInput>, ScuffrReferenceLink<ScuffrElementInput> {
-    public children: ScuffrElementBlockPart[];
-    public parent: ScuffrElementBlockInstance;
+export class ScuffrSvgBlockContent extends ScuffrSvgElementParent implements ScuffrReferenceParentBlock<ScuffrSvgInput>, ScuffrReferenceLink<ScuffrSvgInput> {
+    public children: ScuffrSvgBlockPart[];
+    public parent: ScuffrSvgBlockInstance;
     public inputs: ScuffrBlockContentInput[];
 
     public get root() { return this.parent.root; }
     public get block() { return this.parent.block; }
 
-    public constructor(parent: ScuffrElementBlockInstance) {
+    public constructor(parent: ScuffrSvgBlockInstance) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
@@ -49,11 +49,11 @@ export class ScuffrElementBlockContent extends ScuffrElementParent implements Sc
         return rendered;
     }
 
-    public setInput(key: BlockPartInput, input: ScuffrElementInput) {
+    public setInput(key: BlockPartInput, input: ScuffrSvgInput) {
         this.setInputByIndex(key.index, input);
     }
 
-    public setInputByIndex(index: number, input: ScuffrElementInput) {
+    public setInputByIndex(index: number, input: ScuffrSvgInput) {
         this.parent.block.setInputByIndex(index, input.asInput());
         const oldInput = this.inputs[index];
         if (!oldInput)
@@ -85,9 +85,9 @@ export class ScuffrElementBlockContent extends ScuffrElementParent implements Sc
         return true;
     }
 
-    public detachBlock(index: number): ScuffrElementBlockInstance {
+    public detachBlock(index: number): ScuffrSvgBlockInstance {
         const input = this.inputs[index];
-        if (!(input && input.rendered instanceof ScuffrElementBlockInstance))
+        if (!(input && input.rendered instanceof ScuffrSvgBlockInstance))
             throw new Error(`Block input ${index} is not a block.`);
         input.rendered.attachmentPoints.clear();
         this.parent.block.resetInput(input.input);
@@ -96,11 +96,11 @@ export class ScuffrElementBlockContent extends ScuffrElementParent implements Sc
         return input.rendered;
     }
 
-    public getRoot(): ScuffrElementScriptRoot {
+    public getRoot(): ScuffrSvgScriptRoot {
         return this.parent.root;
     }
 
-    public getReferenceValue(index: number): ScuffrElementInput {
+    public getReferenceValue(index: number): ScuffrSvgInput {
         return this.inputs[index].rendered;
     }
 

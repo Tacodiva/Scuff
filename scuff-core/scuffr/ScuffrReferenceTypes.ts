@@ -1,16 +1,16 @@
-import type { ScuffrElementBlockContent } from ".";
-import type { ScuffrElementBlock } from "./ScuffrElementBlock";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import type { ScuffrElementParent } from "./ScuffrElementParent";
-import type { ScuffrElementScript } from "./ScuffrElementScript";
-import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
+import type { ScuffrSvgBlockContent } from ".";
+import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
+import type { ScuffrSvgScript } from "./ScuffrSvgScript";
+import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import type { ScuffrLinkReference, ScuffrReferenceable, ScuffrReferenceLink } from "./ScuffrReference";
 
-export interface ScuffrReferenceParentBlock<TChild extends ScuffrReferenceable = ScuffrReferenceable> extends ScuffrElementParent, ScuffrReferenceLink<TChild> {
+export interface ScuffrReferenceParentBlock<TChild extends ScuffrReferenceable = ScuffrReferenceable> extends ScuffrSvgElementParent, ScuffrReferenceLink<TChild> {
     onChildBlockDrag(reference: ScuffrReferenceBlock, event: MouseEvent): boolean;
-    getRoot(): ScuffrElementScriptRoot;
+    getRoot(): ScuffrSvgScriptRoot;
 }
 
-export type ScuffrReferenceInput = ScuffrLinkReference<ScuffrElementInput, ScuffrElementBlockContent & ScuffrReferenceParentBlock<ScuffrElementInput>>;
-export type ScuffrReferenceBlockStackable = ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript & ScuffrReferenceParentBlock<ScuffrElementBlock>>;
+export type ScuffrReferenceInput = ScuffrLinkReference<ScuffrSvgInput, ScuffrSvgBlockContent & ScuffrReferenceParentBlock<ScuffrSvgInput>>;
+export type ScuffrReferenceBlockStackable = ScuffrLinkReference<ScuffrSvgBlock, ScuffrSvgScript & ScuffrReferenceParentBlock<ScuffrSvgBlock>>;
 export type ScuffrReferenceBlock = ScuffrReferenceInput | ScuffrReferenceBlockStackable;

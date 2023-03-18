@@ -1,6 +1,6 @@
-import type { ScuffrElementBlockContent } from "../scuffr/ScuffrElementBlockContent";
-import type { ScuffrElementBlockPart } from "../scuffr/ScuffrElementBlockPart";
-import { ScuffrElementIcon } from "../scuffr/ScuffrElementIcon";
+import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
+import type { ScuffrSvgBlockPart } from "../scuffr/ScuffrSvgBlockPart";
+import { ScuffrSvgIcon } from "../scuffr/ScuffrSvgIcon";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockPart } from "./BlockPart";
 
@@ -16,7 +16,7 @@ export class BlockPartIcon implements BlockPart {
         this.padding = padding;
     }
 
-    public render(block: ScuffrElementBlockContent): ScuffrElementBlockPart {
-        return new ScuffrElementIcon(block, this.id, this.dimensions, this.padding);
+    public render(block: ScuffrSvgBlockContent): ScuffrSvgBlockPart {
+        return new ScuffrSvgIcon(block, this.id, this.dimensions, this.padding);
     }
 }

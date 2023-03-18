@@ -1,20 +1,20 @@
 import type { Vec2 } from "../../utils/Vec2";
 import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
-import type { ScuffrElementScript } from "../ScuffrElementScript";
-import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
-import type { ScuffrElementBlockInstance } from "../ScuffrElementBlockInstance";
+import type { ScuffrSvgScript } from "../ScuffrSvgScript";
+import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
+import type { ScuffrSvgBlockInstance } from "../ScuffrSvgBlockInstance";
 import type { ScuffrWrapInfo } from "../ScuffrWrappingDescriptor";
 import type { ScuffrCmd } from "../commands/ScuffrCmd";
 import { ScuffrCmdAttchScriptTakeScript } from "../commands/ScuffrCmdAttchScriptTakeScript";
 
 export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
-    public readonly parent: ScuffrElementScript;
+    public readonly parent: ScuffrSvgScript;
     public readonly index: number;
 
     public readonly requireStackUp: boolean;
     public readonly requireStackDown: boolean;
 
-    public constructor(script: ScuffrElementScript, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
+    public constructor(script: ScuffrSvgScript, index: number, requireStackUp: boolean, requireStackDown: boolean, offset: Vec2) {
         super(offset);
         this.parent = script;
         this.index = index;
@@ -22,7 +22,7 @@ export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
         this.requireStackDown = requireStackDown;
     }
 
-    public canTakeScript(script: ScuffrElementScriptRoot): boolean {
+    public canTakeScript(script: ScuffrSvgScriptRoot): boolean {
         if (script.getWrapperInput())
             return true;
         if (this.requireStackUp) {
@@ -38,25 +38,25 @@ export class ScuffrAttachmentPointScript extends ScuffrAttachmentPoint {
         return true;
     }
 
-    public takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd {
+    public takeScriptCommand(script: ScuffrSvgScriptRoot): ScuffrCmd {
         return new ScuffrCmdAttchScriptTakeScript(script, this.parent.getReference(), this.index, true);
     }
 
-    public override calculateDelta(source: ScuffrElementScriptRoot): Vec2 {
+    public override calculateDelta(source: ScuffrSvgScriptRoot): Vec2 {
         const delta = this._calculateRawDelta(source);
         delta.y -= source.topOffset;
         return delta;
     }
 
-    public get root(): ScuffrElementScriptRoot {
+    public get root(): ScuffrSvgScriptRoot {
         return this.parent.getRoot();
     }
 
-    public highlight(script: ScuffrElementScriptRoot): void {
-        this.parent.addGhost(this.index, script.children[0] as ScuffrElementBlockInstance, true);
+    public highlight(script: ScuffrSvgScriptRoot): void {
+        this.parent.addGhost(this.index, script.children[0] as ScuffrSvgBlockInstance, true);
     }
 
-    public unhighlight(script: ScuffrElementScriptRoot): void {
+    public unhighlight(script: ScuffrSvgScriptRoot): void {
         this.parent.removeGhost();
     }
 }

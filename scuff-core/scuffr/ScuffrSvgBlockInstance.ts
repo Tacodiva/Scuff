@@ -1,19 +1,19 @@
 import type { BlockInstance } from "../block/BlockInstance";
-import type { ScuffrElementBlock } from "./ScuffrElementBlock";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
+import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
 import type { BlockInput } from "../block/BlockInput";
-import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
-import { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
+import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
+import { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
 import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionContextMenu";
 import { l10n } from "../l10n";
 import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
-import { ScuffrElementBlockPartBase } from "./ScuffrElementBlockPartBase";
-import { ScuffrElementScriptInput } from "./ScuffrElementScriptInput";
+import { ScuffrSvgBlockPartBase } from "./ScuffrSvgBlockPartBase";
+import { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
 
-export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<ScuffrElementBlockContent> implements ScuffrElementBlock, ScuffrElementInput {
+export class ScuffrSvgBlockInstance extends ScuffrSvgBlockPartBase<ScuffrSvgBlockContent> implements ScuffrSvgBlock, ScuffrSvgInput {
     public readonly block: BlockInstance;
     public reference: ScuffrReferenceBlock;
     public get parent(): ScuffrReferenceParentBlock { return this.reference.parent; }
@@ -25,7 +25,7 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
         this.content.renderAll();
     }
 
-    public getReferenceValue(index: number): ScuffrElementInput {
+    public getReferenceValue(index: number): ScuffrSvgInput {
         return this.content.getReferenceValue(index);
     }
 
@@ -33,8 +33,8 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
         return this.reference;
     }
 
-    protected createContent(): ScuffrElementBlockContent {
-        return new ScuffrElementBlockContent(this);
+    protected createContent(): ScuffrSvgBlockContent {
+        return new ScuffrSvgBlockContent(this);
     }
 
     public setParent(reference: ScuffrReferenceBlock) {
@@ -42,7 +42,7 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
         this.onAncestryChange(reference.parent.getRoot());
     }
 
-    public override onAncestryChange(root: ScuffrElementScriptRoot | null): void {
+    public override onAncestryChange(root: ScuffrSvgScriptRoot | null): void {
         super.onAncestryChange(root);
         for (const child of this.content.children) {
             if (child.onAncestryChange) child.onAncestryChange(root);
@@ -53,17 +53,17 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
         return this.parent.onChildBlockDrag(this.reference, event);
     }
 
-    public getInput(key: BlockPartInput): ScuffrElementInput | null {
+    public getInput(key: BlockPartInput): ScuffrSvgInput | null {
         return this.content.getInput(key)?.rendered ?? null;
     }
 
-    public setInput(key: BlockPartInput, input: ScuffrElementInput) {
+    public setInput(key: BlockPartInput, input: ScuffrSvgInput) {
         this.content.setInput(key, input);
     }
 
-    public override getContentLines(): (ScuffrShapeContentLine & { part?: ScuffrElementBlockPart })[] {
-        const lines: (ScuffrShapeContentLine & { part?: ScuffrElementBlockPart })[] = [];
-        let lineContent: ScuffrElementBlockPart[] | null = null;
+    public override getContentLines(): (ScuffrShapeContentLine & { part?: ScuffrSvgBlockPart })[] {
+        const lines: (ScuffrShapeContentLine & { part?: ScuffrSvgBlockPart })[] = [];
+        let lineContent: ScuffrSvgBlockPart[] | null = null;
         for (const part of this.content.children) {
             if (part.getBackgroundModifier) {
                 if (lineContent) {
@@ -164,10 +164,10 @@ export class ScuffrElementBlockInstance extends ScuffrElementBlockPartBase<Scuff
         return true;
     }
 
-    public getWrapperInput(checkEmpty: boolean = true): ScuffrElementScriptInput | null {
+    public getWrapperInput(checkEmpty: boolean = true): ScuffrSvgScriptInput | null {
         for (const input of this.content.inputs) {
             const inputElement = this.content.children[input.partIndex];
-            if (inputElement instanceof ScuffrElementScriptInput) {
+            if (inputElement instanceof ScuffrSvgScriptInput) {
                 if (checkEmpty && inputElement.children.length !== 0)
                     return null;
                 return inputElement;

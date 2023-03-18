@@ -1,5 +1,5 @@
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrElementBlockPart } from "../ScuffrElementBlockPart";
+import type { ScuffrSvgBlockPart } from "../ScuffrSvgBlockPart";
 import type { ScuffrShapeContentLine } from "./ScuffrShapeContentLine";
 
 export abstract class ScuffrShape {
@@ -15,7 +15,7 @@ export abstract class ScuffrShape {
         return { x: 0, y: 0 };
     }
 
-    protected _getSnuggle(part: ScuffrElementBlockPart) {
+    protected _getSnuggle(part: ScuffrSvgBlockPart) {
         let partBg = part.getBackground && part.getBackground();
         if (partBg) {
             let snugglePadding = this._getSnugglePadding(partBg.shape);
@@ -29,13 +29,13 @@ export abstract class ScuffrShape {
         return null;
     }
 
-    public getPrePartPadding(partIdx: number, x: number, part: ScuffrElementBlockPart, line: ScuffrShapeContentLine): number {
+    public getPrePartPadding(partIdx: number, x: number, part: ScuffrSvgBlockPart, line: ScuffrShapeContentLine): number {
         if (partIdx === 0)
             x += this._getSnuggle(part);
         return x;
     }
 
-    public getPostPartPadding(partIdx: number, x: number, part: ScuffrElementBlockPart, line: ScuffrShapeContentLine): number {
+    public getPostPartPadding(partIdx: number, x: number, part: ScuffrSvgBlockPart, line: ScuffrShapeContentLine): number {
         if (partIdx === line.elements.length - 1) {
             x += this._getSnuggle(part);
         } else x += 8;

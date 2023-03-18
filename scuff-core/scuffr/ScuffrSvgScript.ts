@@ -1,12 +1,12 @@
-import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
-import { ScuffrElementParent } from "./ScuffrElementParent";
+import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
+import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
-import { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
+import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
-import type { ScuffrElementBlock } from "./ScuffrElementBlock";
+import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import type { BlockScript } from "../block/BlockScript";
 import { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
-import { ScuffrElementBlockGhost } from "./ScuffrElementBlockGhost";
+import { ScuffrSvgBlockGhost } from "./ScuffrSvgBlockGhost";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrWrapInfo } from "./ScuffrWrappingDescriptor";
 import type { Vec2 } from "../utils/Vec2";
@@ -15,17 +15,17 @@ import type { ScuffrReference, ScuffrReferenceLink } from "./ScuffrReference";
 import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
 import { ScuffrCmdScriptSelectScriptBlocks } from "./commands";
 
-export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScript> extends ScuffrElementParent implements ScuffrReferenceLink<ScuffrElementBlock> {
-    public children: ScuffrElementBlock[];
+export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript> extends ScuffrSvgElementParent implements ScuffrReferenceLink<ScuffrSvgBlock> {
+    public children: ScuffrSvgBlock[];
     public readonly script: TScript;
-    protected _root: ScuffrElementScriptRoot | null;
-    protected _ghost: ScuffrElementBlockGhost | null;
-    public get ghost(): ScuffrElementBlockGhost | null { return this._ghost };
+    protected _root: ScuffrSvgScriptRoot | null;
+    protected _ghost: ScuffrSvgBlockGhost | null;
+    public get ghost(): ScuffrSvgBlockGhost | null { return this._ghost };
 
     public readonly attachmentPoints: ScuffrAttachmentPointList;
     public abstract readonly isSubscript: boolean;
 
-    public constructor(container: SVGElement, root: ScuffrElementScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, translation?: Vec2) {
+    public constructor(container: SVGElement, root: ScuffrSvgScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, translation?: Vec2) {
         super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace, translation);
         if (root) this._root = root;
         else this._root = this.getRoot();
@@ -36,7 +36,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         this.children = [];
     }
 
-    protected _init(blocks?: ScuffrElementBlock[]) {
+    protected _init(blocks?: ScuffrSvgBlock[]) {
         if (blocks) {
             this.children = blocks;
 
@@ -54,21 +54,21 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         }
     }
 
-    public getReferenceValue(index: number): ScuffrElementBlock {
+    public getReferenceValue(index: number): ScuffrSvgBlock {
         return this.children[index];
     }
 
     public abstract getReference(): ScuffrReference;
 
-    public getRoot(): ScuffrElementScriptRoot {
+    public getRoot(): ScuffrSvgScriptRoot {
         if (!this._root) throw new Error("Script has no root!");
         return this._root;
     }
 
-    public static getBlockInstanceElements(blocks: ScuffrElementBlock[]): ScuffrElementBlockInstance[] {
+    public static getBlockInstanceElements(blocks: ScuffrSvgBlock[]): ScuffrSvgBlockInstance[] {
         let instances = [];
         for (const child of blocks) {
-            if (child instanceof ScuffrElementBlockInstance)
+            if (child instanceof ScuffrSvgBlockInstance)
                 instances.push(child);
         }
         return instances;
@@ -79,8 +79,8 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         this.updateTranslation(false);
     }
 
-    public addGhost(index: number, source: ScuffrElementBlockInstance, tryWrap: boolean) {
-        this._ghost = new ScuffrElementBlockGhost({ index, parent: this }, source, tryWrap);
+    public addGhost(index: number, source: ScuffrSvgBlockInstance, tryWrap: boolean) {
+        this._ghost = new ScuffrSvgBlockGhost({ index, parent: this }, source, tryWrap);
         this.children.splice(index, 0, this._ghost);
         this._updateBlocks();
         super.update(true);
@@ -96,7 +96,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         }
     }
 
-    private _renderBlock(index: number): ScuffrElementBlockInstance {
+    private _renderBlock(index: number): ScuffrSvgBlockInstance {
         return this.script.blocks[index].render({ index, parent: this });
     }
 
@@ -203,7 +203,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
         this.attachmentPoints.recalculateTranslation();
     }
 
-    public spliceBlocks(start: number, deleteCount?: number, items?: ScuffrElementBlock[], update: boolean = true): ScuffrElementBlock[] {
+    public spliceBlocks(start: number, deleteCount?: number, items?: ScuffrSvgBlock[], update: boolean = true): ScuffrSvgBlock[] {
         let splicedChildren;
 
         if (!items || items.length === 0) {
@@ -211,7 +211,7 @@ export abstract class ScuffrElementScript<TScript extends BlockScript = BlockScr
             this.script.blocks.splice(start, deleteCount);
         } else {
             splicedChildren = this.children.splice(start, deleteCount ?? 0, ...items);
-            this.script.blocks.splice(start, deleteCount ?? 0, ...items.flatMap(ele => (<ScuffrElementBlockInstance>ele).block));
+            this.script.blocks.splice(start, deleteCount ?? 0, ...items.flatMap(ele => (<ScuffrSvgBlockInstance>ele).block));
 
             for (let i = 0; i < items.length; i++) {
                 items[i].setParent({ index: i + start, parent: this });

@@ -1,4 +1,4 @@
-import { BlockDropdownOption, BlockInput, BlockInstance, BlockPartInputFactory, BlockType, ScuffrElementInput, ScuffrElementInputDropdown, ScuffrReferenceInput, ScuffrShape, ScuffrShapeInputRound } from "scuff";
+import { BlockDropdownOption, BlockInput, BlockInstance, BlockPartInputFactory, BlockType, ScuffrSvgInput, ScuffrSvgInputDropdown, ScuffrReferenceInput, ScuffrShape, ScuffrShapeInputRound } from "scuff";
 import { ScratchBlockTypeInput } from "../block-types/ScratchBlockTypeInput";
 import { ScratchDropdownOptionProvider, ScratchDropdownOptionRenderer, ScratchDropdownOptionShorthand, ScratchInputTypeDropdown } from "./ScratchInputTypeDropdown";
 
@@ -6,8 +6,8 @@ export class ScratchInputTypeDropdownRound extends ScratchInputTypeDropdown<Bloc
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
 
     public static readonly optionRenderer: ScratchDropdownOptionRenderer = {
-        renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrElementInput {
-            return new ScuffrElementInputDropdown(reference, ScratchInputTypeDropdownRound.shape, ["scuff-block-input-round"], option);
+        renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrSvgInput {
+            return new ScuffrSvgInputDropdown(reference, ScratchInputTypeDropdownRound.shape, ["scuff-block-input-round"], option);
         }
     };
 

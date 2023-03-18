@@ -1,5 +1,5 @@
-import { ScuffrElementBlockInstance } from "../ScuffrElementBlockInstance";
-import { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import { ScuffrSvgBlockInstance } from "../ScuffrSvgBlockInstance";
+import { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { ScuffrReference } from "../ScuffrReference";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import type { ScuffrCmd } from "./ScuffrCmd";
@@ -17,21 +17,21 @@ export class ScuffrCmdAttchInputTakeScript implements ScuffrCmd {
         const script = this.workspace.getSelectedScript();
         const inputReference = this.source.getTerminalReference();
 
-        if (!(inputReference.parent instanceof ScuffrElementBlockInstance))
+        if (!(inputReference.parent instanceof ScuffrSvgBlockInstance))
             throw new Error("ScuffrCmdTakeScriptInput target parent must be a block instance");
 
-        inputReference.parent.content.setInputByIndex(inputReference.index, script.children[0] as ScuffrElementBlockInstance);
+        inputReference.parent.content.setInputByIndex(inputReference.index, script.children[0] as ScuffrSvgBlockInstance);
         script.workspace.deleteRenderedScript(script, false);
     }
 
     public undo(): void {
         const inputReference = this.source.getTerminalReference();
 
-        if (!(inputReference.parent instanceof ScuffrElementBlockInstance))
+        if (!(inputReference.parent instanceof ScuffrSvgBlockInstance))
             throw new Error("ScuffrCmdTakeScriptInput target parent must be a block instance");
 
         const block = inputReference.parent.content.detachBlock(inputReference.index);
-        const script = new ScuffrElementScriptRoot(this.workspace, null, [block]);
+        const script = new ScuffrSvgScriptRoot(this.workspace, null, [block]);
         this.workspace.addRenderedScript(script);
     }
 }

@@ -1,10 +1,10 @@
 import type { BlockScriptRoot } from "../block/BlockScriptRoot";
 import type { Vec2 } from "../utils/Vec2";
-import { ScuffrElement } from "./ScuffrElement";
-import { ScuffrElementParent } from "./ScuffrElementParent";
+import { ScuffrSvgElement } from "./ScuffrSvgElement";
+import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import type { BlockScripts } from "../block/BlockScripts";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
-import { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
+import { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
@@ -17,11 +17,11 @@ import { l10n } from "../l10n";
 import type { ScuffrRootReference } from "./ScuffrReference";
 import type { ScuffrCmd } from "./commands/ScuffrCmd";
 
-export class ScuffrWorkspace extends ScuffrElementParent {
+export class ScuffrWorkspace extends ScuffrSvgElementParent {
     public parent: null;
 
     public readonly blockScripts: BlockScripts;
-    public children: ScuffrElementScriptRoot[];
+    public children: ScuffrSvgScriptRoot[];
 
     public readonly svg: SVGSVGElement;
 
@@ -85,7 +85,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this.svgBackgroundPattern.patternTransform.baseVal.appendItem(this.svgBackgroundTranformTranslate);
 
         for (const script of this.blockScripts.scripts) {
-            const rendered = new ScuffrElementScriptRoot(this, script);
+            const rendered = new ScuffrSvgScriptRoot(this, script);
             rendered.updateAll();
             this.children.push(rendered);
         }
@@ -143,15 +143,15 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return true;
     }
 
-    public getScript(index: number): ScuffrElementScriptRoot {
+    public getScript(index: number): ScuffrSvgScriptRoot {
         return this.children[index];
     }
 
-    public getScriptReference(script: ScuffrElementScriptRoot): ScuffrRootReference {
+    public getScriptReference(script: ScuffrSvgScriptRoot): ScuffrRootReference {
         return { index: this.children.indexOf(script), parent: this };
     }
 
-    public getReferenceValue(index: number): ScuffrElementScriptRoot {
+    public getReferenceValue(index: number): ScuffrSvgScriptRoot {
         return this.children[index];
     }
 
@@ -192,7 +192,7 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this.children.length = 0;
         this.attachmentPoints.clear();
         for (const script of this.blockScripts.scripts) {
-            const rendered = new ScuffrElementScriptRoot(this, script);
+            const rendered = new ScuffrSvgScriptRoot(this, script);
             rendered.updateAll();
             this.children.push(rendered);
         }
@@ -208,11 +208,11 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         else console.error(`Point Count FAIL ${beforePoints} -> ${afterPoints}`);
     }
 
-    public getSelectedScript(): ScuffrElementScriptRoot {
+    public getSelectedScript(): ScuffrSvgScriptRoot {
         return this.children[this, this.children.length - 1];
     }
 
-    public swapSelected(index: number): ScuffrElementScriptRoot {
+    public swapSelected(index: number): ScuffrSvgScriptRoot {
         if (index === this.children.length - 1)
             return this.getSelectedScript();
         const currentSelect = this.children[this.children.length - 1];
@@ -229,14 +229,14 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return this.getSelectedScript();
     }
 
-    public addScript(script: BlockScriptRoot): ScuffrElementScriptRoot {
-        const rendered = new ScuffrElementScriptRoot(this, script);
+    public addScript(script: BlockScriptRoot): ScuffrSvgScriptRoot {
+        const rendered = new ScuffrSvgScriptRoot(this, script);
         rendered.updateAll();
         this.addRenderedScript(rendered);
         return rendered;
     }
 
-    public addRenderedScript(script: ScuffrElementScriptRoot) {
+    public addRenderedScript(script: ScuffrSvgScriptRoot) {
         this.blockScripts.scripts.push(script.script);
         this.children.push(script);
     }
@@ -245,11 +245,11 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         return this._deleteScriptAt(this.blockScripts.scripts.indexOf(script), deleteBlocks);
     }
 
-    public deleteRenderedScript(script: ScuffrElementScriptRoot, deleteBlocks?: boolean): boolean {
+    public deleteRenderedScript(script: ScuffrSvgScriptRoot, deleteBlocks?: boolean): boolean {
         return this._deleteScriptAt(this.children.indexOf(script), deleteBlocks);
     }
 
-    public getRenderedScript(script: BlockScriptRoot): ScuffrElementScriptRoot {
+    public getRenderedScript(script: BlockScriptRoot): ScuffrSvgScriptRoot {
         const rendered = this.children.find(rendered => rendered.script === script);
         if (!rendered) throw new Error("Script not a part of this workspace.");
         return rendered;
@@ -502,12 +502,12 @@ export class ScuffrWorkspace extends ScuffrElementParent {
         this._interaction = interaction;
     }
 
-    private _dispatch<T>(element: any, listenerInvoker: (element: ScuffrElement) => boolean): boolean {
+    private _dispatch<T>(element: any, listenerInvoker: (element: ScuffrSvgElement) => boolean): boolean {
         if (!element) return false;
 
-        let renderedElement: ScuffrElement | null;
+        let renderedElement: ScuffrSvgElement | null;
         while (
-            !(renderedElement = element[ScuffrElement.DATA_NAME]) &&
+            !(renderedElement = element[ScuffrSvgElement.DATA_NAME]) &&
             element !== this.dom &&
             (element = element.parentElement)
         );

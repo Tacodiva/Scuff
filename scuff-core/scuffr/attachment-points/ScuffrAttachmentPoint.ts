@@ -1,11 +1,11 @@
-import type { ScuffrElement } from "../ScuffrElement";
+import type { ScuffrSvgElement } from "../ScuffrSvgElement";
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { ScuffrAttachmentPointList } from "./ScuffrAttachmentPointList";
 import type { ScuffrCmd } from "../commands";
 
 export abstract class ScuffrAttachmentPoint {
-    public abstract readonly parent: ScuffrElement;
+    public abstract readonly parent: ScuffrSvgElement;
     public readonly offset: Vec2;
 
     private _translation: Vec2 | null;
@@ -15,11 +15,11 @@ export abstract class ScuffrAttachmentPoint {
         this._translation = null;
     }
 
-    public calculateDelta(source: ScuffrElementScriptRoot): Vec2 {
+    public calculateDelta(source: ScuffrSvgScriptRoot): Vec2 {
         return this._calculateRawDelta(source);
     }
     
-    protected _calculateRawDelta(source: ScuffrElementScriptRoot): Vec2 {
+    protected _calculateRawDelta(source: ScuffrSvgScriptRoot): Vec2 {
         return {
             x: this.translation.x + this.root.translationX - source.translationX,
             y: this.translation.y + this.root.translationY - source.translationY
@@ -40,16 +40,16 @@ export abstract class ScuffrAttachmentPoint {
         };
     }
 
-    public abstract get root(): ScuffrElementScriptRoot;
+    public abstract get root(): ScuffrSvgScriptRoot;
 
-    public abstract canTakeScript(script: ScuffrElementScriptRoot): boolean;
-    public abstract takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd;
+    public abstract canTakeScript(script: ScuffrSvgScriptRoot): boolean;
+    public abstract takeScriptCommand(script: ScuffrSvgScriptRoot): ScuffrCmd;
 
-    public abstract highlight(script: ScuffrElementScriptRoot) : void;
-    public abstract unhighlight(script: ScuffrElementScriptRoot) : void;
+    public abstract highlight(script: ScuffrSvgScriptRoot) : void;
+    public abstract unhighlight(script: ScuffrSvgScriptRoot) : void;
 }
 
-export interface IScuffrPointAttachable extends ScuffrElement {
+export interface IScuffrPointAttachable extends ScuffrSvgElement {
     attachmentPoints: ScuffrAttachmentPointList;
 }
 

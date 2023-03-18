@@ -1,5 +1,5 @@
-import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
-import { ScuffrElementScriptInput } from "../scuffr/ScuffrElementScriptInput";
+import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
+import { ScuffrSvgScriptInput } from "../scuffr/ScuffrSvgScriptInput";
 import { BlockScript } from "./BlockScript";
 import type { BlockInput } from "./BlockInput";
 import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
@@ -7,8 +7,8 @@ import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 
 export class BlockScriptInput extends BlockScript implements BlockInput {
 
-    public render(reference: ScuffrReferenceInput): ScuffrElementInput {
-        return new ScuffrElementScriptInput(reference, this);
+    public render(reference: ScuffrReferenceInput): ScuffrSvgInput {
+        return new ScuffrSvgScriptInput(reference, this);
     }
 
     public clone(): BlockScriptInput {

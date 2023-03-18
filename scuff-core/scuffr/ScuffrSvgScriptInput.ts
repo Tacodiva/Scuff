@@ -2,31 +2,31 @@ import { ScuffrCmdScriptSelectScriptBlocks } from "./commands/ScuffrCmdScriptSel
 import { BlockScriptInput } from "../block/BlockScriptInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { Vec2 } from "../utils/Vec2";
-import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
+import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
 import type { ScuffrShapeModifier } from "./shape/ScuffrShapeModifier";
-import type { ScuffrElementBlock } from "./ScuffrElementBlock";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import type { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
-import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
-import { ScuffrElementScript } from "./ScuffrElementScript";
+import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import type { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
+import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
+import { ScuffrSvgScript } from "./ScuffrSvgScript";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
 import { ScuffrShapeStackBody, ScuffrShapeStackHead, ScuffrShapeStackTail } from "./shape";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 import type { ScuffrCmdScriptSelect } from "./commands/ScuffrCmdScriptSelect";
 
-export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInput> implements ScuffrElementInput, ScuffrShapeModifier {
+export class ScuffrSvgScriptInput extends ScuffrSvgScript<BlockScriptInput> implements ScuffrSvgInput, ScuffrShapeModifier {
 
     public static readonly MIN_HEIGHT = 32;
     public get isSubscript(): boolean { return true; }
 
     private _reference: ScuffrReferenceInput;
-    public get parent(): ScuffrElementBlockContent { return this._reference.parent; }
+    public get parent(): ScuffrSvgBlockContent { return this._reference.parent; }
 
-    public constructor(reference: ScuffrReferenceInput, script: BlockScriptInput | null, blocks?: ScuffrElementBlock[]) {
+    public constructor(reference: ScuffrReferenceInput, script: BlockScriptInput | null, blocks?: ScuffrSvgBlock[]) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
-            script = new BlockScriptInput(ScuffrElementScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
+            script = new BlockScriptInput(ScuffrSvgScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
         }
         super(reference.parent.dom, reference.parent.root, reference.parent.workspace, script);
         this._reference = reference;
@@ -43,7 +43,7 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
 
         this.dimensions.x = 144;
         if (this.children.length === 0) {
-            this.dimensions.y = ScuffrElementScriptInput.MIN_HEIGHT;
+            this.dimensions.y = ScuffrSvgScriptInput.MIN_HEIGHT;
         } else {
             this.dimensions.x = 144;
             this.topLeftOffset.y += 4;
@@ -75,7 +75,7 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
 
     public getPath(size: Vec2, shape: ScuffrShapeStackBody, line: ScuffrShapeContentLine, ghost: boolean = false): string | null {
         if (
-            (ghost && size.y === ScuffrElementScriptInput.MIN_HEIGHT) ||
+            (ghost && size.y === ScuffrSvgScriptInput.MIN_HEIGHT) ||
             (this.children.length !== 0 &&
                 (!this._ghost?.wrapping && this.children[this.children.length - 1].shape.shape instanceof ScuffrShapeStackTail) ||
                 (this._ghost?.wrapping && this._ghost.wrapping.wrappingBlock.shape.shape instanceof ScuffrShapeStackTail)
@@ -87,7 +87,7 @@ export class ScuffrElementScriptInput extends ScuffrElementScript<BlockScriptInp
             return `a 4 4 0 0 1 -4 4 ${shape.nub.getLeftPath(12)} a 4 4 0 0 0 -4 4 v ${line.dimensions.y - 16} a 4 4 0 0 0 4 4 ${shape.nub.getRightPath()} H ${size.x + 4} a 4 4 0 0 1 4 4 `;
     }
 
-    public onAncestryChange(root: ScuffrElementScriptRoot | null): void {
+    public onAncestryChange(root: ScuffrSvgScriptRoot | null): void {
         this._root = root;
         for (const child of this.children) child.onAncestryChange(root);
         this.attachmentPoints.onAncestryChange(root);

@@ -1,12 +1,11 @@
-import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
-import type { ScuffrElement } from "./ScuffrElement";
-import { ScuffrElementParent } from "./ScuffrElementParent";
-import type { ScuffrShape } from "./shape/ScuffrShape";
+import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
+import type { ScuffrSvgElement } from "./ScuffrSvgElement";
+import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
 import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
 
-export abstract class ScuffrElementShape<TContent extends ScuffrElement = ScuffrElement> extends ScuffrElementParent implements ScuffrElementBlockPart {
-    public abstract override parent: ScuffrElementParent;
+export abstract class ScuffrSvgShape<TContent extends ScuffrSvgElement = ScuffrSvgElement> extends ScuffrSvgElementParent implements ScuffrSvgBlockPart {
+    public abstract override parent: ScuffrSvgElementParent;
     public override children: readonly [TContent];
     public readonly shape: ScuffrColouredShape;
     public readonly shapeDOM: SVGElement;
@@ -15,7 +14,7 @@ export abstract class ScuffrElementShape<TContent extends ScuffrElement = Scuffr
 
     public renderedLines: ScuffrShapeContentLine[] | null;
 
-    public constructor(parent: ScuffrElementParent, shape: ScuffrColouredShape) {
+    public constructor(parent: ScuffrSvgElementParent, shape: ScuffrColouredShape) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.dom.classList.add(...shape.categoryClasses, ...shape.typeClasses);
         this.shapeDOM = this.dom.appendChild(shape.shape.createElement())
@@ -108,7 +107,7 @@ export abstract class ScuffrElementShape<TContent extends ScuffrElement = Scuffr
     }
 
     public getContentLines(): ScuffrShapeContentLine[] {
-        if (this.content instanceof ScuffrElementParent) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
+        if (this.content instanceof ScuffrSvgElementParent) return [{ elements: this.content.children, dimensions: { x: 0, y: 0 } }];
         else return [{ elements: [this.content], dimensions: { x: 0, y: 0 } }];
     }
 }

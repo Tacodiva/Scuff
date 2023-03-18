@@ -1,17 +1,17 @@
-import type { ScuffrElementInputLiteral } from "..";
+import type { ScuffrSvgInputLiteral } from "..";
 import { ScuffrCmdSetInputLiteral } from "../commands/ScuffrCmdSetInputLiteral";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import { ScuffrInteraction } from "./ScuffrInteraction";
 
 export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
-    public readonly scuffrInput: ScuffrElementInputLiteral;
+    public readonly scuffrInput: ScuffrSvgInputLiteral;
     public readonly svgForeignObject: SVGForeignObjectElement;
     public readonly htmlInput: HTMLInputElement;
 
     public readonly initalValue: string;
     public inputValid: boolean;
 
-    public constructor(input: ScuffrElementInputLiteral) {
+    public constructor(input: ScuffrSvgInputLiteral) {
         super(input.workspace);
         this.scuffrInput = input;
         this.initalValue = input.getValue();

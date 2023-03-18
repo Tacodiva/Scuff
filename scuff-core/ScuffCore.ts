@@ -5,6 +5,7 @@ import Target from "./Target";
 import App from './editor/EditorComponent.svelte';
 import type { BlockScriptRoot } from "./block/BlockScriptRoot";
 import type { ScuffrWorkspace } from "./scuffr";
+import type { SvelteComponent } from "svelte";
 
 type Version = [number, number];
 

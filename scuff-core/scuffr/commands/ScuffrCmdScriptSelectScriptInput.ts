@@ -1,9 +1,9 @@
-import { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { Vec2 } from "../../utils/Vec2";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import type { ScuffrCmdScriptSelect } from "./ScuffrCmdScriptSelect";
 import type { ScuffrReference } from "../ScuffrReference";
-import { ScuffrElementScript } from "..";
+import { ScuffrSvgScript } from "..";
 
 
 export class ScuffrCmdScriptSelectScriptBlocks implements ScuffrCmdScriptSelect {
@@ -23,10 +23,10 @@ export class ScuffrCmdScriptSelectScriptBlocks implements ScuffrCmdScriptSelect 
         this.targetPosition = targetPosition;
     }
 
-    private _getInputScript(): ScuffrElementScript {
+    private _getInputScript(): ScuffrSvgScript {
         const reference = this.source.getTerminalReference();
         const inputScript = reference.parent.getReferenceValue(reference.index);
-        if (!(inputScript instanceof ScuffrElementScript))
+        if (!(inputScript instanceof ScuffrSvgScript))
             throw new Error("ScuffrCmdScriptSelectScriptInput target input must be a script.");
         return inputScript;
     }
@@ -36,7 +36,7 @@ export class ScuffrCmdScriptSelectScriptBlocks implements ScuffrCmdScriptSelect 
         const inputScript = this._getInputScript();
 
         const blocks = inputScript.spliceBlocks(this.sourceStart, this.sourceCount);
-        const rootScript = new ScuffrElementScriptRoot(this.workspace, null, blocks, this.targetPosition);
+        const rootScript = new ScuffrSvgScriptRoot(this.workspace, null, blocks, this.targetPosition);
 
         this.workspace.addRenderedScript(rootScript);
     }

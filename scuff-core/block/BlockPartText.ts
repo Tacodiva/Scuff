@@ -1,6 +1,6 @@
-import type { ScuffrElementBlockContent } from "../scuffr/ScuffrElementBlockContent";
-import type { ScuffrElementBlockPart } from "../scuffr/ScuffrElementBlockPart";
-import { ScuffrElementText } from "../scuffr/ScuffrElementText";
+import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
+import type { ScuffrSvgBlockPart } from "../scuffr/ScuffrSvgBlockPart";
+import { ScuffrSvgText } from "../scuffr/ScuffrSvgText";
 import type { BlockPart } from "./BlockPart";
 
 export class BlockPartText implements BlockPart {
@@ -11,7 +11,7 @@ export class BlockPartText implements BlockPart {
         this.text = text;
     }
 
-    public render(block: ScuffrElementBlockContent): ScuffrElementBlockPart {
-        return new ScuffrElementText(block, this.text);
+    public render(block: ScuffrSvgBlockContent): ScuffrSvgBlockPart {
+        return new ScuffrSvgText(block, this.text);
     }
 }

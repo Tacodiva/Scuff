@@ -1,4 +1,4 @@
-import type { ScuffrElementScriptRoot, ScuffrWorkspace } from ".";
+import type { ScuffrSvgScriptRoot, ScuffrWorkspace } from ".";
 
 export interface ScuffrReferenceable {
     getReference(): ScuffrReference;
@@ -9,7 +9,7 @@ export interface ScuffrReference<TValue extends ScuffrReferenceable = ScuffrRefe
     parent: ScuffrReferenceParent<TValue>;
 }
 
-export interface ScuffrRootReference extends ScuffrReference<ScuffrElementScriptRoot> {
+export interface ScuffrRootReference extends ScuffrReference<ScuffrSvgScriptRoot> {
     index: number;
     parent: ScuffrWorkspace;
 }

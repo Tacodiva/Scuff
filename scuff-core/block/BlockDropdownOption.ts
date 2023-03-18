@@ -1,4 +1,4 @@
-import type { ScuffrElementInput } from "../scuffr/ScuffrElementInput";
+import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
 import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 import type { BlockDropdownProvider } from "./BlockDropdownProvider";
 import type { BlockInput } from "./BlockInput";
@@ -10,7 +10,7 @@ export class BlockDropdownOption implements BlockInput {
         public readonly text: string
     ) { }
 
-    public render(reference: ScuffrReferenceInput): ScuffrElementInput {
+    public render(reference: ScuffrReferenceInput): ScuffrSvgInput {
         return this.provider.renderOption(this, reference);
     }
 

@@ -1,13 +1,13 @@
-import type { ScuffrElementScriptInput } from ".";
+import type { ScuffrSvgScriptInput } from ".";
 import type { Vec2 } from "../utils/Vec2";
 
 export class ScuffrWrapInfo {
-    public readonly wrappingInput: ScuffrElementScriptInput;
+    public readonly wrappingInput: ScuffrSvgScriptInput;
     public get wrappingBlock() { return this.wrappingInput.parent.parent; }
 
     public readonly renderOffset: Vec2;
 
-    public constructor(wrappingInput: ScuffrElementScriptInput) {
+    public constructor(wrappingInput: ScuffrSvgScriptInput) {
         this.wrappingInput = wrappingInput;
 
         this.renderOffset = { x: 0, y: 0 };

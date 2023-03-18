@@ -1,12 +1,12 @@
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import { ScuffrElementInputBase } from "./ScuffrElementBlockInputBase";
-import { ScuffrElementDummy } from "./ScuffrElementDummy";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
+import { ScuffrSvgDummy } from "./ScuffrSvgDummy";
 import type { ScuffrShape } from "./shape/ScuffrShape";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 
-export class ScuffrElementInputBlank extends ScuffrElementInputBase<ScuffrElementDummy> implements ScuffrElementInput {
+export class ScuffrSvgInputBlank extends ScuffrSvgInputBase<ScuffrSvgDummy> implements ScuffrSvgInput {
     public readonly input: BlockInput;
 
     public constructor(reference: ScuffrReferenceInput, shape: ScuffrShape, value: BlockInput) {
@@ -18,8 +18,8 @@ export class ScuffrElementInputBlank extends ScuffrElementInputBase<ScuffrElemen
         this.input = value;
     }
     
-    protected createContent(): ScuffrElementDummy {
-        return new ScuffrElementDummy(this);
+    protected createContent(): ScuffrSvgDummy {
+        return new ScuffrSvgDummy(this);
     }
 
     public asInput(): BlockInput {

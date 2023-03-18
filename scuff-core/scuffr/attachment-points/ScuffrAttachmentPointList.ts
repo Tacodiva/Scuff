@@ -1,11 +1,11 @@
-import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 
 export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = ScuffrAttachmentPoint> {
     public readonly list: TPoint[];
-    public root: ScuffrElementScriptRoot | null;
+    public root: ScuffrSvgScriptRoot | null;
 
-    public constructor(root: ScuffrElementScriptRoot) {
+    public constructor(root: ScuffrSvgScriptRoot) {
         this.list = [];
         this.root = root;
         this.root.workspace.attachmentPoints.add(this);
@@ -31,7 +31,7 @@ export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = Sc
             point.recalculateTranslation();
     }
 
-    public onAncestryChange(root: ScuffrElementScriptRoot | null) {
+    public onAncestryChange(root: ScuffrSvgScriptRoot | null) {
         if (root === null) {
             this.delete();
         } else {

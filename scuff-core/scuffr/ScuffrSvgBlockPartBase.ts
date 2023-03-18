@@ -1,17 +1,17 @@
 import type { IScuffrPointAttachable } from "./attachment-points/ScuffrAttachmentPoint";
 import { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
-import { ScuffrElementShape } from "./ScuffrElementShape";
-import type { ScuffrElementBlockPart } from "./ScuffrElementBlockPart";
-import type { ScuffrElement } from "./ScuffrElement";
-import type { ScuffrElementParent } from "./ScuffrElementParent";
-import type { ScuffrElementScriptRoot } from "./ScuffrElementScriptRoot";
+import { ScuffrSvgShape } from "./ScuffrSvgShape";
+import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
+import type { ScuffrSvgElement } from "./ScuffrSvgElement";
+import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
+import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
 
-export abstract class ScuffrElementBlockPartBase<TContent extends ScuffrElement> extends ScuffrElementShape<TContent> implements ScuffrElementBlockPart, IScuffrPointAttachable {
+export abstract class ScuffrSvgBlockPartBase<TContent extends ScuffrSvgElement> extends ScuffrSvgShape<TContent> implements ScuffrSvgBlockPart, IScuffrPointAttachable {
     public readonly attachmentPoints: ScuffrAttachmentPointList;
-    public root: ScuffrElementScriptRoot;
+    public root: ScuffrSvgScriptRoot;
 
-    public constructor(root: ScuffrElementScriptRoot, parent: ScuffrElementParent, background: ScuffrColouredShape) {
+    public constructor(root: ScuffrSvgScriptRoot, parent: ScuffrSvgElementParent, background: ScuffrColouredShape) {
         super(parent, background);
         this.root = root;
         this.attachmentPoints = new ScuffrAttachmentPointList(root);
@@ -21,7 +21,7 @@ export abstract class ScuffrElementBlockPartBase<TContent extends ScuffrElement>
         return this.shape;
     }
 
-    public onAncestryChange(root: ScuffrElementScriptRoot | null) {
+    public onAncestryChange(root: ScuffrSvgScriptRoot | null) {
         if (root !== null) this.root = root;
         this.attachmentPoints.onAncestryChange(root);
     }

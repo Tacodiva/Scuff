@@ -1,24 +1,24 @@
 import { BlockScriptRoot } from "../block/BlockScriptRoot";
-import { ScuffrElementScript } from "./ScuffrElementScript";
+import { ScuffrSvgScript } from "./ScuffrSvgScript";
 import { ScuffrCmdScriptSelectRoot } from "./commands/ScuffrCmdScriptSelectRoot";
 
-import type { ScuffrElementBlock } from "./ScuffrElementBlock";
+import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrRootReference } from "./ScuffrReference";
 import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
 import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
-import { ScuffrElementBlockInstance } from "./ScuffrElementBlockInstance";
-import type { ScuffrElementScriptInput } from "./ScuffrElementScriptInput";
+import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
+import type { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
 
-export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot> {
+export class ScuffrSvgScriptRoot extends ScuffrSvgScript<BlockScriptRoot> {
     public readonly parent: ScuffrWorkspace;
     public get isSubscript(): boolean { return false; }
 
-    public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: ScuffrElementBlock[], translation?: Vec2) {
+    public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: ScuffrSvgBlock[], translation?: Vec2) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
-            script = new BlockScriptRoot(ScuffrElementScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
+            script = new BlockScriptRoot(ScuffrSvgScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
             if (translation) script.translation = translation;
         }
         super(workspace.svgScriptContainer, null, workspace, script, script ? script.translation : translation);
@@ -26,7 +26,7 @@ export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot
         this._init(blocks);
     }
 
-    public override getRoot(): ScuffrElementScriptRoot {
+    public override getRoot(): ScuffrSvgScriptRoot {
         return this;
     }
 
@@ -48,9 +48,9 @@ export class ScuffrElementScriptRoot extends ScuffrElementScript<BlockScriptRoot
         return super.onChildBlockDrag(reference, event);
     }
 
-    public getWrapperInput(checkEmpty: boolean = true): ScuffrElementScriptInput | null {
+    public getWrapperInput(checkEmpty: boolean = true): ScuffrSvgScriptInput | null {
         const firstChild = this.children[0];
-        if (!(firstChild instanceof ScuffrElementBlockInstance))
+        if (!(firstChild instanceof ScuffrSvgBlockInstance))
             return null;
         return firstChild.getWrapperInput(checkEmpty);
     }

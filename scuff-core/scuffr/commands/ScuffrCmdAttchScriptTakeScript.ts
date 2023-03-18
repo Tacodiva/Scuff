@@ -1,6 +1,6 @@
-import { ScuffrElementScriptInput } from "..";
-import { ScuffrElementScript } from "../ScuffrElementScript";
-import { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import { ScuffrSvgScriptInput } from "..";
+import { ScuffrSvgScript } from "../ScuffrSvgScript";
+import { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { ScuffrReference } from "../ScuffrReference";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import { ScuffrWrapInfo } from "../ScuffrWrappingDescriptor";
@@ -15,7 +15,7 @@ export class ScuffrCmdAttchScriptTakeScript implements ScuffrCmd {
 
     public get workspace() { return this.target.workspace; }
 
-    public constructor(source: ScuffrElementScriptRoot, target: ScuffrReference, index: number, tryWrap: boolean) {
+    public constructor(source: ScuffrSvgScriptRoot, target: ScuffrReference, index: number, tryWrap: boolean) {
         this.sourceLength = source.children.length;
         this.target = new ScuffrReferenceChain(target);
         this.targetIndex = index;
@@ -27,12 +27,12 @@ export class ScuffrCmdAttchScriptTakeScript implements ScuffrCmd {
         const targetReference = this.target.getTerminalReference();
         const target = targetReference.parent.getReferenceValue(targetReference.index);
 
-        if (!(target instanceof ScuffrElementScript))
+        if (!(target instanceof ScuffrSvgScript))
             throw new Error("ScuffrCmdTakeScriptInputScript target must be a script");
 
         sourceScript.workspace.deleteRenderedScript(sourceScript, false);
 
-        let wrappingInput: ScuffrElementScriptInput | null = null;
+        let wrappingInput: ScuffrSvgScriptInput | null = null;
         if (this.wrappingInputIndex !== -1) {
             wrappingInput = sourceScript.getWrapperInput();
             if (wrappingInput?.getReference().index !== this.wrappingInputIndex)
@@ -66,15 +66,15 @@ export class ScuffrCmdAttchScriptTakeScript implements ScuffrCmd {
         const targetReference = this.target.getTerminalReference();
         const target = targetReference.parent.getReferenceValue(targetReference.index);
 
-        if (!(target instanceof ScuffrElementScript))
+        if (!(target instanceof ScuffrSvgScript))
             throw new Error("ScuffrCmdTakeScriptInputScript target must be a script");
 
         const blocks = target.spliceBlocks(this.targetIndex, this.sourceLength);
 
-        let wrappingInput: ScuffrElementScriptInput | null = null;
+        let wrappingInput: ScuffrSvgScriptInput | null = null;
         if (this.wrappingInputIndex !== -1) {
             wrappingInput = blocks[0].getReferenceValue(this.wrappingInputIndex);
-            if (!(wrappingInput instanceof ScuffrElementScriptInput))
+            if (!(wrappingInput instanceof ScuffrSvgScriptInput))
                 throw new Error("Wrapping inputs wasn't a script.");
         }
 
@@ -83,7 +83,7 @@ export class ScuffrCmdAttchScriptTakeScript implements ScuffrCmd {
             target.spliceBlocks(this.targetIndex, 0, wrappedBlocks);
         }
 
-        const script = new ScuffrElementScriptRoot(this.workspace, null, blocks);
+        const script = new ScuffrSvgScriptRoot(this.workspace, null, blocks);
         this.workspace.addRenderedScript(script);
 
         if (this.targetIndex == 0 && !target.isSubscript) {

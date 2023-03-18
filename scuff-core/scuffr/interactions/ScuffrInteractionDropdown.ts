@@ -1,13 +1,13 @@
 import type { BlockDropdownOption } from "../../block";
 import { ScuffrCmdSetInputDropdown } from "../commands/ScuffrCmdSetInputDropdown";
-import type { ScuffrElementInputDropdown } from "../ScuffrElementInputDropdown";
+import type { ScuffrSvgInputDropdown } from "../ScuffrSvgInputDropdown";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import { ScuffrInteraction } from "./ScuffrInteraction";
 
 export class ScuffrInteractionDropdown extends ScuffrInteraction {
     public static readonly MAX_HEIGHT = 300;
 
-    public readonly scuffrInput: ScuffrElementInputDropdown;
+    public readonly scuffrInput: ScuffrSvgInputDropdown;
     public readonly displayedOptions: BlockDropdownOption[];
     public readonly allOptions: BlockDropdownOption[];
     public highlightIndex: number;
@@ -20,7 +20,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
     public readonly htmlOptionContainer: HTMLDivElement;
     public readonly htmlInput: HTMLInputElement;
 
-    public constructor(dropdown: ScuffrElementInputDropdown) {
+    public constructor(dropdown: ScuffrSvgInputDropdown) {
         super(dropdown.workspace);
         this.scuffrInput = dropdown;
 

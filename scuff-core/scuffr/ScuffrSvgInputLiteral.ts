@@ -1,23 +1,23 @@
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import { ScuffrElementInputBase } from "./ScuffrElementBlockInputBase";
-import { ScuffrElementText } from "./ScuffrElementText";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
+import { ScuffrSvgText } from "./ScuffrSvgText";
 import type { BlockInputLiteral } from "../block/BlockInputLiteral";
-import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
+import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import { ScuffrShapeInputRound } from "./shape/ScuffrShapeInputRound";
 import type { ScuffrShape } from "./shape";
 import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 
-export class ScuffrElementInputLiteral extends ScuffrElementInputBase<ScuffrElementText> implements ScuffrElementInput {
+export class ScuffrSvgInputLiteral extends ScuffrSvgInputBase<ScuffrSvgText> implements ScuffrSvgInput {
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
 
     private _input: BlockInputLiteral;
 
     public constructor(reference: ScuffrReferenceInput, value: BlockInputLiteral) {
         super(reference, {
-            shape: ScuffrElementInputLiteral.shape,
+            shape: ScuffrSvgInputLiteral.shape,
             categoryClasses: [],
             typeClasses: ["scuff-input"]
         });
@@ -25,8 +25,8 @@ export class ScuffrElementInputLiteral extends ScuffrElementInputBase<ScuffrElem
         this.content.text = this._input.value;
     }
 
-    protected createContent(): ScuffrElementText {
-        return new ScuffrElementText(this, "");
+    protected createContent(): ScuffrSvgText {
+        return new ScuffrSvgText(this, "");
     }
 
     public setValue(value: string) {

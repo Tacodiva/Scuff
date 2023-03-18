@@ -1,7 +1,7 @@
-import { BlockType, BlockInput, BlockInstance, BlockDropdownOption, BlockDropdownProvider, BlockPartInputDropdown, ScuffrElementInput, ScuffrReferenceInput } from "scuff";
+import { BlockType, BlockInput, BlockInstance, BlockDropdownOption, BlockDropdownProvider, BlockPartInputDropdown, ScuffrSvgInput, ScuffrReferenceInput } from "scuff";
 
 export interface ScratchDropdownOptionRenderer {
-    renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrElementInput;
+    renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrSvgInput;
 }
 
 export type ScratchDropdownOptionShorthand = [id: string, text: string];

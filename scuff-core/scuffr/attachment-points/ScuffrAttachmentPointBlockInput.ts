@@ -1,21 +1,21 @@
 import type { BlockPartInput } from "../../block/BlockPartInput";
 import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
-import type { ScuffrElementInput } from "../ScuffrElementInput";
+import type { ScuffrSvgInput } from "../ScuffrSvgInput";
 import { ScuffrCmdAttchInputTakeScript } from "../commands/ScuffrCmdAttchInputTakeScript";
-import { ScuffrElementBlockInstance } from "../ScuffrElementBlockInstance";
-import { ScuffrElementBlockContent } from "../ScuffrElementBlockContent";
+import { ScuffrSvgBlockInstance } from "../ScuffrSvgBlockInstance";
+import { ScuffrSvgBlockContent } from "../ScuffrSvgBlockContent";
 import { ScuffrCmdScriptSelectBlockInput } from "../commands/ScuffrCmdScriptSelectBlockInput";
 import { ScuffrCmdCompound } from "../commands/ScuffrCmdCompound";
-import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { ScuffrCmd } from "../commands/ScuffrCmd";
 import { ScuffrCmdScriptSwapSelected } from "../commands/ScuffrCmdScriptSwapSelected";
 
 export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
-    public readonly block: ScuffrElementBlockInstance;
+    public readonly block: ScuffrSvgBlockInstance;
     public readonly input: BlockPartInput;
-    public readonly parent: ScuffrElementInput;
+    public readonly parent: ScuffrSvgInput;
 
-    public constructor(block: ScuffrElementBlockInstance, input: BlockPartInput, part: ScuffrElementInput) {
+    public constructor(block: ScuffrSvgBlockInstance, input: BlockPartInput, part: ScuffrSvgInput) {
         super();
         this.parent = part;
         this.block = block;
@@ -23,18 +23,18 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
         this.parent.attachmentPoints.push(this);
     }
 
-    public canTakeScript(script: ScuffrElementScriptRoot): boolean {
+    public canTakeScript(script: ScuffrSvgScriptRoot): boolean {
         if (script.children.length !== 1) return false;
         return !!this.input.isValidValue(this.block.block, script.script.blocks[0]);
     }
 
-    public takeScriptCommand(script: ScuffrElementScriptRoot): ScuffrCmd {
+    public takeScriptCommand(script: ScuffrSvgScriptRoot): ScuffrCmd {
         let cmd: ScuffrCmd = new ScuffrCmdAttchInputTakeScript(this.parent.getReference());
 
         const replacedInput = this.block.getInput(this.input);
-        if (replacedInput instanceof ScuffrElementBlockInstance) {
+        if (replacedInput instanceof ScuffrSvgBlockInstance) {
             let rootBlock = this.block;
-            while (rootBlock.parent instanceof ScuffrElementBlockContent)
+            while (rootBlock.parent instanceof ScuffrSvgBlockContent)
                 rootBlock = rootBlock.parent.parent;
             replacedInput.attachmentPoints.clear();
             const rootTranslation = { ...rootBlock.getAbsoluteTranslation() };

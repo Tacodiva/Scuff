@@ -1,5 +1,5 @@
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrElementBlockPart } from "../ScuffrElementBlockPart";
+import type { ScuffrSvgBlockPart } from "../ScuffrSvgBlockPart";
 import { ScuffrShape } from "./ScuffrShape";
 import type { ScuffrShapeContentLine } from "./ScuffrShapeContentLine";
 import type { ScuffrStackNub } from "./ScuffrStackNub";
@@ -44,7 +44,7 @@ export class ScuffrShapeStackBody extends ScuffrShape {
         return `a 4 4 0 0 1 -4 4 ${this.nub.getLeftPath(-4)} a 4 4 0 0 1 -4 -4 z`;
     }
 
-    public override getPrePartPadding(partIdx: number, x: number, part: ScuffrElementBlockPart, line: ScuffrShapeContentLine): number {
+    public override getPrePartPadding(partIdx: number, x: number, part: ScuffrSvgBlockPart, line: ScuffrShapeContentLine): number {
         x = super.getPrePartPadding(partIdx, x, part, line);
         if (x < 40 && (part.getBackground && part.getBackground()))
             x = 40;

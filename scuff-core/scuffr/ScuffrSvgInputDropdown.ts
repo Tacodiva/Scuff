@@ -1,30 +1,30 @@
 import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
-import { ScuffrElementInputBase } from "./ScuffrElementBlockInputBase";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
+import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
 import type { ScuffrShape } from "./shape/ScuffrShape";
-import { ScuffrElementText } from "./ScuffrElementText";
+import { ScuffrSvgText } from "./ScuffrSvgText";
 import type { BlockDropdownOption } from "../block";
-import { ScuffrElementParent } from ".";
-import { ScuffrElementIcon } from "./ScuffrElementIcon";
+import { ScuffrSvgParent } from ".";
+import { ScuffrSvgIcon } from "./ScuffrSvgIcon";
 import { ScuffrInteractionDropdown } from "./interactions/ScuffrInteractionDropdown";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
 
-class Content extends ScuffrElementParent {
-    public children: readonly [ScuffrElementText, ScuffrElementIcon];
-    public parent: ScuffrElementInputDropdown;
+class Content extends ScuffrSvgParent {
+    public children: readonly [ScuffrSvgText, ScuffrSvgIcon];
+    public parent: ScuffrSvgInputDropdown;
 
-    constructor(parent: ScuffrElementInputDropdown) {
+    constructor(parent: ScuffrSvgInputDropdown) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [
-            new ScuffrElementText(this, ""),
-            new ScuffrElementIcon(this, "scuff-block-dropdown-arrow", { x: 12, y: 12 })
+            new ScuffrSvgText(this, ""),
+            new ScuffrSvgIcon(this, "scuff-block-dropdown-arrow", { x: 12, y: 12 })
         ];
     }
 }
 
-export class ScuffrElementInputDropdown extends ScuffrElementInputBase<Content> implements ScuffrElementInput {
+export class ScuffrSvgInputDropdown extends ScuffrSvgInputBase<Content> implements ScuffrSvgInput {
     private _value: BlockDropdownOption;
     public get value() { return this._value; }
 

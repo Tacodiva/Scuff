@@ -1,25 +1,25 @@
 
-import { ScuffrElementShape } from './ScuffrElementShape';
-import type { ScuffrElementBlock } from './ScuffrElementBlock';
-import type { ScuffrElementBlockInstance } from './ScuffrElementBlockInstance';
-import { ScuffrElementDummy } from './ScuffrElementDummy';
-import { ScuffrElementScriptInput } from './ScuffrElementScriptInput';
-import type { ScuffrElementScriptRoot } from './ScuffrElementScriptRoot';
-import type { ScuffrElementScript } from './ScuffrElementScript';
+import { ScuffrSvgShape } from './ScuffrSvgShape';
+import type { ScuffrSvgBlock } from './ScuffrSvgBlock';
+import type { ScuffrSvgBlockInstance } from './ScuffrSvgBlockInstance';
+import { ScuffrSvgDummy } from './ScuffrSvgDummy';
+import { ScuffrSvgScriptInput } from './ScuffrSvgScriptInput';
+import type { ScuffrSvgScriptRoot } from './ScuffrSvgScriptRoot';
+import type { ScuffrSvgScript } from './ScuffrSvgScript';
 import { ScuffrWrapInfo } from './ScuffrWrappingDescriptor';
 import type { ScuffrShapeContentLine } from './shape/ScuffrShapeContentLine';
 import type { ScuffrLinkReference, ScuffrReference } from './ScuffrReference';
 
-export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDummy> implements ScuffrElementBlock {
+export class ScuffrSvgBlockGhost extends ScuffrSvgShape<ScuffrSvgDummy> implements ScuffrSvgBlock {
 
-    public reference: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>;
-    public get parent(): ScuffrElementScript { return this.reference.parent; }
+    public reference: ScuffrLinkReference<ScuffrSvgBlock, ScuffrSvgScript>;
+    public get parent(): ScuffrSvgScript { return this.reference.parent; }
     public get index(): number { return this.reference.index; }
-    public readonly sourceBlock: ScuffrElementBlockInstance;
+    public readonly sourceBlock: ScuffrSvgBlockInstance;
 
     public readonly wrapping: ScuffrWrapInfo | null;
 
-    public constructor(parentRef: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>, sourceBlock: ScuffrElementBlockInstance, tryWrap: boolean) {
+    public constructor(parentRef: ScuffrLinkReference<ScuffrSvgBlock, ScuffrSvgScript>, sourceBlock: ScuffrSvgBlockInstance, tryWrap: boolean) {
         super(parentRef.parent,
             {
                 shape: sourceBlock.getBackground().shape,
@@ -45,16 +45,16 @@ export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDum
         return this.reference as any;
     }
 
-    protected createContent(): ScuffrElementDummy {
-        return new ScuffrElementDummy(this);
+    protected createContent(): ScuffrSvgDummy {
+        return new ScuffrSvgDummy(this);
     }
 
-    public setParent(reference: ScuffrLinkReference<ScuffrElementBlock, ScuffrElementScript>): void {
+    public setParent(reference: ScuffrLinkReference<ScuffrSvgBlock, ScuffrSvgScript>): void {
         this.reference = reference;
         this.onAncestryChange(reference.parent.getRoot());
     }
 
-    public onAncestryChange(root: ScuffrElementScriptRoot | null): void { }
+    public onAncestryChange(root: ScuffrSvgScriptRoot | null): void { }
 
     public shouldAttachUp(): boolean {
         return this.reference.index === 0;
@@ -75,25 +75,25 @@ export class ScuffrElementBlockGhost extends ScuffrElementShape<ScuffrElementDum
                 elements: sourceLine.elements
             };
             const part = sourceLine.part;
-            if (part instanceof ScuffrElementScriptInput) {
+            if (part instanceof ScuffrSvgScriptInput) {
                 let dimensions;
                 if (part === this.wrapping?.wrappingInput) {
                     let wrapHeight = 0;
                     for (let i = this.index; i < this.parent.children.length; i++) {
                         wrapHeight += this.parent.children[i].dimensions.y;
                     }
-                    if (wrapHeight < ScuffrElementScriptInput.MIN_HEIGHT)
-                        wrapHeight = ScuffrElementScriptInput.MIN_HEIGHT;
+                    if (wrapHeight < ScuffrSvgScriptInput.MIN_HEIGHT)
+                        wrapHeight = ScuffrSvgScriptInput.MIN_HEIGHT;
                     dimensions = { x: part.parent.dimensions.x, y: wrapHeight + 8 };
                 } else {
-                    dimensions = { x: part.parent.dimensions.x, y: ScuffrElementScriptInput.MIN_HEIGHT };
+                    dimensions = { x: part.parent.dimensions.x, y: ScuffrSvgScriptInput.MIN_HEIGHT };
                 }
                 line.modifier = {
                     getPath(size, shape, line) {
                         return part.getPath(size, shape, line, true);
                     },
                 };
-                line.elements = [new ScuffrElementDummy(this, dimensions)];
+                line.elements = [new ScuffrSvgDummy(this, dimensions)];
             }
 
             lines.push(line);

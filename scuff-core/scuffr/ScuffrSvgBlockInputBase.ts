@@ -1,14 +1,14 @@
-import type { ScuffrElement } from "./ScuffrElement";
+import type { ScuffrSvgElement } from "./ScuffrSvgElement";
 import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
-import type { ScuffrElementBlockContent } from "./ScuffrElementBlockContent";
-import type { ScuffrElementInput } from "./ScuffrElementInput";
+import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
+import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import type { BlockInput, BlockPartInput } from "../block";
-import { ScuffrElementBlockPartBase } from "./ScuffrElementBlockPartBase";
+import { ScuffrSvgBlockPartBase } from "./ScuffrSvgBlockPartBase";
 
-export abstract class ScuffrElementInputBase<TContent extends ScuffrElement> extends ScuffrElementBlockPartBase<TContent> implements ScuffrElementInput {
+export abstract class ScuffrSvgInputBase<TContent extends ScuffrSvgElement> extends ScuffrSvgBlockPartBase<TContent> implements ScuffrSvgInput {
     private _reference: ScuffrReferenceInput;
-    public override get parent(): ScuffrElementBlockContent { return this._reference.parent; }
+    public override get parent(): ScuffrSvgBlockContent { return this._reference.parent; }
 
     public readonly inputType: BlockPartInput;
 

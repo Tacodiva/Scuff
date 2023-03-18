@@ -1,6 +1,6 @@
 import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrAttachmentPoint } from "../attachment-points/ScuffrAttachmentPoint";
-import type { ScuffrElementScriptRoot } from "../ScuffrElementScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import { ScuffrInteraction } from "./ScuffrInteraction";
 import type { ScuffrCmdScriptSelect } from "../commands/ScuffrCmdScriptSelect";
 import { ScuffrCmdCompound } from "../commands";
@@ -8,7 +8,7 @@ import { ScuffrCmdCompound } from "../commands";
 export class ScuffrInteractionDragScript extends ScuffrInteraction {
     public static readonly ATTACH_RADIUS = 60;
 
-    public readonly script: ScuffrElementScriptRoot;
+    public readonly script: ScuffrSvgScriptRoot;
     public readonly scriptSelector: ScuffrCmdScriptSelect;
     public readonly offset: Vec2;
     public readonly startPos: Vec2;
