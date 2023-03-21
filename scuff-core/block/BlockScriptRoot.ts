@@ -11,6 +11,6 @@ export class BlockScriptRoot extends BlockScript {
     }
 
     public clone(): BlockScriptRoot {
-        return new BlockScriptRoot(this._clone(), this.translation);
+        return new BlockScriptRoot(this._clone(), { ...this.translation });
     }
 }

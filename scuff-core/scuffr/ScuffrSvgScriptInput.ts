@@ -7,13 +7,11 @@ import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmen
 import type { ScuffrShapeModifier } from "./shape/ScuffrShapeModifier";
 import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
-import type { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
 import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import { ScuffrSvgScript } from "./ScuffrSvgScript";
 import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
-import { ScuffrShapeStackBody, ScuffrShapeStackHead, ScuffrShapeStackTail } from "./shape";
+import { ScuffrShapeStackBody, ScuffrShapeStackTail } from "./shape";
 import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
-import type { ScuffrCmdScriptSelect } from "./commands/ScuffrCmdScriptSelect";
 
 export class ScuffrSvgScriptInput extends ScuffrSvgScript<BlockScriptInput> implements ScuffrSvgInput, ScuffrShapeModifier {
 
@@ -26,7 +24,7 @@ export class ScuffrSvgScriptInput extends ScuffrSvgScript<BlockScriptInput> impl
     public constructor(reference: ScuffrReferenceInput, script: BlockScriptInput | null, blocks?: ScuffrSvgBlock[]) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
-            script = new BlockScriptInput(ScuffrSvgScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
+            script = new BlockScriptInput(ScuffrSvgScript.getBlockInstanceElements(blocks).map(inst => inst.block));
         }
         super(reference.parent.dom, reference.parent.root, reference.parent.workspace, script);
         this._reference = reference;

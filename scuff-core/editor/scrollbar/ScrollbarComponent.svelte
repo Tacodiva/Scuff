@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { ScrollablePane } from "./ScrollablePaneInfo";
+    import type { ScuffEditorScrollableArea } from "./ScuffEditorScrollableArea";
 
-    export let pane: ScrollablePane;
+    export let pane: ScuffEditorScrollableArea;
 
     $: topLeft = {
         x: Math.min(

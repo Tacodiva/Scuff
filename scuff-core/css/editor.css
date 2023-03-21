@@ -1,0 +1,88 @@
+.scuff-editor {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.scuff-pane {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.scuff-pane-split {
+    display: inline-flex;
+}
+
+.scuff-pane-split-h {
+    flex-direction: row;
+}
+
+.scuff-pane-split-v {
+    flex-direction: column;
+}
+
+.scuff-pane-split-divider {
+    position: absolute;
+}
+
+.scuff-pane-split-divider::before {
+    content: '';
+    display: block;
+    background-color: #444;
+    transition: width 0.1s ease 0s, background-color 0.1s ease 0s;
+}
+
+.scuff-pane-split-divider:hover::before {
+    background-color: red;
+}
+
+.scuff-pane-split-spacer-h {
+    width: 2px;
+    height: 100%;    
+}
+
+.scuff-pane-split-spacer-v {
+    width: 100%;    
+    height: 2px;
+}
+
+.scuff-pane-split-divider-h {
+    width: min-content;
+    height: 100%;
+    transform: translateX(-50%);
+}
+
+.scuff-pane-split-divider-v {
+    width: 100%;
+    height: min-content;
+    transform: translateY(-50%);
+}
+
+.scuff-pane-split-divider-h::before {
+    margin: 0 2px;
+    width: 2px;
+    height: 100%;
+}
+
+.scuff-pane-split-divider-v::before {
+    margin: 2px 0;
+    width: 100%;
+    height: 2px;
+}
+
+.scuff-pane-split-divider-h:hover {
+    cursor: ew-resize;
+}
+
+.scuff-pane-split-divider-v:hover {
+    cursor: ns-resize;
+}
+
+.scuff-pane-split-divider-h.scuff-dragging:before {
+    width: 6px;
+}
+
+.scuff-pane-split-divider-v.scuff-dragging:before {
+    height: 6px;
+}

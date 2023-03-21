@@ -6,6 +6,11 @@ import App from './editor/EditorComponent.svelte';
 import type { BlockScriptRoot } from "./block/BlockScriptRoot";
 import type { ScuffrWorkspace } from "./scuffr";
 import type { SvelteComponent } from "svelte";
+import { ScuffEditor } from "./editor/ScuffEditor";
+import { ScuffEditorSveltePane } from "./editor/ScuffEditorSveltePane";
+import ScuffEditorDefautComponent from "./editor/ScuffEditorDefautComponent.svelte";
+import { ScuffEditorPaneSplit } from "./editor/ScuffEditorSplitPane";
+import ScuffEditorInfoComponent from "./editor/ScuffEditorInfoComponent.svelte";
 
 type Version = [number, number];
 
@@ -39,7 +44,7 @@ export interface ScuffCore {
 
 export class ScuffCoreImpl implements ScuffCore {
 
-    public static readonly version: Version = [0, 19];
+    public static readonly version: Version = [0, 20];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;
@@ -107,25 +112,26 @@ export class ScuffCoreImpl implements ScuffCore {
     }
 
     public main(script: BlockScriptRoot): void {
-        const target = new Target();
+        const targetL = new Target();
+        targetL.blockScripts.scripts.push(script.clone());
+        targetL.blockScripts.transformScale = 1.5;
 
 
-        // for (let x = 0; x < 80; x++) {
-        //     for (let y = 0; y < 240; y++) {
-        const clone = script.clone();
-        // clone.translation = { x: x * 240, y: y * 80 };
-        target.blockScripts.scripts.push(clone);
-        //     }
-        // }
+        const targetR = new Target();
+        targetR.blockScripts.scripts.push(script);
+        targetR.blockScripts.transformScale = 1.5;
 
-        target.blockScripts.transformScale = 1.5;
-        // target.blockScripts.transformPosition = { x: 0, y: 150 };
-
-        new App({
-            target: document.body,
-            props: {
-                scripts: target.blockScripts
-            }
-        });
+        new ScuffEditor(document.body,
+            ScuffEditorPaneSplit.createHorizontal(
+                ScuffEditorSveltePane.create([App, { scripts: targetL.blockScripts }]),
+                ScuffEditorPaneSplit.createVertical(
+                    ScuffEditorPaneSplit.createHorizontal(
+                        ScuffEditorSveltePane.create([ScuffEditorDefautComponent]),
+                        ScuffEditorSveltePane.create([App, { scripts: targetR.blockScripts }]),
+                    ),
+                    ScuffEditorSveltePane.create([ScuffEditorInfoComponent])
+                )
+            )
+        );
     }
 }

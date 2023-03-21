@@ -18,7 +18,7 @@ export class ScuffrSvgScriptRoot extends ScuffrSvgScript<BlockScriptRoot> {
     public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: ScuffrSvgBlock[], translation?: Vec2) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
-            script = new BlockScriptRoot(ScuffrSvgScript.getBlockInstanceElements(blocks).flatMap(inst => inst.block));
+            script = new BlockScriptRoot(ScuffrSvgScript.getBlockInstanceElements(blocks).map(inst => inst.block));
             if (translation) script.translation = translation;
         }
         super(workspace.svgScriptContainer, null, workspace, script, script ? script.translation : translation);

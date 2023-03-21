@@ -8,7 +8,7 @@ import { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
 import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
-import type { ScrollablePane } from "../editor/scrollbar/ScrollablePaneInfo";
+import type { ScuffEditorScrollableArea } from "../editor/scrollbar/ScuffEditorScrollableArea";
 import { writable } from "svelte/store";
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
 import type { ScuffrInteraction } from "./interactions/ScuffrInteraction";
@@ -35,7 +35,7 @@ export class ScuffrWorkspace extends ScuffrSvgElementParent {
     public readonly svgBackgroundTranformTranslate: SVGTransform;
     public readonly svgBackgroundTranformScale: SVGTransform;
 
-    public readonly scrollPane: ScrollablePane;
+    public readonly scrollPane: ScuffEditorScrollableArea;
     private readonly _scrollTopLeft: Vec2;
     private readonly _scrollBottomRight: Vec2;
 
@@ -119,11 +119,11 @@ export class ScuffrWorkspace extends ScuffrSvgElementParent {
         }
     }
 
-    public peekUndo() : ScuffrCmd | undefined {
+    public peekUndo(): ScuffrCmd | undefined {
         return this._commandHistory[this._commandHistoryPresent - 1];
     }
 
-    public peekRedo() : ScuffrCmd | undefined {
+    public peekRedo(): ScuffrCmd | undefined {
         return this._commandHistory[this._commandHistoryPresent];
     }
 
@@ -267,16 +267,20 @@ export class ScuffrWorkspace extends ScuffrSvgElementParent {
     }
 
     public toWorkspaceCoords(pos: Vec2): Vec2 {
+        const bounds = this.svg.getBoundingClientRect();
+
         return {
-            x: pos.x / this.blockScripts.transformScale - this.blockScripts.transformPosition.x,
-            y: pos.y / this.blockScripts.transformScale - this.blockScripts.transformPosition.y
+            x: (pos.x - bounds.x) / this.blockScripts.transformScale - this.blockScripts.transformPosition.x,
+            y: (pos.y - bounds.y) / this.blockScripts.transformScale - this.blockScripts.transformPosition.y
         };
     }
 
     public toViewportCoords(pos: Vec2): Vec2 {
+        const bounds = this.svg.getBoundingClientRect();
+
         return {
-            x: (pos.x + this.blockScripts.transformPosition.x) * this.blockScripts.transformScale,
-            y: (pos.y + this.blockScripts.transformPosition.y) * this.blockScripts.transformScale
+            x: (pos.x + this.blockScripts.transformPosition.x) * this.blockScripts.transformScale + bounds.x,
+            y: (pos.y + this.blockScripts.transformPosition.y) * this.blockScripts.transformScale + bounds.y
         }
     }
 
@@ -390,17 +394,28 @@ export class ScuffrWorkspace extends ScuffrSvgElementParent {
 
             const newScale = this.blockScripts.transformScale * deltaY;
 
+            const bounds = this.svg.getBoundingClientRect();
+            const x = event.x - bounds.x;
+            const y = event.y - bounds.y;
+
             this.blockScripts.transformPosition.x +=
-                event.x / newScale - event.x / this.blockScripts.transformScale;
+                x / newScale - x / this.blockScripts.transformScale;
             this.blockScripts.transformPosition.y +=
-                event.y / newScale - event.y / this.blockScripts.transformScale;
+                y / newScale - y / this.blockScripts.transformScale;
             this.blockScripts.transformScale = newScale;
 
             this.updateGlobalTransform();
             event.preventDefault();
-            return true;
+        } else {
+            let delta = -event.deltaY / this.blockScripts.transformScale;
+            if (event.shiftKey) {
+                this.blockScripts.transformPosition.x += delta;
+            } else {
+                this.blockScripts.transformPosition.y += delta;
+            }
+            this.updateGlobalTransform();
         }
-        return false;
+        return true;
     }
 
     public onKeyDown(event: KeyboardEvent): boolean {
@@ -474,21 +489,21 @@ export class ScuffrWorkspace extends ScuffrSvgElementParent {
     }
 
     public addListeners() {
-        window.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
-        window.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
-        window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
-        window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
-        window.addEventListener("wheel", this.eventWheelListener, { passive: false });
-        window.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
+        this.svg.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
+        this.svg.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
+        this.svg.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
+        this.svg.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
+        this.svg.addEventListener("wheel", this.eventWheelListener, { passive: false });
+        this.svg.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
     }
 
     public removeListeners() {
-        window.removeEventListener("keydown", this.eventKeyDownListener);
-        window.removeEventListener("mousedown", this.eventMouseDownListener);
-        window.removeEventListener("mouseup", this.eventMouseUpListener);
-        window.removeEventListener("mousemove", this.eventMouseMoveListener);
-        window.removeEventListener("wheel", this.eventWheelListener);
-        window.removeEventListener("contextmenu", this.eventContextMenuListener);
+        this.svg.removeEventListener("keydown", this.eventKeyDownListener);
+        this.svg.removeEventListener("mousedown", this.eventMouseDownListener);
+        this.svg.removeEventListener("mouseup", this.eventMouseUpListener);
+        this.svg.removeEventListener("mousemove", this.eventMouseMoveListener);
+        this.svg.removeEventListener("wheel", this.eventWheelListener);
+        this.svg.removeEventListener("contextmenu", this.eventContextMenuListener);
     }
 
     public endInteraction() {
@@ -588,15 +603,6 @@ export class ScuffrWorkspace extends ScuffrSvgElementParent {
         if (!this._interaction) {
             if (this._dispatch(event.target, (element) => element.onWheel(event)))
                 event.preventDefault();
-            else {
-                let delta = -event.deltaY / this.blockScripts.transformScale;
-                if (event.shiftKey) {
-                    this.blockScripts.transformPosition.x += delta;
-                } else {
-                    this.blockScripts.transformPosition.y += delta;
-                }
-                this.updateGlobalTransform();
-            }
         }
     }
 

@@ -9,7 +9,7 @@ export abstract class BlockScript {
     }
 
     protected _clone(): BlockInstance[] {
-        return this.blocks.flatMap(block => block.clone());
+        return this.blocks.map(block => block.clone());
     }
 }
 

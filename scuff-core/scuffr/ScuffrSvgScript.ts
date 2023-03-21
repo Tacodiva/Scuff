@@ -211,7 +211,7 @@ export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript>
             this.script.blocks.splice(start, deleteCount);
         } else {
             splicedChildren = this.children.splice(start, deleteCount ?? 0, ...items);
-            this.script.blocks.splice(start, deleteCount ?? 0, ...items.flatMap(ele => (<ScuffrSvgBlockInstance>ele).block));
+            this.script.blocks.splice(start, deleteCount ?? 0, ...items.map(ele => (<ScuffrSvgBlockInstance>ele).block));
 
             for (let i = 0; i < items.length; i++) {
                 items[i].setParent({ index: i + start, parent: this });

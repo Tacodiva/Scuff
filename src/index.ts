@@ -65,6 +65,7 @@ import("scuff").then(async module => {
         // top
     ]);
 
+
     document.getElementById("scuff-loading")?.remove();
     core.main(script);
 });
