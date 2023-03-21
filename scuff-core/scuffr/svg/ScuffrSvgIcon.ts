@@ -1,11 +1,12 @@
-import { ScuffrSvg, ScuffrSvgParent } from ".";
-import type { Vec2 } from "../utils/Vec2";
+import { ScuffrSvgElement } from './ScuffrSvgElement'
+import type { ScuffrSvgElementParent } from './ScuffrSvgElementParent'
+import type { Vec2 } from "../../utils/Vec2";
 
-export class ScuffrSvgIcon extends ScuffrSvg {
+export class ScuffrSvgIcon extends ScuffrSvgElement {
 
-    public parent: ScuffrSvgParent;
+    public parent: ScuffrSvgElementParent;
 
-    public constructor(parent: ScuffrSvgParent, id: string, dimensions: Vec2, padding: Vec2 = { x: 0, y: 0 }) {
+    public constructor(parent: ScuffrSvgElementParent, id: string, dimensions: Vec2, padding: Vec2 = { x: 0, y: 0 }) {
         super(parent.dom.appendChild(document.createElementNS(SVG_NS, "use")), parent.scriptContainer,
             { x: padding.x, y: -dimensions.y / 2 },
             { x: dimensions.x + padding.x * 2, y: dimensions.y + padding.y * 2 });

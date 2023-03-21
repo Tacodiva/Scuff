@@ -6,8 +6,8 @@ import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttach
 import { ScuffrElement } from "./ScuffrElement";
 import type { ScuffrElementParent } from "./ScuffrElementParent";
 import type { ScuffrRootReference } from "./ScuffrReference";
-import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
-import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
+import type { ScuffrSvgBlock } from "./svg/ScuffrSvgBlock";
+import type { ScuffrSvgScriptRoot } from "./svg/ScuffrSvgScriptRoot";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 
 export abstract class ScuffrElementScriptContainer<TWorkspace extends ScuffrWorkspace = ScuffrWorkspace> extends ScuffrElement<SVGElement> implements ScuffrElementParent {

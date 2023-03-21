@@ -1,4 +1,4 @@
-import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
 import type { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
 
 export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = ScuffrAttachmentPoint> {

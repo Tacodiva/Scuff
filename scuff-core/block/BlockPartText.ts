@@ -1,6 +1,6 @@
-import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
-import type { ScuffrSvgBlockPart } from "../scuffr/ScuffrSvgBlockPart";
-import { ScuffrSvgText } from "../scuffr/ScuffrSvgText";
+import type { ScuffrSvgBlockContent } from "../scuffr/svg/ScuffrSvgBlockContent";
+import type { ScuffrSvgBlockPart } from "../scuffr/svg/ScuffrSvgBlockPart";
+import { ScuffrSvgText } from "../scuffr/svg/ScuffrSvgText";
 import type { BlockPart } from "./BlockPart";
 
 export class BlockPartText implements BlockPart {

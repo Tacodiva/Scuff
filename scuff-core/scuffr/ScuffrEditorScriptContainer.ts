@@ -4,9 +4,9 @@ import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttach
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
 import type { ScuffrEditorWorkspace } from "./ScuffrEditorWorkspace";
 import { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
-import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
-import type { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
-import { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
+import type { ScuffrSvgBlock } from "./svg/ScuffrSvgBlock";
+import type { ScuffrSvgBlockInstance } from "./svg/ScuffrSvgBlockInstance";
+import { ScuffrSvgScriptRoot } from "./svg/ScuffrSvgScriptRoot";
 
 export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer<ScuffrEditorWorkspace> {
     public children: ScuffrSvgScriptRoot[];

@@ -1,4 +1,3 @@
-import { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
 import type { Vec2 } from "../../utils/Vec2";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import type { ScuffrCmdScriptSelect } from "./ScuffrCmdScriptSelect";

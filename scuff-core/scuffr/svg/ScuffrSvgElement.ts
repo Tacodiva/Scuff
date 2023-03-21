@@ -1,6 +1,6 @@
-import type { Vec2 } from "../utils/Vec2";
-import { ScuffrElement } from "./ScuffrElement";
-import type { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
+import type { Vec2 } from "../../utils/Vec2";
+import { ScuffrElement } from "../ScuffrElement";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
 export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement> {
 

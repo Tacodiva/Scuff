@@ -1,23 +1,23 @@
 
 // Do not change order
 // ->
-export { ScuffrSvgScriptInput } from './ScuffrSvgScriptInput';
-export { ScuffrSvgScriptRoot } from './ScuffrSvgScriptRoot';
-export { ScuffrSvgScript } from './ScuffrSvgScript';
+export { ScuffrSvgScriptInput } from './svg/ScuffrSvgScriptInput';
+export { ScuffrSvgScriptRoot } from './svg/ScuffrSvgScriptRoot';
+export { ScuffrSvgScript } from './svg/ScuffrSvgScript';
 // <-
 
-export { ScuffrSvgElement as ScuffrSvg } from './ScuffrSvgElement';
-export { ScuffrSvgElementParent as ScuffrSvgParent } from './ScuffrSvgElementParent';
-export { type ScuffrSvgBlockPart } from './ScuffrSvgBlockPart';
-export { ScuffrSvgInputBase as ScuffrSvgBlockPartBackground } from './ScuffrSvgBlockInputBase';
-export { type ScuffrSvgInput } from './ScuffrSvgInput';
-export { ScuffrSvgInputBlank } from './ScuffrSvgInputBlank';
-export { ScuffrSvgInputLiteral } from './ScuffrSvgInputLiteral';
-export { ScuffrSvgInputDropdown } from './ScuffrSvgInputDropdown'
-export { ScuffrSvgBlockInstance } from './ScuffrSvgBlockInstance';
-export { ScuffrSvgBlockContent } from './ScuffrSvgBlockContent';
-export { ScuffrSvgText } from './ScuffrSvgText';
-export { ScuffrSvgDummy } from './ScuffrSvgDummy';
+export { ScuffrSvgElement as ScuffrSvg } from './svg/ScuffrSvgElement';
+export { ScuffrSvgElementParent as ScuffrSvgElementParent } from './svg/ScuffrSvgElementParent';
+export { type ScuffrSvgBlockPart } from './svg/ScuffrSvgBlockPart';
+export { ScuffrSvgInputBase as ScuffrSvgBlockPartBackground } from './svg/ScuffrSvgBlockInputBase';
+export { type ScuffrSvgInput } from './svg/ScuffrSvgInput';
+export { ScuffrSvgInputBlank } from './svg/ScuffrSvgInputBlank';
+export { ScuffrSvgInputLiteral } from './svg/ScuffrSvgInputLiteral';
+export { ScuffrSvgInputDropdown } from './svg/ScuffrSvgInputDropdown'
+export { ScuffrSvgBlockInstance } from './svg/ScuffrSvgBlockInstance';
+export { ScuffrSvgBlockContent } from './svg/ScuffrSvgBlockContent';
+export { ScuffrSvgText } from './svg/ScuffrSvgText';
+export { ScuffrSvgDummy } from './svg/ScuffrSvgDummy';
 export { ScuffrWorkspace } from './ScuffrWorkspace';
 export * from './ScuffrReferenceTypes';
 export * from './ScuffrReference';

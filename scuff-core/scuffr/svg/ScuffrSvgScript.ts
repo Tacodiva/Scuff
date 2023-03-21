@@ -1,19 +1,18 @@
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
-import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
-import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
+import { ScuffrAttachmentPointScript } from "../attachment-points/ScuffrAttachmentPointScript";
 import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
-import type { BlockScript } from "../block/BlockScript";
-import { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
+import type { BlockScript } from "../../block/BlockScript";
+import { ScuffrAttachmentPointList } from "../attachment-points/ScuffrAttachmentPointList";
 import { ScuffrSvgBlockGhost } from "./ScuffrSvgBlockGhost";
-import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
-import type { Vec2 } from "../utils/Vec2";
-import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
-import type { ScuffrReference, ScuffrReferenceLink } from "./ScuffrReference";
-import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
-import { ScuffrCmdScriptSelectScriptBlocks } from "./commands";
-import type { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
+import { ScuffrAttachmentPointScriptTop } from "../attachment-points/ScuffrAttachmentPointScriptTop";
+import type { Vec2 } from "../../utils/Vec2";
+import { ScuffrInteractionDragScript } from "../interactions/ScuffrInteractionDragScript";
+import type { ScuffrReference, ScuffrReferenceLink } from "../ScuffrReference";
+import type { ScuffrReferenceBlock } from "../ScuffrReferenceTypes";
+import { ScuffrCmdScriptSelectScriptBlocks } from "../commands";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
 export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript> extends ScuffrSvgElementParent implements ScuffrReferenceLink<ScuffrSvgBlock> {
     public children: ScuffrSvgBlock[];

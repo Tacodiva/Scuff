@@ -1,5 +1,5 @@
-import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
-import { ScuffrSvgScriptInput } from "../scuffr/ScuffrSvgScriptInput";
+import type { ScuffrSvgInput } from "../scuffr/svg/ScuffrSvgInput";
+import { ScuffrSvgScriptInput } from "../scuffr/svg/ScuffrSvgScriptInput";
 import { BlockScript } from "./BlockScript";
 import type { BlockInput } from "./BlockInput";
 import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";

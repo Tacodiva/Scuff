@@ -1,4 +1,4 @@
-import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
+import type { ScuffrSvgInput } from "../scuffr/svg/ScuffrSvgInput";
 import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 import type { BlockDropdownProvider } from "./BlockDropdownProvider";
 import type { BlockInput } from "./BlockInput";

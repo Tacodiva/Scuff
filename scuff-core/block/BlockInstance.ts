@@ -1,4 +1,4 @@
-import { ScuffrSvgBlockInstance } from "../scuffr/ScuffrSvgBlockInstance";
+import { ScuffrSvgBlockInstance } from "../scuffr/svg/ScuffrSvgBlockInstance";
 import type { ScuffrReferenceBlock } from "../scuffr/ScuffrReferenceTypes";
 import type { BlockInput } from "./BlockInput";
 import type { BlockPartInput } from "./BlockPartInput";

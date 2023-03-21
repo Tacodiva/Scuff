@@ -1,15 +1,15 @@
-import type { BlockInput } from "../block/BlockInput";
+import type { BlockInput } from "../../block/BlockInput";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
-import type { ScuffrShape } from "./shape/ScuffrShape";
+import type { ScuffrShape } from "../shape/ScuffrShape";
 import { ScuffrSvgText } from "./ScuffrSvgText";
-import type { BlockDropdownOption } from "../block";
-import { ScuffrSvgParent } from ".";
+import type { BlockDropdownOption } from "../../block";
 import { ScuffrSvgIcon } from "./ScuffrSvgIcon";
-import { ScuffrInteractionDropdown } from "./interactions/ScuffrInteractionDropdown";
-import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
+import { ScuffrInteractionDropdown } from "../interactions/ScuffrInteractionDropdown";
+import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
+import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 
-class Content extends ScuffrSvgParent {
+class Content extends ScuffrSvgElementParent {
     public children: readonly [ScuffrSvgText, ScuffrSvgIcon];
     public parent: ScuffrSvgInputDropdown;
 

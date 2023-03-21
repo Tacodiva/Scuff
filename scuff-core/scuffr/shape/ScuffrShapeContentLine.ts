@@ -1,5 +1,5 @@
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrSvgElement } from "../ScuffrSvgElement";
+import type { ScuffrSvgElement } from "../svg/ScuffrSvgElement";
 import type { ScuffrShapeModifier } from "./ScuffrShapeModifier";
 
 export interface ScuffrShapeContentLine {

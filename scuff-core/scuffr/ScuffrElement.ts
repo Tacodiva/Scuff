@@ -1,6 +1,5 @@
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrElementParent } from "./ScuffrElementParent";
-import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 
 export abstract class ScuffrElement<TDom extends Element = Element> {

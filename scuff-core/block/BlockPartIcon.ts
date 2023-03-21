@@ -1,6 +1,6 @@
-import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
-import type { ScuffrSvgBlockPart } from "../scuffr/ScuffrSvgBlockPart";
-import { ScuffrSvgIcon } from "../scuffr/ScuffrSvgIcon";
+import type { ScuffrSvgBlockContent } from "../scuffr/svg/ScuffrSvgBlockContent";
+import type { ScuffrSvgBlockPart } from "../scuffr/svg/ScuffrSvgBlockPart";
+import { ScuffrSvgIcon } from "../scuffr/svg/ScuffrSvgIcon";
 import type { Vec2 } from "../utils/Vec2";
 import type { BlockPart } from "./BlockPart";
 

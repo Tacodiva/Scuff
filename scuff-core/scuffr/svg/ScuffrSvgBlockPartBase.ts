@@ -1,11 +1,11 @@
-import type { IScuffrPointAttachable } from "./attachment-points/ScuffrAttachmentPoint";
-import { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
+import type { IScuffrPointAttachable } from "../attachment-points/ScuffrAttachmentPoint";
+import { ScuffrAttachmentPointList } from "../attachment-points/ScuffrAttachmentPointList";
 import { ScuffrSvgShape } from "./ScuffrSvgShape";
 import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
 import type { ScuffrSvgElement } from "./ScuffrSvgElement";
 import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
-import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
+import type { ScuffrColouredShape } from "../shape/ScuffrColouredShape";
 
 export abstract class ScuffrSvgBlockPartBase<TContent extends ScuffrSvgElement> extends ScuffrSvgShape<TContent> implements ScuffrSvgBlockPart, IScuffrPointAttachable {
     public readonly attachmentPoints: ScuffrAttachmentPointList;

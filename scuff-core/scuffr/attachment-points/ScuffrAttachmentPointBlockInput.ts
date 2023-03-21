@@ -1,12 +1,12 @@
 import type { BlockPartInput } from "../../block/BlockPartInput";
 import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
-import type { ScuffrSvgInput } from "../ScuffrSvgInput";
+import type { ScuffrSvgInput } from "../svg/ScuffrSvgInput";
 import { ScuffrCmdAttchInputTakeScript } from "../commands/ScuffrCmdAttchInputTakeScript";
-import { ScuffrSvgBlockInstance } from "../ScuffrSvgBlockInstance";
-import { ScuffrSvgBlockContent } from "../ScuffrSvgBlockContent";
+import { ScuffrSvgBlockInstance } from "../svg/ScuffrSvgBlockInstance";
+import { ScuffrSvgBlockContent } from "../svg/ScuffrSvgBlockContent";
 import { ScuffrCmdScriptSelectBlockInput } from "../commands/ScuffrCmdScriptSelectBlockInput";
 import { ScuffrCmdCompound } from "../commands/ScuffrCmdCompound";
-import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
 import type { ScuffrCmd } from "../commands/ScuffrCmd";
 import { ScuffrCmdScriptSwapSelected } from "../commands/ScuffrCmdScriptSwapSelected";
 

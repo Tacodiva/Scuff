@@ -1,9 +1,9 @@
 import type { ScuffrSvgElement } from "./ScuffrSvgElement";
-import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
-import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
+import type { ScuffrColouredShape } from "../shape/ScuffrColouredShape";
+import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
-import type { BlockInput, BlockPartInput } from "../block";
+import type { BlockInput, BlockPartInput } from "../../block";
 import { ScuffrSvgBlockPartBase } from "./ScuffrSvgBlockPartBase";
 
 export abstract class ScuffrSvgInputBase<TContent extends ScuffrSvgElement> extends ScuffrSvgBlockPartBase<TContent> implements ScuffrSvgInput {

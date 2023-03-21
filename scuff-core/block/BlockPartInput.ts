@@ -1,9 +1,9 @@
 import { ScuffrAttachmentPointBlockInput } from "../scuffr/attachment-points/ScuffrAttachmentPointBlockInput";
 import type { BlockPart } from "./BlockPart";
 import type { BlockType } from "./BlockType";
-import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
+import type { ScuffrSvgInput } from "../scuffr/svg/ScuffrSvgInput";
 import type { BlockInput } from "./BlockInput";
-import type { ScuffrSvgBlockContent } from "../scuffr/ScuffrSvgBlockContent";
+import type { ScuffrSvgBlockContent } from "../scuffr/svg/ScuffrSvgBlockContent";
 import type { BlockInstance } from "./BlockInstance";
 
 export abstract class BlockPartInput<T extends BlockInput = BlockInput> implements BlockPart {

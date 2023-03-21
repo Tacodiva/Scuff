@@ -1,4 +1,4 @@
-import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
+import type { ScuffrSvgInput } from "../scuffr/svg/ScuffrSvgInput";
 import type { ScuffrReferenceBlock } from "../scuffr/ScuffrReferenceTypes";
 
 export interface BlockInput {

@@ -1,16 +1,15 @@
-import { BlockScriptRoot } from "../block/BlockScriptRoot";
+import { BlockScriptRoot } from "../../block/BlockScriptRoot";
 import { ScuffrSvgScript } from "./ScuffrSvgScript";
-import { ScuffrCmdScriptSelectRoot } from "./commands/ScuffrCmdScriptSelectRoot";
+import { ScuffrCmdScriptSelectRoot } from "../commands/ScuffrCmdScriptSelectRoot";
 
 import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
-import type { ScuffrWorkspace } from "./ScuffrWorkspace";
-import type { Vec2 } from "../utils/Vec2";
-import type { ScuffrRootReference } from "./ScuffrReference";
-import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
-import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
+import type { Vec2 } from "../../utils/Vec2";
+import type { ScuffrRootReference } from "../ScuffrReference";
+import { ScuffrInteractionDragScript } from "../interactions/ScuffrInteractionDragScript";
+import type { ScuffrReferenceBlock } from "../ScuffrReferenceTypes";
 import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
 import type { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
-import type { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
 export class ScuffrSvgScriptRoot extends ScuffrSvgScript<BlockScriptRoot> {
     public readonly parent: ScuffrElementScriptContainer;

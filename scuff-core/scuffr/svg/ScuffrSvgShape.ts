@@ -1,8 +1,8 @@
 import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
 import type { ScuffrSvgElement } from "./ScuffrSvgElement";
 import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
-import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
-import type { ScuffrColouredShape } from "./shape/ScuffrColouredShape";
+import type { ScuffrShapeContentLine } from "../shape/ScuffrShapeContentLine";
+import type { ScuffrColouredShape } from "../shape/ScuffrColouredShape";
 
 export abstract class ScuffrSvgShape<TContent extends ScuffrSvgElement = ScuffrSvgElement> extends ScuffrSvgElementParent implements ScuffrSvgBlockPart {
     public abstract override parent: ScuffrSvgElementParent;

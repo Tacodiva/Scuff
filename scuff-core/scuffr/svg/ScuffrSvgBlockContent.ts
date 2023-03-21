@@ -1,13 +1,13 @@
-import { BlockPartInput } from "../block/BlockPartInput";
+import { BlockPartInput } from "../../block/BlockPartInput";
 import { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
-import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
-import type { ScuffrReferenceLink } from "./ScuffrReference";
-import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
-import { ScuffrCmdScriptSelectBlockInput } from "./commands/ScuffrCmdScriptSelectBlockInput";
+import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "../ScuffrReferenceTypes";
+import type { ScuffrReferenceLink } from "../ScuffrReference";
+import { ScuffrInteractionDragScript } from "../interactions/ScuffrInteractionDragScript";
+import { ScuffrCmdScriptSelectBlockInput } from "../commands/ScuffrCmdScriptSelectBlockInput";
 
 interface ScuffrBlockContentInput {
     input: BlockPartInput;

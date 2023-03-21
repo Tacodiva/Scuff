@@ -1,4 +1,4 @@
-import type { Vec2 } from "../utils/Vec2";
+import type { Vec2 } from "../../utils/Vec2";
 import { ScuffrSvgElement } from "./ScuffrSvgElement";
 import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 

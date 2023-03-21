@@ -1,9 +1,9 @@
-import type { BlockInput } from "../block/BlockInput";
+import type { BlockInput } from "../../block/BlockInput";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
 import { ScuffrSvgDummy } from "./ScuffrSvgDummy";
-import type { ScuffrShape } from "./shape/ScuffrShape";
-import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
+import type { ScuffrShape } from "../shape/ScuffrShape";
+import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 
 export class ScuffrSvgInputBlank extends ScuffrSvgInputBase<ScuffrSvgDummy> implements ScuffrSvgInput {
     public readonly input: BlockInput;

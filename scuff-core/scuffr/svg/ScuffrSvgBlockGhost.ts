@@ -6,9 +6,9 @@ import { ScuffrSvgDummy } from './ScuffrSvgDummy';
 import { ScuffrSvgScriptInput } from './ScuffrSvgScriptInput';
 import type { ScuffrSvgScriptRoot } from './ScuffrSvgScriptRoot';
 import type { ScuffrSvgScript } from './ScuffrSvgScript';
-import { ScuffrWrapInfo } from './ScuffrWrappingDescriptor';
-import type { ScuffrShapeContentLine } from './shape/ScuffrShapeContentLine';
-import type { ScuffrLinkReference, ScuffrReference } from './ScuffrReference';
+import { ScuffrWrapInfo } from '../ScuffrWrappingDescriptor';
+import type { ScuffrShapeContentLine } from '../shape/ScuffrShapeContentLine';
+import type { ScuffrLinkReference, ScuffrReference } from '../ScuffrReference';
 
 export class ScuffrSvgBlockGhost extends ScuffrSvgShape<ScuffrSvgDummy> implements ScuffrSvgBlock {
 

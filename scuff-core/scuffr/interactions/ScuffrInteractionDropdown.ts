@@ -1,6 +1,6 @@
 import type { BlockDropdownOption } from "../../block";
 import { ScuffrCmdSetInputDropdown } from "../commands/ScuffrCmdSetInputDropdown";
-import type { ScuffrSvgInputDropdown } from "../ScuffrSvgInputDropdown";
+import type { ScuffrSvgInputDropdown } from "../svg/ScuffrSvgInputDropdown";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import { ScuffrInteraction } from "./ScuffrInteraction";
 

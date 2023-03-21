@@ -1,5 +1,5 @@
-import { ScuffrSvgInputLiteral } from "../scuffr/ScuffrSvgInputLiteral";
-import type { ScuffrSvgInput } from "../scuffr/ScuffrSvgInput";
+import { ScuffrSvgInputLiteral } from "../scuffr/svg/ScuffrSvgInputLiteral";
+import type { ScuffrSvgInput } from "../scuffr/svg/ScuffrSvgInput";
 import type { BlockInput } from "./BlockInput";
 import type { ScuffrReferenceInput } from "../scuffr/ScuffrReferenceTypes";
 

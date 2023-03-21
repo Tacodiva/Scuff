@@ -1,5 +1,5 @@
-import { ScuffrSvgBlockInstance } from "../ScuffrSvgBlockInstance";
-import { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
+import { ScuffrSvgBlockInstance } from "../svg/ScuffrSvgBlockInstance";
+import { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
 import type { ScuffrReference } from "../ScuffrReference";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import type { ScuffrCmd } from "./ScuffrCmd";

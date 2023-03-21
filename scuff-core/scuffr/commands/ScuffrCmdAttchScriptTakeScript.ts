@@ -1,10 +1,10 @@
-import { ScuffrSvgScript } from "../ScuffrSvgScript";
+import { ScuffrSvgScript } from "../svg/ScuffrSvgScript";
 import type { ScuffrReference } from "../ScuffrReference";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import { ScuffrWrapInfo } from "../ScuffrWrappingDescriptor";
 import type { ScuffrCmd } from "./ScuffrCmd";
-import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
-import { ScuffrSvgScriptInput } from "../ScuffrSvgScriptInput";
+import type { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
+import { ScuffrSvgScriptInput } from "../svg/ScuffrSvgScriptInput";
 
 export class ScuffrCmdAttchScriptTakeScript implements ScuffrCmd {
     public readonly target: ScuffrReferenceChain;

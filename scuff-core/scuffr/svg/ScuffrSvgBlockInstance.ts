@@ -1,15 +1,15 @@
-import type { BlockInstance } from "../block/BlockInstance";
+import type { BlockInstance } from "../../block/BlockInstance";
 import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
-import type { BlockInput } from "../block/BlockInput";
+import type { BlockInput } from "../../block/BlockInput";
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
-import type { BlockPartInput } from "../block/BlockPartInput";
-import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
-import { ScuffrInteractionContextMenu } from "./interactions/ScuffrInteractionContextMenu";
-import { l10n } from "../l10n";
-import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "./ScuffrReferenceTypes";
+import type { BlockPartInput } from "../../block/BlockPartInput";
+import type { ScuffrShapeContentLine } from "../shape/ScuffrShapeContentLine";
+import { ScuffrInteractionContextMenu } from "../interactions/ScuffrInteractionContextMenu";
+import { l10n } from "../../l10n";
+import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "../ScuffrReferenceTypes";
 import { ScuffrSvgBlockPartBase } from "./ScuffrSvgBlockPartBase";
 import { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
 

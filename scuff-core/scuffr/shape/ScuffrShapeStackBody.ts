@@ -1,5 +1,5 @@
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrSvgBlockPart } from "../ScuffrSvgBlockPart";
+import type { ScuffrSvgBlockPart } from "../svg/ScuffrSvgBlockPart";
 import { ScuffrShape } from "./ScuffrShape";
 import type { ScuffrShapeContentLine } from "./ScuffrShapeContentLine";
 import type { ScuffrStackNub } from "./ScuffrStackNub";

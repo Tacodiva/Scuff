@@ -1,4 +1,4 @@
-import type { ScuffrElementParent } from "./ScuffrElementParent";
+import type { ScuffrElementParent } from "../ScuffrElementParent";
 import { ScuffrSvgElement } from "./ScuffrSvgElement";
 
 export abstract class ScuffrSvgElementParent extends ScuffrSvgElement implements ScuffrElementParent<SVGGraphicsElement> {

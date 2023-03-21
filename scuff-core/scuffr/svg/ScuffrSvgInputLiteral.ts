@@ -1,12 +1,12 @@
-import type { BlockInput } from "../block/BlockInput";
+import type { BlockInput } from "../../block/BlockInput";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
 import { ScuffrSvgText } from "./ScuffrSvgText";
-import type { BlockInputLiteral } from "../block/BlockInputLiteral";
-import { ScuffrShapeInputRound } from "./shape/ScuffrShapeInputRound";
-import type { ScuffrShape } from "./shape";
-import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";
-import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
+import type { BlockInputLiteral } from "../../block/BlockInputLiteral";
+import { ScuffrShapeInputRound } from "../shape/ScuffrShapeInputRound";
+import type { ScuffrShape } from "../shape";
+import { ScuffrInteractionLiteralEdit } from "../interactions/ScuffrInteractionLiteralEdit";
+import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 
 export class ScuffrSvgInputLiteral extends ScuffrSvgInputBase<ScuffrSvgText> implements ScuffrSvgInput {
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();

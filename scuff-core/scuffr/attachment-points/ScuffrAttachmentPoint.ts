@@ -1,6 +1,6 @@
-import type { ScuffrSvgElement } from "../ScuffrSvgElement";
+import type { ScuffrSvgElement } from "../svg/ScuffrSvgElement";
 import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrSvgScriptRoot } from "../ScuffrSvgScriptRoot";
+import type { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
 import type { ScuffrAttachmentPointList } from "./ScuffrAttachmentPointList";
 import type { ScuffrCmd } from "../commands";
 

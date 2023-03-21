@@ -1,17 +1,16 @@
-import { ScuffrCmdScriptSelectScriptBlocks } from "./commands/ScuffrCmdScriptSelectScriptInput";
-import { BlockScriptInput } from "../block/BlockScriptInput";
-import type { BlockInput } from "../block/BlockInput";
-import type { Vec2 } from "../utils/Vec2";
+import { BlockScriptInput } from "../../block/BlockScriptInput";
+import type { BlockInput } from "../../block/BlockInput";
+import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
-import { ScuffrAttachmentPointScript } from "./attachment-points/ScuffrAttachmentPointScript";
-import type { ScuffrShapeModifier } from "./shape/ScuffrShapeModifier";
+import { ScuffrAttachmentPointScript } from "../attachment-points/ScuffrAttachmentPointScript";
+import type { ScuffrShapeModifier } from "../shape/ScuffrShapeModifier";
 import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import { ScuffrSvgScript } from "./ScuffrSvgScript";
-import type { ScuffrShapeContentLine } from "./shape/ScuffrShapeContentLine";
-import { ScuffrShapeStackBody, ScuffrShapeStackTail } from "./shape";
-import type { ScuffrReferenceInput } from "./ScuffrReferenceTypes";
+import type { ScuffrShapeContentLine } from "../shape/ScuffrShapeContentLine";
+import { ScuffrShapeStackBody, ScuffrShapeStackTail } from "../shape";
+import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 
 export class ScuffrSvgScriptInput extends ScuffrSvgScript<BlockScriptInput> implements ScuffrSvgInput, ScuffrShapeModifier {
 
