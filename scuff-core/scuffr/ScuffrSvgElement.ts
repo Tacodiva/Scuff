@@ -1,8 +1,10 @@
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrElement } from "./ScuffrElement";
-import type { ScuffrWorkspace } from "./ScuffrWorkspace";
+import type { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
 
 export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement> {
+
+    public readonly scriptContainer : ScuffrElementScriptContainer;
 
     private readonly _domTranslation: SVGTransform;
     public dimensions: Vec2;
@@ -16,14 +18,15 @@ export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement>
     private _lastTranslationUpdate: Vec2;
     private _absoluteTranslation: Vec2 | null;
 
-    public constructor(dom: SVGGraphicsElement, workspace?: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
-        super(dom, workspace);
+    public constructor(dom: SVGGraphicsElement, scriptContainer: ScuffrElementScriptContainer, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
+        super(dom, scriptContainer.workspace);
+        this.scriptContainer = scriptContainer;
         this.dimensions = dimensions;
         this.topLeftOffset = topLeftOffset;
 
         this.translationSelf = translation;
         this.translationParent = translationParent;
-        this._domTranslation = this.workspace.svg?.createSVGTransform();
+        this._domTranslation = this.workspace.dom?.createSVGTransform();
         if (this._domTranslation) {
             this.dom.transform.baseVal.clear();
             this.dom.transform.baseVal.appendItem(this._domTranslation);
@@ -32,21 +35,6 @@ export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement>
         this._absoluteTranslation = null;
         this._lastTranslationUpdate = { x: NaN, y: NaN };
     }
-
-    public getAbsoluteTranslation(): Vec2 {
-        if (this._absoluteTranslation) return this._absoluteTranslation;
-        return this._absoluteTranslation = this._calculateAbsoluteTranslation();
-    }
-
-    private _calculateAbsoluteTranslation(): Vec2 {
-        if (!this.parent) return { x: this.translationX, y: this.translationY };
-        const parentTrans = this.parent.getAbsoluteTranslation();
-        return {
-            x: this.translationX + parentTrans.x,
-            y: this.translationY + parentTrans.y
-        }
-    }
-
 
     public updateTranslation(propgrateDown: boolean = true) {
         const x = this.translationX;
@@ -79,6 +67,20 @@ export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement>
 
     public get rightOffset() {
         return this.dimensions.x + this.leftOffset;
+    }
+
+    public override getAbsoluteTranslation(): Vec2 {
+        if (this._absoluteTranslation) return this._absoluteTranslation;
+        return this._absoluteTranslation = this._calculateAbsoluteTranslation();
+    }
+
+    private _calculateAbsoluteTranslation(): Vec2 {
+        if (!this.parent) return { x: this.translationX, y: this.translationY };
+        const parentTrans = this.parent.getAbsoluteTranslation();
+        return {
+            x: this.translationX + parentTrans.x,
+            y: this.translationY + parentTrans.y
+        }
     }
 }
 

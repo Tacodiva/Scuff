@@ -21,7 +21,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
     public readonly htmlInput: HTMLInputElement;
 
     public constructor(dropdown: ScuffrSvgInputDropdown) {
-        super(dropdown.workspace);
+        super(dropdown.scriptContainer);
         this.scuffrInput = dropdown;
 
         this.svgMenu = document.body.appendChild(document.createElementNS(SVG_NS, "svg"));
@@ -92,7 +92,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
 
     private _setOption(option: BlockDropdownOption) {
         if (this.scuffrInput.value.id !== option.id) {
-            this.workspace.submitCommand(
+            this.root.workspace.submitCommand(
                 new ScuffrCmdSetInputDropdown(this.scuffrInput, option)
             );
         }

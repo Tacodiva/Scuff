@@ -1,17 +1,18 @@
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 
 export class ScuffrCmdScriptSwapSelected {
 
     public readonly offset: number;
-    public readonly workspace: ScuffrWorkspace;
+    public readonly root: ScuffrElementScriptContainer;
 
-    public constructor(offset: number, workspace: ScuffrWorkspace) {
+    public constructor(offset: number, root: ScuffrElementScriptContainer) {
         this.offset = offset;
-        this.workspace = workspace;
+        this.root = root;
     }
 
     public do(): void {
-        this.workspace.swapSelected(this.workspace.children.length - this.offset - 1);
+        this.root.swapSelected(this.root.children.length - this.offset - 1);
     }
 
     public undo(): void {

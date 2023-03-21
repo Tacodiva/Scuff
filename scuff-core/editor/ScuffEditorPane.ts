@@ -1,3 +1,4 @@
+import { Bounds } from "../utils/Bounds";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffEditor } from "./ScuffEditor";
 
@@ -7,30 +8,33 @@ export type ScuffEditorPaneInfo
 export type ScuffEditorPaneFactory<TPane extends ScuffEditorPane = ScuffEditorPane>
     = (pane: ScuffEditorPaneInfo) => TPane;
 
-    export abstract class ScuffEditorPane {
+export abstract class ScuffEditorPane {
 
     public readonly parent: ScuffEditorPane | null;
     public readonly target: HTMLDivElement;
     public readonly editor: ScuffEditor;
 
-    protected _dimensions: Vec2;
+    protected _bounds: Bounds;
+    protected _minSize: Vec2;
 
     public constructor({ editor, parent, target }: ScuffEditorPaneInfo) {
         this.parent = parent;
         this.target = target;
         this.editor = editor;
-        this._dimensions = { x: 0, y: 0 };
+        this._bounds = Bounds.Zero;
+        this._minSize = { x: 0, y: 0 };
     }
 
-    public get dimensions() { return this._dimensions };
+    public get bounds() { return this._bounds };
+    public get minSize() { return this._minSize };
 
-    public setDimensions(dimensions: Vec2) {
-        if (this._dimensions.x !== dimensions.x || this._dimensions.y !== dimensions.y) {
-            this._dimensions = dimensions;
-            this.onDimensionUpdate()
+    public setBounds(bounds: Bounds) {
+        if (!Bounds.equal(this._bounds, bounds)) {
+            this._bounds = bounds;
+            this.onBoundsUpdate()
         }
     }
 
     public onDestroy(): void { }
-    public onDimensionUpdate() { }
+    public onBoundsUpdate() { }
 }

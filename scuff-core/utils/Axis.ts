@@ -1,3 +1,8 @@
+import type { Vec2 } from "./Vec2";
+
+export type Axis = "x" | "y";
+export type AxisInfo = typeof Axis.X | typeof Axis.Y;
+
 export namespace Axis {
     export const X = {
         name: "x",
@@ -35,11 +40,13 @@ export namespace Axis {
         return "x";
     }
 
-    export function vector(axis: Axis | AxisInfo, parallel: number, cross: number) {
+    export function getCrossInfo(axis: Axis | AxisInfo): AxisInfo {
+        if (isX(axis)) return Y;
+        return X;
+    }
+
+    export function vector(axis: Axis | AxisInfo, parallel: number, cross: number): Vec2 {
         if (isX(axis)) return { x: parallel, y: cross };
         return { x: cross, y: parallel };
     }
 }
-
-export type Axis = "x" | "y";
-export type AxisInfo = typeof Axis.X | typeof Axis.Y;

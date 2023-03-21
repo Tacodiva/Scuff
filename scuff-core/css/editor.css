@@ -39,11 +39,11 @@
 
 .scuff-pane-split-spacer-h {
     width: 2px;
-    height: 100%;    
+    height: 100%;
 }
 
 .scuff-pane-split-spacer-v {
-    width: 100%;    
+    width: 100%;
     height: 2px;
 }
 
@@ -81,8 +81,10 @@
 
 .scuff-pane-split-divider-h.scuff-dragging:before {
     width: 6px;
+    background-color: red;
 }
 
 .scuff-pane-split-divider-v.scuff-dragging:before {
     height: 6px;
+    background-color: red;
 }

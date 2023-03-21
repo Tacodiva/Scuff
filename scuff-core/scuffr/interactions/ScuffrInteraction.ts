@@ -1,14 +1,14 @@
-import type { ScuffrWorkspace } from "../ScuffrWorkspace";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
 export abstract class ScuffrInteraction {
-    public readonly workspace: ScuffrWorkspace;
+    public readonly root: ScuffrElementScriptContainer;
 
-    public constructor(workspace: ScuffrWorkspace) {
-        this.workspace = workspace;
+    public constructor(root: ScuffrElementScriptContainer) {
+        this.root = root;
     }
 
     protected end() {
-        this.workspace.endInteraction();
+        this.root.workspace.endInteraction();
     }
 
     public onEnd() { }

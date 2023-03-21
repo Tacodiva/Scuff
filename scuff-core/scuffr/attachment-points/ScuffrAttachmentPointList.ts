@@ -8,7 +8,7 @@ export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = Sc
     public constructor(root: ScuffrSvgScriptRoot) {
         this.list = [];
         this.root = root;
-        this.root.workspace.attachmentPoints.add(this);
+        this.root.scriptContainer.addAttachmentPoints(this);
     }
 
     public clear() {
@@ -22,7 +22,7 @@ export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = Sc
     public delete() {
         if (!this.root)
             return;
-        this.root.workspace.attachmentPoints.delete(this);
+        this.root.scriptContainer.deleteAttachmentPoints(this);
         this.root = null;
     }
 
@@ -36,7 +36,7 @@ export class ScuffrAttachmentPointList<TPoint extends ScuffrAttachmentPoint = Sc
             this.delete();
         } else {
             if (this.root === null && root)
-                root.workspace.attachmentPoints.add(this);
+                root.scriptContainer.addAttachmentPoints(this);
             this.root = root;
             this.recalculateTranslation();
         }

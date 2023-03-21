@@ -1,4 +1,3 @@
-import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
@@ -15,7 +14,7 @@ class Content extends ScuffrSvgParent {
     public parent: ScuffrSvgInputDropdown;
 
     constructor(parent: ScuffrSvgInputDropdown) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.scriptContainer);
         this.parent = parent;
         this.children = [
             new ScuffrSvgText(this, ""),

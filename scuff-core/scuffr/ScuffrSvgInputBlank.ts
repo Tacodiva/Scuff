@@ -1,4 +1,3 @@
-import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";

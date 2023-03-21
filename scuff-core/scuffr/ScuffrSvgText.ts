@@ -8,7 +8,7 @@ export class ScuffrSvgText extends ScuffrSvgElement {
     private _textNode: Text | null;
 
     public constructor(parent: ScuffrSvgElementParent, text: string) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.workspace);
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.scriptContainer);
         this.parent = parent;
         this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");

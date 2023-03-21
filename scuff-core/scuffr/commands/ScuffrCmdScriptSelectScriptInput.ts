@@ -12,7 +12,7 @@ export class ScuffrCmdScriptSelectScriptBlocks implements ScuffrCmdScriptSelect 
     public readonly sourceStart: number;
     public readonly sourceCount: number;
 
-    public get workspace() { return this.source.workspace; }
+    public get root() { return this.source.root; }
 
     public targetPosition: Vec2;
 
@@ -36,16 +36,14 @@ export class ScuffrCmdScriptSelectScriptBlocks implements ScuffrCmdScriptSelect 
         const inputScript = this._getInputScript();
 
         const blocks = inputScript.spliceBlocks(this.sourceStart, this.sourceCount);
-        const rootScript = new ScuffrSvgScriptRoot(this.workspace, null, blocks, this.targetPosition);
-
-        this.workspace.addRenderedScript(rootScript);
+        this.root.createScript(blocks, this.targetPosition);
     }
 
     public undo(): void {
         const inputScript = this._getInputScript();
-        const rootScript = this.workspace.getSelectedScript();
+        const rootScript = this.root.getSelectedScript();
 
         inputScript.spliceBlocks(this.sourceStart, 0, rootScript.children);
-        this.workspace.deleteRenderedScript(rootScript, false);
+        this.root.deleteScript(rootScript, false);
     }
 }

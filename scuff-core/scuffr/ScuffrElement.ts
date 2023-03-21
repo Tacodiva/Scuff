@@ -1,3 +1,5 @@
+import type { Vec2 } from "../utils/Vec2";
+import type { ScuffrElementParent } from "./ScuffrElementParent";
 import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
 
@@ -6,7 +8,7 @@ export abstract class ScuffrElement<TDom extends Element = Element> {
 
     public readonly workspace: ScuffrWorkspace;
     public readonly dom: TDom;
-    public abstract parent: ScuffrSvgElementParent | null;
+    public abstract parent: ScuffrElementParent | null;
 
     public constructor(dom: TDom, workspace?: ScuffrWorkspace) {
         this.dom = dom;
@@ -23,7 +25,7 @@ export abstract class ScuffrElement<TDom extends Element = Element> {
         return false;
     }
 
-    public onRightClick(event: MouseEvent) : boolean {
+    public onRightClick(event: MouseEvent): boolean {
         return false;
     }
 
@@ -41,5 +43,9 @@ export abstract class ScuffrElement<TDom extends Element = Element> {
 
     public update(propagateUp: boolean) {
         if (propagateUp && this.parent) this.parent.update(true);
+    }
+
+    public getAbsoluteTranslation(): Vec2 {
+        return { x: 0, y: 0 };
     }
 }

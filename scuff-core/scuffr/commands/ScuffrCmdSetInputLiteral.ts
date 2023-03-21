@@ -5,7 +5,7 @@ import type { ScuffrCmd } from "./ScuffrCmd";
 export class ScuffrCmdSetInputLiteral implements ScuffrCmd {
 
     public inputReference: ScuffrReferenceChain<ScuffrSvgInput>;
-    public get workspace() { return this.inputReference.workspace; }
+    public get root() { return this.inputReference.root; }
 
     public readonly targetValue: string;
     public readonly sourceValue: string;

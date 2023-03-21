@@ -12,7 +12,7 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
     public inputValid: boolean;
 
     public constructor(input: ScuffrSvgInputLiteral) {
-        super(input.workspace);
+        super(input.scriptContainer);
         this.scuffrInput = input;
         this.initalValue = input.getValue();
         this.inputValid = true;
@@ -65,7 +65,7 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
         if (!this.inputValid) {
             this.scuffrInput.setValue(this.initalValue);
         } else if (this.scuffrInput.getValue() !== this.initalValue) {
-            this.workspace.submitCommand(
+            this.root.workspace.submitCommand(
                 new ScuffrCmdSetInputLiteral(this.scuffrInput, this.scuffrInput.getValue(), this.initalValue),
                 false
             );

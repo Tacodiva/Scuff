@@ -10,7 +10,7 @@ import type { ScuffrCmdScriptSelect } from "./ScuffrCmdScriptSelect";
 
 export class ScuffrCmdScriptSelectBlockInput implements ScuffrCmdScriptSelect {
     public source: ScuffrReferenceChain<ScuffrSvgInput | ScuffrSvgBlock>;
-    public get workspace() { return this.source.workspace; }
+    public get root() { return this.source.root; }
 
     public targetPosition: Vec2;
 
@@ -29,14 +29,13 @@ export class ScuffrCmdScriptSelectBlockInput implements ScuffrCmdScriptSelect {
     public do() {
         const source = this._getSourceReference();
         const block = source.parent.content.detachBlock(source.index);
-        const script = new ScuffrSvgScriptRoot(this.workspace, null, [block], this.targetPosition);
-        this.workspace.addRenderedScript(script);
+        this.root.createScript([block], this.targetPosition);
     }
 
     public undo() {
         const source = this._getSourceReference();
-        const script = this.workspace.getSelectedScript();
+        const script = this.root.getSelectedScript();
         source.parent.content.setInputByIndex(source.index, script.children[0] as ScuffrSvgBlockInstance);
-        this.workspace.deleteRenderedScript(script, false);
+        this.root.deleteScript(script, false);
     }
 }

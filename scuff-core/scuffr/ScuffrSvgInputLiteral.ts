@@ -1,10 +1,8 @@
-import type { BlockPartInput } from "../block/BlockPartInput";
 import type { BlockInput } from "../block/BlockInput";
 import type { ScuffrSvgInput } from "./ScuffrSvgInput";
 import { ScuffrSvgInputBase } from "./ScuffrSvgBlockInputBase";
 import { ScuffrSvgText } from "./ScuffrSvgText";
 import type { BlockInputLiteral } from "../block/BlockInputLiteral";
-import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import { ScuffrShapeInputRound } from "./shape/ScuffrShapeInputRound";
 import type { ScuffrShape } from "./shape";
 import { ScuffrInteractionLiteralEdit } from "./interactions/ScuffrInteractionLiteralEdit";

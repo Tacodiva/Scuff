@@ -10,28 +10,31 @@ import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDra
 import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
 import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
 import type { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
+import type { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
 
 export class ScuffrSvgScriptRoot extends ScuffrSvgScript<BlockScriptRoot> {
-    public readonly parent: ScuffrWorkspace;
+    public readonly parent: ScuffrElementScriptContainer;
     public get isSubscript(): boolean { return false; }
 
-    public constructor(workspace: ScuffrWorkspace, script: BlockScriptRoot | null, blocks?: ScuffrSvgBlock[], translation?: Vec2) {
+    public constructor(scriptContainer: ScuffrElementScriptContainer, script: BlockScriptRoot | null, blocks?: ScuffrSvgBlock[], translation?: Vec2) {
         if (!script) {
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
             script = new BlockScriptRoot(ScuffrSvgScript.getBlockInstanceElements(blocks).map(inst => inst.block));
             if (translation) script.translation = translation;
         }
-        super(workspace.svgScriptContainer, null, workspace, script, script ? script.translation : translation);
-        this.parent = workspace;
+        super(scriptContainer.scriptsDom, null, scriptContainer, script, script ? script.translation : translation);
+        this.parent = scriptContainer;
         this._init(blocks);
     }
 
+    // TODO Rename 'root' to 'scriptRoot'
+    // Rename 'scriptContainer' to 'root'
     public override getRoot(): ScuffrSvgScriptRoot {
         return this;
     }
 
     public getReference(): ScuffrRootReference {
-        return this.workspace.getScriptReference(this);
+        return this.scriptContainer.getScriptReference(this);
     }
 
     public override updateTranslation(propgrateDown?: boolean) {

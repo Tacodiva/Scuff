@@ -26,7 +26,7 @@ export class ScuffrSvgScriptInput extends ScuffrSvgScript<BlockScriptInput> impl
             if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
             script = new BlockScriptInput(ScuffrSvgScript.getBlockInstanceElements(blocks).map(inst => inst.block));
         }
-        super(reference.parent.dom, reference.parent.root, reference.parent.workspace, script);
+        super(reference.parent.dom, reference.parent.root, reference.parent.scriptContainer, script);
         this._reference = reference;
         this._init(blocks);
     }

@@ -5,7 +5,7 @@ export class ScuffEditor {
 
     public readonly root: ScuffEditorPane;
     public readonly dom: HTMLDivElement;
-    private readonly _resizeObserver : ResizeObserver;
+    private readonly _resizeObserver: ResizeObserver;
 
     private _drag: ScuffEditorDragContext | null;
 
@@ -16,8 +16,7 @@ export class ScuffEditor {
         this.root = root({ editor: this, parent: null, target: this.dom.appendChild(document.createElement("div")) });
         this.root.target.classList.add("scuff-pane");
 
-        const bounds = target.getBoundingClientRect();
-        this.root.setDimensions({ x: bounds.width, y: bounds.height });
+        this.root.setBounds(target.getBoundingClientRect());
 
         this._drag = null;
 
@@ -41,8 +40,7 @@ export class ScuffEditor {
     }
 
     private readonly eventResizeObserver = (entries: ResizeObserverEntry[]) => {
-        const bounds = this.root.target.getBoundingClientRect();
-        this.root.setDimensions({ x: bounds.width, y: bounds.height });
+        this.root.setBounds(this.root.target.getBoundingClientRect());
     }
 
     public startDrag(drag: ScuffEditorDragContext, e: MouseEvent) {

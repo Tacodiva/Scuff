@@ -1,13 +1,14 @@
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import type { ScuffrCmd } from "./ScuffrCmd";
 
 export class ScuffrCmdCompound implements ScuffrCmd {
 
     public readonly subCommands: ScuffrCmd[];
-    public readonly workspace: ScuffrWorkspace;
+    public readonly root: ScuffrElementScriptContainer;
 
     public constructor(...subCommands: ScuffrCmd[]) {
-        this.workspace = subCommands[0].workspace;
+        this.root = subCommands[0].root;
         this.subCommands = subCommands;
     }
 

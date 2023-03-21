@@ -8,12 +8,12 @@ import type { BlockScript } from "../block/BlockScript";
 import { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrSvgBlockGhost } from "./ScuffrSvgBlockGhost";
 import { ScuffrAttachmentPointScriptTop } from "./attachment-points/ScuffrAttachmentPointScriptTop";
-import { ScuffrWrapInfo } from "./ScuffrWrappingDescriptor";
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrInteractionDragScript } from "./interactions/ScuffrInteractionDragScript";
 import type { ScuffrReference, ScuffrReferenceLink } from "./ScuffrReference";
 import type { ScuffrReferenceBlock } from "./ScuffrReferenceTypes";
 import { ScuffrCmdScriptSelectScriptBlocks } from "./commands";
+import type { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
 
 export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript> extends ScuffrSvgElementParent implements ScuffrReferenceLink<ScuffrSvgBlock> {
     public children: ScuffrSvgBlock[];
@@ -25,8 +25,8 @@ export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript>
     public readonly attachmentPoints: ScuffrAttachmentPointList;
     public abstract readonly isSubscript: boolean;
 
-    public constructor(container: SVGElement, root: ScuffrSvgScriptRoot | null, workspace: ScuffrWorkspace, script: TScript, translation?: Vec2) {
-        super(container.appendChild(document.createElementNS(SVG_NS, "g")), workspace, translation);
+    public constructor(container: SVGElement, root: ScuffrSvgScriptRoot | null, scriptContainer: ScuffrElementScriptContainer, script: TScript, translation?: Vec2) {
+        super(container.appendChild(document.createElementNS(SVG_NS, "g")), scriptContainer, translation);
         if (root) this._root = root;
         else this._root = this.getRoot();
 

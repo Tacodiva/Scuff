@@ -41,7 +41,7 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
             rootTranslation.x += rootBlock.leftOffset - replacedInput.rightOffset - 40;
             cmd = new ScuffrCmdCompound(
                 new ScuffrCmdScriptSelectBlockInput(replacedInput.getReference(), rootTranslation),
-                new ScuffrCmdScriptSwapSelected(1, cmd.workspace),
+                new ScuffrCmdScriptSwapSelected(1, cmd.root),
                 cmd
             );
         }

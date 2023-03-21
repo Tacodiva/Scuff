@@ -11,6 +11,9 @@ import { ScuffEditorSveltePane } from "./editor/ScuffEditorSveltePane";
 import ScuffEditorDefautComponent from "./editor/ScuffEditorDefautComponent.svelte";
 import { ScuffEditorPaneSplit } from "./editor/ScuffEditorSplitPane";
 import ScuffEditorInfoComponent from "./editor/ScuffEditorInfoComponent.svelte";
+import { ScuffrEditorPane } from "./scuffr/ScuffrEditorPane";
+import { WorkspaceDefinitionComponent } from ".";
+import WorkspaceBackgroundCompnent from "./editor/WorkspaceBackgroundCompnent.svelte";
 
 type Version = [number, number];
 
@@ -112,25 +115,36 @@ export class ScuffCoreImpl implements ScuffCore {
     }
 
     public main(script: BlockScriptRoot): void {
+        document.body.classList.add("scuff-theme-default");
+        if (location.href.includes("light"))
+            document.body.classList.add("scuff-theme-light");
+        if (location.href.includes("contrast"))
+            document.body.classList.add("scuff-theme-contrast-blocks");
+        if (location.href.includes("bold"))
+            document.body.classList.add("scuff-theme-bold");
+        if (location.href.includes("neon"))
+            document.body.classList.add("scuff-theme-neon");
+
         const targetL = new Target();
         targetL.blockScripts.scripts.push(script.clone());
         targetL.blockScripts.transformScale = 1.5;
-
+        targetL.blockScripts.transformPosition = {x: 20, y: 75};
 
         const targetR = new Target();
         targetR.blockScripts.scripts.push(script);
         targetR.blockScripts.transformScale = 1.5;
+        targetR.blockScripts.transformPosition = {x: 20, y: 75};
+
+        new WorkspaceDefinitionComponent({ target: document.body });
 
         new ScuffEditor(document.body,
             ScuffEditorPaneSplit.createHorizontal(
-                ScuffEditorSveltePane.create([App, { scripts: targetL.blockScripts }]),
                 ScuffEditorPaneSplit.createVertical(
-                    ScuffEditorPaneSplit.createHorizontal(
-                        ScuffEditorSveltePane.create([ScuffEditorDefautComponent]),
-                        ScuffEditorSveltePane.create([App, { scripts: targetR.blockScripts }]),
-                    ),
-                    ScuffEditorSveltePane.create([ScuffEditorInfoComponent])
-                )
+                    ScuffEditorSveltePane.create([ScuffEditorInfoComponent]),
+                    ScuffrEditorPane.create(targetL.blockScripts, WorkspaceBackgroundCompnent),
+                    0.3
+                ),
+                ScuffrEditorPane.create(targetR.blockScripts, WorkspaceBackgroundCompnent)
             )
         );
     }

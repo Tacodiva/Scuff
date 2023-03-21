@@ -1,5 +1,6 @@
 import type { l10nString } from "../../l10n";
 import type { Vec2 } from "../../utils/Vec2";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 import type { ScuffrWorkspace } from "../ScuffrWorkspace";
 import { ScuffrInteraction } from "./ScuffrInteraction";
 
@@ -214,8 +215,8 @@ export class ScuffrInteractionContextMenu extends ScuffrInteraction {
 
     public readonly menu: ScuffrContextMenu;
 
-    public constructor(workspace: ScuffrWorkspace, pos: Vec2, items: ScuffrCtxMenuItem[], classes: string[]) {
-        super(workspace);
+    public constructor(root: ScuffrElementScriptContainer, pos: Vec2, items: ScuffrCtxMenuItem[], classes: string[]) {
+        super(root);
         this.menu = new ScuffrContextMenu(pos, items, classes, "corner");
         this.menu.onAction = this._menuOnAction;
     }

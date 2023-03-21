@@ -1,7 +1,7 @@
-import type { ScuffrWorkspace } from "..";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
 export interface ScuffrCmd {
-    readonly workspace: ScuffrWorkspace;
+    readonly root: ScuffrElementScriptContainer;
     do() : void;
     undo() : void;
 }

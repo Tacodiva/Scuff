@@ -16,14 +16,14 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
     private _attachmentPoint: ScuffrAttachmentPoint | null;
 
     public constructor(scriptSelector: ScuffrCmdScriptSelect, startPos: Vec2) {
-        super(scriptSelector.workspace);
+        super(scriptSelector.root);
         this.startPos = startPos;
 
         this.scriptSelector = scriptSelector;
         scriptSelector.do();
-        this.script = this.workspace.getSelectedScript();
+        this.script = this.root.getSelectedScript();
 
-        const startPosWorkspace = this.workspace.toWorkspaceCoords(startPos);
+        const startPosWorkspace = this.root.toWorkspaceCoords(startPos);
         this.offset = {
             x: this.script.translationX - startPosWorkspace.x,
             y: this.script.translationY - startPosWorkspace.y,
@@ -31,11 +31,12 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
         this._attachmentPoint = null;
         this.script.dom.classList.add("scuff-block-dragging");
         // Move the script to the bottom of the container so it renders on top of everything else
-        this.workspace.svgScriptContainer.appendChild(this.script.dom);
+        // TODO Make selected script always on top.
+        // this.root.svgScriptContainer.appendChild(this.script.dom);
     }
 
     public override onMouseMove(event: MouseEvent): void {
-        const scriptCoords = this.workspace.toWorkspaceCoords(event);
+        const scriptCoords = this.root.toWorkspaceCoords(event);
         scriptCoords.x += this.offset.x;
         scriptCoords.y += this.offset.y;
 
@@ -56,7 +57,7 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
                 this._attachmentPoint.highlight(this.script);
         }
 
-        this.workspace.findWorkspaceCorners();
+        this.root.updateScrollPane();
     }
 
     public override onEnd(): void {
@@ -66,17 +67,17 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
 
             const takeCommand = this._attachmentPoint.takeScriptCommand(this.script);
             takeCommand.do();
-            this.workspace.submitCommand(new ScuffrCmdCompound(this.scriptSelector, takeCommand), false);
+            this.root.workspace.submitCommand(new ScuffrCmdCompound(this.scriptSelector, takeCommand), false);
         } else {
             this.scriptSelector.targetPosition = this.script.getAbsoluteTranslation();
-            this.workspace.submitCommand(this.scriptSelector, false);
+            this.root.workspace.submitCommand(this.scriptSelector, false);
         }
     }
 
     private _findAttachmentPoint(): ScuffrAttachmentPoint | null {
         let closestDist = ScuffrInteractionDragScript.ATTACH_RADIUS * ScuffrInteractionDragScript.ATTACH_RADIUS;
         let closest = null;
-        for (const pointList of this.workspace.attachmentPoints) {
+        for (const pointList of this.root.getAttachmentPoints()) {
             if (pointList.root === this.script)
                 continue;
             for (const targetPoint of pointList.list) {
