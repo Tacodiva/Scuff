@@ -7,13 +7,13 @@
     --scuff-block-category-looks-secondary: #855cd6;
     --scuff-block-category-looks-tertiary: #774dcb;
 
-    --scuff-block-category-sounds-primary: #cf63cf;
-    --scuff-block-category-sounds-secondary: #c94fc9;
-    --scuff-block-category-sounds-tertiary: #bd42bd;
+    --scuff-block-category-sound-primary: #cf63cf;
+    --scuff-block-category-sound-secondary: #c94fc9;
+    --scuff-block-category-sound-tertiary: #bd42bd;
 
-    --scuff-block-category-events-primary: #ffbf00;
-    --scuff-block-category-events-secondary: #e6ac00;
-    --scuff-block-category-events-tertiary: #cc9900;
+    --scuff-block-category-event-primary: #ffbf00;
+    --scuff-block-category-event-secondary: #e6ac00;
+    --scuff-block-category-event-tertiary: #cc9900;
 
     --scuff-block-category-control-primary: #ffab19;
     --scuff-block-category-control-secondary: #ec9c13;
@@ -23,9 +23,9 @@
     --scuff-block-category-sensing-secondary: #47a8d1;
     --scuff-block-category-sensing-tertiary: #2e8eb8;
 
-    --scuff-block-category-operators-primary: #59c059;
-    --scuff-block-category-operators-secondary: #46b946;
-    --scuff-block-category-operators-tertiary: #389438;
+    --scuff-block-category-operator-primary: #59c059;
+    --scuff-block-category-operator-secondary: #46b946;
+    --scuff-block-category-operator-tertiary: #389438;
 
     --scuff-block-category-data-primary: #ff8c1a;
     --scuff-block-category-data-secondary: #ff8000;

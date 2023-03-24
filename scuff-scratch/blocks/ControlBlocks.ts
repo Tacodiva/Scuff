@@ -1,4 +1,4 @@
-import { ScratchBlockCategory } from "../block/ScratchBlockCategory";
+import { ScratchCategories } from "../block/ScratchBlockCategory";
 import { ScratchBlockTypeStackable, ScratchStackableBlockShape } from "../block/block-types/ScratchBlockTypeStackable";
 import { BlockPartInputSubscript, l10n } from "scuff";
 import { ScratchInputTypeBoolean } from "../block/input-types/ScratchInputTypeBoolean";
@@ -14,7 +14,7 @@ export class ControlBlockIf extends ScratchBlockTypeStackable {
                     ScratchInputTypeBoolean.create("idk"),
                     BlockPartInputSubscript.create("testI")
                 ],
-                category: ScratchBlockCategory.CONTROL
+                category: ScratchCategories.control
             }));
     }
 }
@@ -27,7 +27,7 @@ export class ControlBlockForever extends ScratchBlockTypeStackable {
                 id: "control_forever",
                 text: l10n.raw("forever %"),
                 inputs: [BlockPartInputSubscript.create("testI")],
-                category: ScratchBlockCategory.CONTROL,
+                category: ScratchCategories.control,
                 shape: ScratchStackableBlockShape.TAIL,
             })
         );

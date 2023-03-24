@@ -7,6 +7,8 @@
 <div class="scuff-block-text">
     <h1>Scuff! {ScuffCoreImpl.version[0]}.{ScuffCoreImpl.version[1]}a</h1>
 
+    <p>Ignore the bugs, refactor in progress...</p>
+
     <p>Try out <a href="https://scuff.emberj.sh/?light+bold+contrast">https://scuff.emberj.sh/?light+bold+contrast</a>
     ...or maybe <a href="https://scuff.emberj.sh/?neon">https://scuff.emberj.sh/?neon</a></p>
 

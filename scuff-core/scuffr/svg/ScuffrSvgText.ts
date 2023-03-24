@@ -1,14 +1,23 @@
+import type { ScuffrElementParent } from "../ScuffrElementParent";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 import { ScuffrSvgElement } from "./ScuffrSvgElement";
 import type { ScuffrSvgElementParent } from "./ScuffrSvgElementParent";
 
 export class ScuffrSvgText extends ScuffrSvgElement {
-    public readonly parent: ScuffrSvgElementParent;
+    public readonly parent: ScuffrElementParent;
 
     public text: string;
     private _textNode: Text | null;
 
-    public constructor(parent: ScuffrSvgElementParent, text: string) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), parent.scriptContainer);
+    public constructor(parent: ScuffrSvgElementParent, text: string);
+    public constructor(parent: ScuffrElementParent, text: string, scriptContainer: ScuffrElementScriptContainer);
+
+    public constructor(parent: ScuffrElementParent, text: string, scriptContainer?: ScuffrElementScriptContainer) {
+        if (!scriptContainer) {
+            if (parent instanceof ScuffrSvgElement) scriptContainer = parent.scriptContainer;
+            else throw new Error("No script container provided to ScuffrSvgText.");
+        }
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "text")), scriptContainer);
         this.parent = parent;
         this.text = text;
         this.dom.setAttribute("dominant-baseline", "middle");

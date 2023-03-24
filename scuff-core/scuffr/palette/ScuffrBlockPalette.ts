@@ -22,5 +22,9 @@ export class ScuffrBlockPalette {
     public addCategory(category: ScuffrBlockPaletteCategory) {
         this._categories.set(category.id, category);
     }
+
+    public getCategories() : Iterable<ScuffrBlockPaletteCategory> {
+        return this._categories.values();
+    }
 }
 

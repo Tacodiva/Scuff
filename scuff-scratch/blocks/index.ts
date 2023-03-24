@@ -27,5 +27,5 @@ export const ScratchBlocks = {
         add: OperatorBlockPlus.create(),
         equals: OperatorBlockEquals.create(),
     },
-};
+} as const;
 

@@ -9,12 +9,12 @@ import type { ScuffrRootReference } from "./ScuffrReference";
 import type { ScuffrSvgBlock } from "./svg/ScuffrSvgBlock";
 import type { ScuffrSvgScriptRoot } from "./svg/ScuffrSvgScriptRoot";
 import type { ScuffrWorkspace } from "./ScuffrWorkspace";
+import type { BlockInstance } from "../block";
 
-export abstract class ScuffrElementScriptContainer<TWorkspace extends ScuffrWorkspace = ScuffrWorkspace> extends ScuffrElement<SVGElement> implements ScuffrElementParent {
+export abstract class ScuffrElementScriptContainer extends ScuffrElement<SVGElement> implements ScuffrElementParent {
     public abstract children: ScuffrSvgScriptRoot[];
-    public readonly parent: TWorkspace;
 
-    public readonly scriptsDom : SVGGElement;
+    public readonly scriptsDom: SVGGElement;
 
     public contentTranslation: Vec2;
     public contentScale: number;
@@ -23,24 +23,23 @@ export abstract class ScuffrElementScriptContainer<TWorkspace extends ScuffrWork
     protected readonly svgScale: SVGTransform;
 
     public readonly scrollPane: ScuffEditorScrollableArea;
-    private readonly _scrollTopLeft: Vec2;
-    private readonly _scrollBottomRight: Vec2;
+    protected readonly _scrollTopLeft: Vec2;
+    protected readonly _scrollBottomRight: Vec2;
 
     private _bounds: Bounds;
     public get bounds() { return this._bounds };
 
-    public constructor(workspace: TWorkspace, dom?: SVGElement) {
+    public constructor(workspace: ScuffrWorkspace, dom?: SVGElement) {
         super(dom ?? workspace.dom.appendChild(document.createElementNS(SVG_NS, "g")), workspace);
-        this.parent = workspace;
 
         this.contentTranslation = { x: 0, y: 0 };
         this.contentScale = 1;
         this._bounds = Bounds.Zero;
 
         this.scriptsDom = this.dom.appendChild(document.createElementNS(SVG_NS, "g"));
-        this.svgScale = this.parent.dom.createSVGTransform();
+        this.svgScale = this.workspace.dom.createSVGTransform();
         this.scriptsDom.transform.baseVal.appendItem(this.svgScale);
-        this.svgTranslation = this.parent.dom.createSVGTransform();
+        this.svgTranslation = this.workspace.dom.createSVGTransform();
         this.scriptsDom.transform.baseVal.appendItem(this.svgTranslation);
 
         this.scrollPane = writable();
@@ -123,10 +122,10 @@ export abstract class ScuffrElementScriptContainer<TWorkspace extends ScuffrWork
                 this._scrollTopLeft.y = scriptTrans.y + script.topOffset;
         }
         const scrollPadding = 2500;
-        this._scrollTopLeft.x -= scrollPadding;
-        this._scrollTopLeft.y -= scrollPadding;
-        this._scrollBottomRight.x += scrollPadding;
-        this._scrollBottomRight.y += scrollPadding;
+        // this._scrollTopLeft.x -= scrollPadding;
+        // this._scrollTopLeft.y -= scrollPadding;
+        // this._scrollBottomRight.x += scrollPadding;
+        // this._scrollBottomRight.y += scrollPadding;
         this.updateContentTransform();
     }
 
@@ -145,6 +144,10 @@ export abstract class ScuffrElementScriptContainer<TWorkspace extends ScuffrWork
         this.children[this.children.length - 1] = newSelect;
 
         return this.getSelectedScript();
+    }
+
+    public renderScript(blocks: BlockInstance[], translation?: Vec2): ScuffrSvgScriptRoot {
+        throw new Error("Operation not supported.");
     }
 
     public createScript(blocks?: ScuffrSvgBlock[], translation?: Vec2): ScuffrSvgScriptRoot {

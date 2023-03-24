@@ -1,11 +1,10 @@
-import { BlockScriptRoot } from "../../block/BlockScriptRoot";
 import { ScuffrSvgScript } from "./ScuffrSvgScript";
+import { ScuffrInteractionDragScript } from "../interactions/ScuffrInteractionDragScript";
+import type { BlockScriptRoot } from "../../block/BlockScriptRoot";
 import { ScuffrCmdScriptSelectRoot } from "../commands/ScuffrCmdScriptSelectRoot";
-
 import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrRootReference } from "../ScuffrReference";
-import { ScuffrInteractionDragScript } from "../interactions/ScuffrInteractionDragScript";
 import type { ScuffrReferenceBlock } from "../ScuffrReferenceTypes";
 import { ScuffrSvgBlockInstance } from "./ScuffrSvgBlockInstance";
 import type { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
@@ -15,13 +14,8 @@ export class ScuffrSvgScriptRoot extends ScuffrSvgScript<BlockScriptRoot> {
     public readonly parent: ScuffrElementScriptContainer;
     public get isSubscript(): boolean { return false; }
 
-    public constructor(scriptContainer: ScuffrElementScriptContainer, script: BlockScriptRoot | null, blocks?: ScuffrSvgBlock[], translation?: Vec2) {
-        if (!script) {
-            if (!blocks) throw new Error("Must provide either script or blocks but both where undefined.");
-            script = new BlockScriptRoot(ScuffrSvgScript.getBlockInstanceElements(blocks).map(inst => inst.block));
-            if (translation) script.translation = translation;
-        }
-        super(scriptContainer.scriptsDom, null, scriptContainer, script, script ? script.translation : translation);
+    public constructor(scriptContainer: ScuffrElementScriptContainer, script: BlockScriptRoot, blocks?: ScuffrSvgBlock[]) {
+        super(scriptContainer.scriptsDom, null, scriptContainer, script, script.translation);
         this.parent = scriptContainer;
         this._init(blocks);
     }

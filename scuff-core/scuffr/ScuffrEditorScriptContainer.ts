@@ -1,4 +1,5 @@
-import { BlockScriptRoot } from "../block";
+import { ScuffrSvgScriptRoot } from "./svg/ScuffrSvgScriptRoot";
+import { BlockInstance, BlockScriptRoot } from "../block";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
@@ -6,10 +7,11 @@ import type { ScuffrEditorWorkspace } from "./ScuffrEditorWorkspace";
 import { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
 import type { ScuffrSvgBlock } from "./svg/ScuffrSvgBlock";
 import type { ScuffrSvgBlockInstance } from "./svg/ScuffrSvgBlockInstance";
-import { ScuffrSvgScriptRoot } from "./svg/ScuffrSvgScriptRoot";
+import EditorScrollbarSvg from "../editor/scrollbar/EditorScrollbarSvg.svelte";
 
-export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer<ScuffrEditorWorkspace> {
+export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
     public children: ScuffrSvgScriptRoot[];
+    public parent: ScuffrEditorWorkspace;
 
     public readonly backgroundPattern: SVGPatternElement;
     public readonly backgroundRect: SVGRectElement;
@@ -25,7 +27,7 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer<Sc
         const background = dom.appendChild(document.createElementNS(SVG_NS, "rect"));
 
         super(workspace, dom);
-
+        this.parent = workspace;
         this.children = [];
         this._attachmentPoints = new Set();
 
@@ -52,13 +54,24 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer<Sc
             this.children.push(rendered);
         }
         this.updateScrollPane();
+
+        // new EditorScrollbarSvg({ target: dom, props: { pane: this.scrollPane } })
+    }
+
+    public override renderScript(blocks: BlockInstance[], translation?: Vec2 | undefined): ScuffrSvgScriptRoot {
+        const script = new BlockScriptRoot(blocks, translation);
+        this.parent.pane.scripts.scripts.push(script); 
+        const rendered = new ScuffrSvgScriptRoot(this, script);
+        rendered.updateAll();
+        this.children.push(rendered);
+        return rendered;
     }
 
     public override createScript(blocks?: ScuffrSvgBlock[], translation?: Vec2): ScuffrSvgScriptRoot {
         const scriptBlocks = blocks?.map(block => (<ScuffrSvgBlockInstance>block).block);
         const script = new BlockScriptRoot(scriptBlocks, translation);
         this.parent.pane.scripts.scripts.push(script);
-        const rendered = new ScuffrSvgScriptRoot(this, script, blocks, translation);
+        const rendered = new ScuffrSvgScriptRoot(this, script, blocks);
         this.children.push(rendered);
         return rendered;
     }

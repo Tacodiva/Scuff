@@ -33,7 +33,7 @@ export abstract class ScuffrSvgShape<TContent extends ScuffrSvgElement = ScuffrS
         for (let lineIdx = 0; lineIdx < this.renderedLines.length; lineIdx++) {
             const line = this.renderedLines[lineIdx];
 
-            let x = 0;
+            let x = this.content.topLeftOffset.x + this.shape.shape.contentOffset.x;
             let lineHeight = 0;
             for (let partIdx = 0; partIdx < line.elements.length; partIdx++) {
                 const part = line.elements[partIdx];
@@ -57,7 +57,7 @@ export abstract class ScuffrSvgShape<TContent extends ScuffrSvgElement = ScuffrS
         this.content.dimensions = { x: width, y: height };
         this.content.topLeftOffset = { x: 0, y: -this.renderedLines[0].dimensions.y / 2 };
 
-        let y = this.content.topLeftOffset.y;
+        let y = this.content.topLeftOffset.y + this.shape.shape.contentOffset.y;
         for (let lineIdx = 0; lineIdx < this.renderedLines.length; lineIdx++) {
             const line = this.renderedLines[lineIdx];
             y += line.dimensions.y / 2;

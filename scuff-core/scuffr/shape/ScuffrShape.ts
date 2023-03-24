@@ -5,8 +5,12 @@ import type { ScuffrShapeContentLine } from "./ScuffrShapeContentLine";
 export abstract class ScuffrShape {
     public readonly minSize: Vec2;
 
+    protected _contentOffset: Vec2;
+    public get contentOffset() { return this._contentOffset; }
+
     public constructor(minSize: Vec2) {
         this.minSize = minSize;
+        this._contentOffset = { x: 0, y: 0 };
     }
 
     public abstract getPadding(contentSize: Vec2): Vec2;

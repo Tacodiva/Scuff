@@ -2,6 +2,7 @@ import type { BlockType } from "../../block/BlockType";
 import type { l10nString } from "../../l10n";
 import type { ScuffrBlockPaletteItem } from "./ScuffrBlockPaletteItem";
 import { ScuffrBlockPaletteItemBlock } from "./ScuffrBlockPaletteItemBlock";
+import { ScuffrBlockPaletteItemText } from "./ScuffrBlockPaletteItemText";
 
 export class ScuffrBlockPaletteCategory {
     public readonly id: string;
@@ -13,6 +14,7 @@ export class ScuffrBlockPaletteCategory {
         this.id = id;
         this.name = name;
         this._items = [];
+        // this._items.push(new ScuffrBlockPaletteItemText(name));
     }
 
     public addBlock(...blocks: BlockType[]): this {
@@ -25,5 +27,9 @@ export class ScuffrBlockPaletteCategory {
         for (const item of items)
             this._items.push(item);
         return this;
+    }
+
+    public getItems() : Iterable<ScuffrBlockPaletteItem> {
+        return this._items;
     }
 }

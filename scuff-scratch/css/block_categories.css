@@ -10,16 +10,16 @@
     --scuff-block-category-tertiary: var(--scuff-block-category-looks-tertiary);
 }
 
-.scuff-block-category-sounds {
-    --scuff-block-category-primary: var(--scuff-block-category-sounds-primary);
-    --scuff-block-category-secondary: var(--scuff-block-category-sounds-secondary);
-    --scuff-block-category-tertiary: var(--scuff-block-category-sounds-tertiary);
+.scuff-block-category-sound {
+    --scuff-block-category-primary: var(--scuff-block-category-sound-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-sound-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-sound-tertiary);
 }
 
-.scuff-block-category-events {
-    --scuff-block-category-primary: var(--scuff-block-category-events-primary);
-    --scuff-block-category-secondary: var(--scuff-block-category-events-secondary);
-    --scuff-block-category-tertiary: var(--scuff-block-category-events-tertiary);
+.scuff-block-category-event {
+    --scuff-block-category-primary: var(--scuff-block-category-event-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-event-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-event-tertiary);
 }
 
 .scuff-block-category-control {
@@ -34,10 +34,10 @@
     --scuff-block-category-tertiary: var(--scuff-block-category-sensing-tertiary);
 }
 
-.scuff-block-category-operators {
-    --scuff-block-category-primary: var(--scuff-block-category-operators-primary);
-    --scuff-block-category-secondary: var(--scuff-block-category-operators-secondary);
-    --scuff-block-category-tertiary: var(--scuff-block-category-operators-tertiary);
+.scuff-block-category-operator {
+    --scuff-block-category-primary: var(--scuff-block-category-operator-primary);
+    --scuff-block-category-secondary: var(--scuff-block-category-operator-secondary);
+    --scuff-block-category-tertiary: var(--scuff-block-category-operator-tertiary);
 }
 
 

@@ -1,7 +1,7 @@
 import { ScratchBlockTypeRound } from "../block/block-types/ScratchBlockTypeRound";
 import { ScratchBlockTypeTriangle } from "../block/block-types/ScratchBlockTypeTriangle";
 import { ScratchInputTypeString } from "../block/input-types/ScratchInputTypeString";
-import { ScratchBlockCategory } from "../block/ScratchBlockCategory";
+import { ScratchCategories } from "../block/ScratchBlockCategory";
 import { l10n } from "scuff";
 import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNumber";
 
@@ -15,7 +15,7 @@ export class OperatorBlockPlus extends ScratchBlockTypeRound {
                     ScratchInputTypeNumber.create("test", 5),
                     ScratchInputTypeNumber.create("testII", 10),
                 ],
-                category: ScratchBlockCategory.OPERATORS,
+                category: ScratchCategories.operator,
             })
         );
     }
@@ -31,7 +31,7 @@ export class OperatorBlockEquals extends ScratchBlockTypeTriangle {
                     ScratchInputTypeString.create("test", ""),
                     ScratchInputTypeString.create("testII", "50"),
                 ],
-                category: ScratchBlockCategory.OPERATORS,
+                category: ScratchCategories.operator,
             })
         );
     }

@@ -103,49 +103,29 @@
 </script>
 
 {#if visible.x}
-    <svg class="scuff-scrollbar-vertical">
-        <rect
-            class="scuff-scrollbar-handle"
-            rx="3"
-            ry="3"
-            height="6"
-            width={handleSize.x * 100 + "%"}
-            x={handlePos.x * 100 + "%"}
-            on:mousedown={grabX}
-            bind:this={horizontalBar}
-        />
-    </svg>
+    <rect
+        class="scuff-scrollbar-handle"
+        rx="3"
+        ry="3"
+        height="6"
+        width={handleSize.x * 100 + "%"}
+        x={handlePos.x * 100 + "%"}
+        y={$pane.clientSize.y - 8}
+        on:mousedown={grabX}
+        bind:this={horizontalBar}
+    />
 {/if}
 
 {#if visible.y}
-    <svg class="scuff-scrollbar-horizontal">
-        <rect
-            class="scuff-scrollbar-handle"
-            rx="3"
-            ry="3"
-            width="6"
-            height={handleSize.y * 100 + "%"}
-            y={handlePos.y * 100 + "%"}
-            on:mousedown={grabY}
-            bind:this={vertialBar}
-        />
-    </svg>
+    <rect
+        class="scuff-scrollbar-handle"
+        rx="3"
+        ry="3"
+        width="6"
+        height={handleSize.y * 100 + "%"}
+        x={$pane.clientSize.x - 8}
+        y={handlePos.y * 100 + "%"}
+        on:mousedown={grabY}
+        bind:this={vertialBar}
+    />
 {/if}
-
-<style>
-    .scuff-scrollbar-horizontal {
-        position: absolute;
-        width: 8px;
-        height: calc(100% - 8px);
-        top: 0;
-        right: 0;
-    }
-
-    .scuff-scrollbar-vertical {
-        position: absolute;
-        height: 8px;
-        width: calc(100% - 8px);
-        bottom: 0;
-        left: 0;
-    }
-</style>

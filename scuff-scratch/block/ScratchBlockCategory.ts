@@ -1,17 +1,21 @@
+import { BlockType, l10n, ScuffrBlockPaletteCategory } from "scuff";
+import { ScratchBlocks } from "../blocks";
 
-export class ScratchBlockCategory {
-    public static readonly MOTION = new ScratchBlockCategory("motion");
-    public static readonly LOOKS = new ScratchBlockCategory("looks");
-    public static readonly SOUNDS = new ScratchBlockCategory("sounds");
-    public static readonly EVENTS = new ScratchBlockCategory("events");
-    public static readonly CONTROL = new ScratchBlockCategory("control");
-    public static readonly SENSING = new ScratchBlockCategory("sensing");
-    public static readonly OPERATORS = new ScratchBlockCategory("operators");
-    public static readonly DATA = new ScratchBlockCategory("data");
+export class ScratchBlockCategory<K extends keyof typeof ScratchBlocks = keyof typeof ScratchBlocks> {
+    public readonly cssClass: string;
+    public readonly id: K;
 
-    public readonly cssClass : string;
-
-    constructor(id: string) {
+    constructor(id: K) {
+        this.id = id;
         this.cssClass = `scuff-block-category-${id}`;
     }
+}
+
+export const ScratchCategories: { [K in keyof typeof ScratchBlocks]: ScratchBlockCategory } = {
+    motion: new ScratchBlockCategory("motion"),
+    looks: new ScratchBlockCategory("looks"),
+    event: new ScratchBlockCategory("event"),
+    control: new ScratchBlockCategory("control"),
+    sensing: new ScratchBlockCategory("sensing"),
+    operator: new ScratchBlockCategory("operator")
 }

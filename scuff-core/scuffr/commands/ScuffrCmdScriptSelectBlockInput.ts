@@ -2,7 +2,6 @@ import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrSvgBlock } from "../svg/ScuffrSvgBlock";
 import { ScuffrSvgBlockInstance } from "../svg/ScuffrSvgBlockInstance";
 import type { ScuffrSvgInput } from "../svg/ScuffrSvgInput";
-import { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
 import type { ScuffrLinkReference } from "../ScuffrReference";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import type { ScuffrReferenceBlock } from "../ScuffrReferenceTypes";

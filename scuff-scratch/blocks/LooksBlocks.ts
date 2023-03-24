@@ -1,6 +1,6 @@
 import { ScratchBlockTypeStackable } from "../block/block-types/ScratchBlockTypeStackable";
 import { ScratchInputTypeString } from "../block/input-types/ScratchInputTypeString";
-import { ScratchBlockCategory } from "../block/ScratchBlockCategory";
+import { ScratchCategories } from "../block/ScratchBlockCategory";
 import { l10n } from "scuff";
 import { ScratchInputTypeDropdownSquare } from "../block/input-types/ScratchInputTypeDropdownSquare";
 import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNumber";
@@ -14,7 +14,7 @@ export class LooksBlockSay extends ScratchBlockTypeStackable {
                 inputs: [
                     ScratchInputTypeString.create("test", "Hello, World!")
                 ],
-                category: ScratchBlockCategory.LOOKS,
+                category: ScratchCategories.looks,
             })
         );
     }
@@ -38,7 +38,7 @@ export class LooksBlockSetEffectTo extends ScratchBlockTypeStackable {
                     ]),
                     ScratchInputTypeNumber.create("test", 0),
                 ],
-                category: ScratchBlockCategory.LOOKS,
+                category: ScratchCategories.looks,
             })
         );
     }

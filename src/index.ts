@@ -65,7 +65,12 @@ import("scuff").then(async module => {
         // top
     ]);
 
+    // const palette = new module.ScuffrBlockPalette();
+    // const category = palette.createCategory("test", module.l10n.raw("Hi"));
+    // category.addBlock(ScratchBlocks.motion.move_steps);
+
+    // scratch.ScratchPalette.
 
     document.getElementById("scuff-loading")?.remove();
-    core.main(script);
+    core.main(script, scratch.ScratchPalette);
 });

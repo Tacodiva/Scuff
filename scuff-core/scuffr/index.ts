@@ -24,3 +24,4 @@ export * from './ScuffrReference';
 
 export * from './shape';
 export * from './commands';
+export * from './palette';

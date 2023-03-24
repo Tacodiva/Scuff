@@ -91,21 +91,21 @@ export abstract class ScuffrWorkspace extends ScuffrElement<SVGSVGElement> imple
     }
 
     public addListeners() {
-        this.dom.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
+        window.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
         this.dom.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
         window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
         window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
         this.dom.addEventListener("wheel", this.eventWheelListener, { passive: false });
-        this.dom.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
+        window.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
     }
 
     public removeListeners() {
-        this.dom.removeEventListener("keydown", this.eventKeyDownListener);
+        window.removeEventListener("keydown", this.eventKeyDownListener);
         this.dom.removeEventListener("mousedown", this.eventMouseDownListener);
         window.removeEventListener("mouseup", this.eventMouseUpListener);
         window.removeEventListener("mousemove", this.eventMouseMoveListener);
         this.dom.removeEventListener("wheel", this.eventWheelListener);
-        this.dom.removeEventListener("contextmenu", this.eventContextMenuListener);
+        window.removeEventListener("contextmenu", this.eventContextMenuListener);
     }
 
     public endInteraction() {

@@ -247,3 +247,8 @@ input.scuff-input {
 .scuff-context-menu-item-disabled:hover {
     background-color: transparent;
 }
+
+.scuff-palette-background {
+    fill: var(--scuff-workspace-bg-main);
+    fill-opacity: 0.8;
+}

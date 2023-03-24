@@ -2,7 +2,6 @@
 import type { ScuffExtension } from "./api/ScuffExtension";
 import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
 import Target from "./Target";
-import App from './editor/EditorComponent.svelte';
 import type { BlockScriptRoot } from "./block/BlockScriptRoot";
 import type { ScuffrWorkspace } from "./scuffr";
 import type { SvelteComponent } from "svelte";
@@ -12,8 +11,9 @@ import ScuffEditorDefautComponent from "./editor/ScuffEditorDefautComponent.svel
 import { ScuffEditorPaneSplit } from "./editor/ScuffEditorSplitPane";
 import ScuffEditorInfoComponent from "./editor/ScuffEditorInfoComponent.svelte";
 import { ScuffrEditorPane } from "./scuffr/ScuffrEditorPane";
-import { WorkspaceDefinitionComponent } from ".";
 import WorkspaceBackgroundCompnent from "./editor/WorkspaceBackgroundCompnent.svelte";
+import WorkspaceDefinitionComponent from './editor/WorkspaceDefinitionComponent.svelte'
+import type { ScuffrBlockPalette } from "./scuffr/palette/ScuffrBlockPalette";
 
 type Version = [number, number];
 
@@ -42,12 +42,12 @@ export interface ScuffCore {
      */
     getExtensionAsync(id: string): Promise<ScuffExtension>;
 
-    main(script: BlockScriptRoot): void;
+    main(script: BlockScriptRoot, palette: ScuffrBlockPalette): void;
 }
 
 export class ScuffCoreImpl implements ScuffCore {
 
-    public static readonly version: Version = [0, 20];
+    public static readonly version: Version = [0, 21];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;
@@ -114,7 +114,7 @@ export class ScuffCoreImpl implements ScuffCore {
         });
     }
 
-    public main(script: BlockScriptRoot): void {
+    public main(script: BlockScriptRoot, palette: ScuffrBlockPalette): void {
         document.body.classList.add("scuff-theme-default");
         if (location.href.includes("light"))
             document.body.classList.add("scuff-theme-light");
@@ -128,12 +128,12 @@ export class ScuffCoreImpl implements ScuffCore {
         const targetL = new Target();
         targetL.blockScripts.scripts.push(script.clone());
         targetL.blockScripts.transformScale = 1.5;
-        targetL.blockScripts.transformPosition = {x: 20, y: 75};
+        targetL.blockScripts.transformPosition = {x: 200, y: 75};
 
         const targetR = new Target();
         targetR.blockScripts.scripts.push(script);
         targetR.blockScripts.transformScale = 1.5;
-        targetR.blockScripts.transformPosition = {x: 20, y: 75};
+        targetR.blockScripts.transformPosition = {x: 200, y: 75};
 
         new WorkspaceDefinitionComponent({ target: document.body });
 
@@ -141,10 +141,10 @@ export class ScuffCoreImpl implements ScuffCore {
             ScuffEditorPaneSplit.createHorizontal(
                 ScuffEditorPaneSplit.createVertical(
                     ScuffEditorSveltePane.create([ScuffEditorInfoComponent]),
-                    ScuffrEditorPane.create(targetL.blockScripts, WorkspaceBackgroundCompnent),
+                    ScuffrEditorPane.create(targetL.blockScripts, WorkspaceBackgroundCompnent, palette),
                     0.3
                 ),
-                ScuffrEditorPane.create(targetR.blockScripts, WorkspaceBackgroundCompnent)
+                ScuffrEditorPane.create(targetR.blockScripts, WorkspaceBackgroundCompnent, palette)
             )
         );
     }
