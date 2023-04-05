@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { ScuffEditorScrollableArea } from "../editor/scrollbar/ScuffEditorScrollableArea";
+import type { ScuffEditorScrollableArea, ScuffEditorScrollableAreaData } from "../editor/scrollbar/ScuffEditorScrollableArea";
 import { Bounds } from "../utils/Bounds";
 import type { Vec2 } from "../utils/Vec2";
 import type { ScuffrAttachmentPointList } from "./attachment-points/ScuffrAttachmentPointList";
@@ -23,8 +23,9 @@ export abstract class ScuffrElementScriptContainer extends ScuffrElement<SVGElem
     protected readonly svgScale: SVGTransform;
 
     public readonly scrollPane: ScuffEditorScrollableArea;
-    protected readonly _scrollTopLeft: Vec2;
-    protected readonly _scrollBottomRight: Vec2;
+    protected _scrollTopLeft: Vec2;
+    protected _scrollBottomRight: Vec2;
+    protected _scrollEnforceBounds: boolean;
 
     private _bounds: Bounds;
     public get bounds() { return this._bounds };
@@ -45,13 +46,14 @@ export abstract class ScuffrElementScriptContainer extends ScuffrElement<SVGElem
         this.scrollPane = writable();
         this.scrollPane.subscribe(pane => {
             if (pane) {
-                this.contentTranslation.x = -pane.scroll.x;
-                this.contentTranslation.y = -pane.scroll.y;
+                this.contentTranslation.x = -pane.viewportTopLeft.x;
+                this.contentTranslation.y = -pane.viewportTopLeft.y;
                 this.updateContentTransformDOM();
             }
         });
         this._scrollTopLeft = { x: 0, y: 0 };
         this._scrollBottomRight = { x: 0, y: 0 };
+        this._scrollEnforceBounds = false;
     }
 
     public getScriptReference(script: ScuffrSvgScriptRoot): ScuffrRootReference {
@@ -68,19 +70,27 @@ export abstract class ScuffrElementScriptContainer extends ScuffrElement<SVGElem
     }
 
     public updateContentTransform() {
-        this.scrollPane.set({
+        this._setScrollPane({
             contentTopLeft: this._scrollTopLeft,
             contentBottomRight: this._scrollBottomRight,
-            clientSize: { x: this._bounds.width, y: this._bounds.height },
-            viewportSize: {
-                x: this._bounds.width / this.contentScale,
-                y: this._bounds.height / this.contentScale
-            },
-            scroll: {
+            viewportTopLeft: {
                 x: -this.contentTranslation.x,
                 y: -this.contentTranslation.y
-            }
+            },
+            viewportBottomRight: {
+                x: this._bounds.width / this.contentScale - this.contentTranslation.x,
+                y: this._bounds.height / this.contentScale - this.contentTranslation.y
+            },
+            domSize: {
+                x: this._bounds.width,
+                y: this._bounds.height
+            },
+            enforceBounds: this._scrollEnforceBounds
         });
+    }
+
+    protected _setScrollPane(scroll: ScuffEditorScrollableAreaData) {
+        this.scrollPane.set(scroll);
     }
 
     public toWorkspaceCoords(pos: Vec2): Vec2 {
@@ -103,30 +113,15 @@ export abstract class ScuffrElementScriptContainer extends ScuffrElement<SVGElem
     }
 
     public updateScrollPane() {
-        this._scrollTopLeft.x = 0;
-        this._scrollTopLeft.y = 0;
-        this._scrollBottomRight.x = 0;
-        this._scrollBottomRight.y = 0;
-        for (const script of this.children) {
-            const scriptTrans = script.getAbsoluteTranslation();
-            if (scriptTrans.x > this._scrollBottomRight.x)
-                this._scrollBottomRight.x = scriptTrans.x;
+        const bounds = this._getContentBounds();
+        this._scrollTopLeft = this.toWorkspaceCoords({ x: bounds.x, y: bounds.y });
+        this._scrollBottomRight = this.toWorkspaceCoords({ x: bounds.x + bounds.width, y: bounds.y + bounds.height });
 
-            if (scriptTrans.y + script.bottomOffset > this._scrollBottomRight.y)
-                this._scrollBottomRight.y = scriptTrans.y + script.bottomOffset;
-
-            if (scriptTrans.x < this._scrollTopLeft.x)
-                this._scrollTopLeft.x = scriptTrans.x;
-
-            if (scriptTrans.y + script.topOffset < this._scrollTopLeft.y)
-                this._scrollTopLeft.y = scriptTrans.y + script.topOffset;
-        }
-        const scrollPadding = 2500;
-        // this._scrollTopLeft.x -= scrollPadding;
-        // this._scrollTopLeft.y -= scrollPadding;
-        // this._scrollBottomRight.x += scrollPadding;
-        // this._scrollBottomRight.y += scrollPadding;
         this.updateContentTransform();
+    }
+
+    protected _getContentBounds(): Bounds {
+        return this.scriptsDom.getBoundingClientRect();
     }
 
     public getSelectedScript(): ScuffrSvgScriptRoot {

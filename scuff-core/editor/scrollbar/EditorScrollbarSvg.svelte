@@ -3,33 +3,60 @@
 
     export let pane: ScuffEditorScrollableArea;
 
+    pane.subscribe((paneVal) => {
+        if (paneVal.enforceBounds) {
+            const viewportSize = {
+                x: paneVal.viewportBottomRight.x - paneVal.viewportTopLeft.x,
+                y: paneVal.viewportBottomRight.y - paneVal.viewportTopLeft.y,
+            };
+
+            function checkLowerBound(axis: "x" | "y") {
+                const lower = paneVal.contentTopLeft[axis];
+                if (lower > paneVal.viewportTopLeft[axis]) {
+                    const upper = lower + viewportSize[axis];
+                    paneVal.viewportTopLeft[axis] = lower;
+                    paneVal.viewportBottomRight[axis] = upper;
+                    return true;
+                }
+                return false;
+            }
+
+            function checkUpperBound(axis: "x" | "y") {
+                const upper = paneVal.contentBottomRight[axis];
+                if (upper < paneVal.viewportBottomRight[axis]) {
+                    const lower = upper - viewportSize[axis];
+                    if (lower >= paneVal.contentTopLeft[axis]) {
+                        paneVal.viewportTopLeft[axis] = lower;
+                        paneVal.viewportBottomRight[axis] = upper;
+                        return true;
+                    } else if (paneVal.viewportTopLeft[axis] !== paneVal.contentTopLeft[axis]) {
+                        paneVal.viewportTopLeft[axis] = paneVal.contentTopLeft[axis];
+                        paneVal.viewportBottomRight[axis] = paneVal.contentTopLeft[axis] + viewportSize[axis];
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            let update = false;
+
+            update ||= checkLowerBound("x");
+            update ||= checkLowerBound("y");
+            update ||= checkUpperBound("x");
+            update ||= checkUpperBound("y");
+
+            if (update) pane.set(paneVal);
+        }
+    });
+
     $: topLeft = {
-        x: Math.min(
-            $pane.contentTopLeft.x,
-            $pane.scroll.x - $pane.clientSize.x / 2
-        ),
-        y: Math.min(
-            $pane.contentTopLeft.y,
-            $pane.scroll.y - $pane.clientSize.y / 2
-        ),
+        x: Math.min($pane.contentTopLeft.x, $pane.viewportTopLeft.x),
+        y: Math.min($pane.contentTopLeft.y, $pane.viewportTopLeft.y),
     };
 
     $: bottomRight = {
-        x: Math.max($pane.contentBottomRight.x, $pane.scroll.x),
-        y: Math.max($pane.contentBottomRight.y, $pane.scroll.y),
-    };
-
-    function bound(scroll: number, axis: "x" | "y") {
-        const offset = $pane.clientSize[axis] / 2;
-        return Math.min(
-            Math.max(scroll, topLeft[axis] + offset),
-            bottomRight[axis] - $pane.viewportSize[axis] + offset
-        );
-    }
-
-    $: scroll = {
-        x: bound($pane.scroll.x, "x"),
-        y: bound($pane.scroll.y, "y"),
+        x: Math.max($pane.contentBottomRight.x, $pane.viewportBottomRight.x),
+        y: Math.max($pane.contentBottomRight.y, $pane.viewportBottomRight.y),
     };
 
     $: contentDimentions = {
@@ -37,44 +64,46 @@
         y: bottomRight.y - topLeft.y,
     };
 
-    $: handleSize = {
-        x: $pane.viewportSize.x / contentDimentions.x,
-        y: $pane.viewportSize.y / contentDimentions.y,
+    $: viewportSize = {
+        x: $pane.viewportBottomRight.x - $pane.viewportTopLeft.x,
+        y: $pane.viewportBottomRight.y - $pane.viewportTopLeft.y,
     };
 
-    $: handlePos = {
-        x:
-            (scroll.x - $pane.clientSize.x / 2 - topLeft.x) /
-            contentDimentions.x,
-        y:
-            (scroll.y - $pane.clientSize.y / 2 - topLeft.y) /
-            contentDimentions.y,
+    $: handleStart = {
+        x: (($pane.viewportTopLeft.x - topLeft.x) / contentDimentions.x) * $pane.domSize.x,
+        y: (($pane.viewportTopLeft.y - topLeft.y) / contentDimentions.y) * $pane.domSize.y,
+    };
+
+    $: handleEnd = {
+        x: (($pane.viewportBottomRight.x - topLeft.x) / contentDimentions.x) * $pane.domSize.x,
+        y: (($pane.viewportBottomRight.y - topLeft.y) / contentDimentions.y) * $pane.domSize.y,
+    };
+
+    $: visible = {
+        x: handleStart.x != 0 || handleEnd.x < $pane.domSize.x,
+        y: handleStart.y != 0 || handleEnd.y < $pane.domSize.y,
+    };
+
+    $: handleSize = {
+        x: handleEnd.x - handleStart.x,
+        y: handleEnd.y - handleStart.y,
     };
 
     let horizontalBar: SVGRectElement;
     let vertialBar: SVGRectElement;
 
-    $: visible = {
-        x: handleSize.x < 1,
-        y: handleSize.y < 1,
-    };
-
     function grab(e: MouseEvent, axis: "x" | "y", bar: SVGRectElement) {
         const initalMousePos = e[axis];
-        let initalScroll = scroll[axis];
+        const initalPosition = $pane.viewportTopLeft[axis];
+        const scale = contentDimentions[axis] / $pane.domSize[axis];
 
         bar.classList.add("scuff-scrollbar-handle-active");
 
         function mouseMove(e: MouseEvent) {
-            let delta = e[axis] - initalMousePos;
-            initalScroll = bound(initalScroll, axis);
-
             pane.update((info) => {
-                info.scroll[axis] = bound(
-                    (delta / $pane.clientSize[axis]) * contentDimentions[axis] +
-                        initalScroll,
-                    axis
-                );
+                const delta = (e[axis] - initalMousePos) * scale;
+                info.viewportTopLeft[axis] = initalPosition + delta;
+                info.viewportBottomRight[axis] = info.viewportTopLeft[axis] + viewportSize[axis];
                 return info;
             });
         }
@@ -103,29 +132,9 @@
 </script>
 
 {#if visible.x}
-    <rect
-        class="scuff-scrollbar-handle"
-        rx="3"
-        ry="3"
-        height="6"
-        width={handleSize.x * 100 + "%"}
-        x={handlePos.x * 100 + "%"}
-        y={$pane.clientSize.y - 8}
-        on:mousedown={grabX}
-        bind:this={horizontalBar}
-    />
+    <rect class="scuff-scrollbar-handle" rx="3" ry="3" height="6" width={handleSize.x} x={handleStart.x} y={$pane.domSize.y - 8} on:mousedown={grabX} bind:this={horizontalBar} />
 {/if}
 
 {#if visible.y}
-    <rect
-        class="scuff-scrollbar-handle"
-        rx="3"
-        ry="3"
-        width="6"
-        height={handleSize.y * 100 + "%"}
-        x={$pane.clientSize.x - 8}
-        y={handlePos.y * 100 + "%"}
-        on:mousedown={grabY}
-        bind:this={vertialBar}
-    />
+    <rect class="scuff-scrollbar-handle" rx="3" ry="3" width="6" height={handleSize.y} x={$pane.domSize.x - 8} y={handleStart.y} on:mousedown={grabY} bind:this={vertialBar} />
 {/if}

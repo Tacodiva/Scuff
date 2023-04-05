@@ -13,6 +13,6 @@ export class ScuffrBlockPaletteItemBlock implements ScuffrBlockPaletteItem {
     }
 
     public render(editor: ScuffrEditorPalette, translation: Vec2): ScuffrSvgElement {
-        return editor.scriptContainer.createPaletteBlock(this.blockType, translation);
+        return editor.appendPaletteBlock(this.blockType, translation);
     }
 }

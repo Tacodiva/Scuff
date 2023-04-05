@@ -21,7 +21,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
     public readonly htmlInput: HTMLInputElement;
 
     public constructor(dropdown: ScuffrSvgInputDropdown) {
-        super(dropdown.scriptContainer);
+        super(dropdown.parent.scriptContainer);
         this.scuffrInput = dropdown;
 
         this.svgMenu = document.body.appendChild(document.createElementNS(SVG_NS, "svg"));

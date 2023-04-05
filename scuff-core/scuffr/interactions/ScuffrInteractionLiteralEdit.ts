@@ -12,7 +12,7 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
     public inputValid: boolean;
 
     public constructor(input: ScuffrSvgInputLiteral) {
-        super(input.scriptContainer);
+        super(input.parent.scriptContainer);
         this.scuffrInput = input;
         this.initalValue = input.getValue();
         this.inputValid = true;

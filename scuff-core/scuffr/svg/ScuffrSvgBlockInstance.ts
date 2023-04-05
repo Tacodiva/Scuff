@@ -93,7 +93,7 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgBlockPartBase<ScuffrSvgBloc
     }
 
     public override onRightClick(event: MouseEvent): boolean {
-        this.workspace.startInteraction(new ScuffrInteractionContextMenu(this.scriptContainer, event, [
+        this.workspace.startInteraction(new ScuffrInteractionContextMenu(this.parent.scriptContainer, event, [
             {
                 type: "action",
                 text: l10n.raw("Duplicate"),

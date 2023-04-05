@@ -1,10 +1,9 @@
+import type { ScuffrWorkspace } from "..";
 import type { Vec2 } from "../../utils/Vec2";
 import { ScuffrElement } from "../ScuffrElement";
 import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
 export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement> {
-
-    public readonly scriptContainer : ScuffrElementScriptContainer;
 
     private readonly _domTranslation: SVGTransform;
     public dimensions: Vec2;
@@ -18,9 +17,8 @@ export abstract class ScuffrSvgElement extends ScuffrElement<SVGGraphicsElement>
     private _lastTranslationUpdate: Vec2;
     private _absoluteTranslation: Vec2 | null;
 
-    public constructor(dom: SVGGraphicsElement, scriptContainer: ScuffrElementScriptContainer, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
-        super(dom, scriptContainer.workspace);
-        this.scriptContainer = scriptContainer;
+    public constructor(dom: SVGGraphicsElement, workspace: ScuffrWorkspace, translation: Vec2 = { x: 0, y: 0 }, dimensions: Vec2 = { x: 0, y: 0 }, topLeftOffset: Vec2 = { x: 0, y: 0 }, translationParent: Vec2 = { x: 0, y: 0 }) {
+        super(dom, workspace);
         this.dimensions = dimensions;
         this.topLeftOffset = topLeftOffset;
 

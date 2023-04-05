@@ -1,13 +1,12 @@
 import { BlockScriptRoot, BlockType } from "../block";
-import type { Bounds } from "../utils/Bounds";
+import { Bounds } from "../utils/Bounds";
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrInteractionPanning } from "./interactions/ScuffrInteractionPanning";
-import { ScuffrBlockPaletteItemBlock } from "./palette/ScuffrBlockPaletteItemBlock";
-import type { ScuffrEditorWorkspace } from "./ScuffrEditorWorkspace";
 import { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
 import { ScuffrSvgScriptPalette } from "./svg/ScuffrSvgScriptPalette";
 import EditorScrollbarSvg from "../editor/scrollbar/EditorScrollbarSvg.svelte";
 import type { ScuffrEditorPalette } from "./ScuffrEditorPalette";
+import type { ScuffEditorScrollableAreaData } from "../editor/scrollbar/ScuffEditorScrollableArea";
 
 export class ScuffrEditorPaletteScriptContainer extends ScuffrElementScriptContainer {
     public children: ScuffrSvgScriptPalette[];
@@ -29,22 +28,22 @@ export class ScuffrEditorPaletteScriptContainer extends ScuffrElementScriptConta
         this.background = background;
         this.background.classList.add("scuff-palette-background");
 
+        this._scrollEnforceBounds = true;
         this.updateScrollPane();
         new EditorScrollbarSvg({ target: dom, props: { pane: this.scrollPane } })
     }
 
-    public createPaletteBlock(type: BlockType, translation: Vec2): ScuffrSvgScriptPalette {
+    public appendPaletteBlock(type: BlockType, translation: Vec2): ScuffrSvgScriptPalette {
         const script = new BlockScriptRoot([type.createInstance()], translation);
         const rendered = new ScuffrSvgScriptPalette(this, script, this.parent.parent.scriptContainer);
         rendered.updateAll();
         this.children.push(rendered);
-        // this.updateScrollPane();
         return rendered;
     }
 
     public override setBounds(bounds: Bounds): void {
         this.background.style.width = bounds.width + "px";
-        this.background.style.height = bounds.height + "px";        
+        this.background.style.height = bounds.height + "px";
         super.setBounds(bounds);
     }
 
@@ -61,13 +60,30 @@ export class ScuffrEditorPaletteScriptContainer extends ScuffrElementScriptConta
     }
 
     public override updateContentTransform(): void {
-        if (this.contentTranslation.y > 0)
-            this.contentTranslation.y = 0;
-        this._scrollTopLeft.x = 0;
-        this._scrollTopLeft.y = 0;
-        this._scrollBottomRight.x = 0;
-        this.contentTranslation.x = 0;
         this.contentScale = 0.675;
         super.updateContentTransform();
+    }
+
+    protected override updateContentTransformDOM(): void {
+        super.updateContentTransformDOM();
+        if (this.parent.elementContainer)
+            this.parent.elementContainer.updateContentTransformDOM();
+    }
+
+    protected override _setScrollPane(scroll: ScuffEditorScrollableAreaData): void {
+        scroll.contentTopLeft.x = 0;
+        scroll.contentBottomRight.x = 1;
+        scroll.contentTopLeft.y = 0;
+        scroll.contentBottomRight.y += 25;
+        super._setScrollPane(scroll);
+    }
+
+    protected override _getContentBounds(): Bounds {
+        let bounds = super._getContentBounds();
+        if (this.parent.elementContainer) {
+            const otherBounds = this.parent.elementContainer.dom.getBoundingClientRect();
+            bounds = Bounds.smallestContaining(bounds, otherBounds);
+        }
+        return bounds;
     }
 }

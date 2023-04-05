@@ -8,10 +8,13 @@ import { ScuffrElementScriptContainer } from "./ScuffrElementScriptContainer";
 import type { ScuffrSvgBlock } from "./svg/ScuffrSvgBlock";
 import type { ScuffrSvgBlockInstance } from "./svg/ScuffrSvgBlockInstance";
 import EditorScrollbarSvg from "../editor/scrollbar/EditorScrollbarSvg.svelte";
+import type { ScuffEditorScrollableAreaData } from "../editor/scrollbar/ScuffEditorScrollableArea";
 
 export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
     public children: ScuffrSvgScriptRoot[];
     public parent: ScuffrEditorWorkspace;
+
+    protected readonly _scrollContainer: SVGGElement;
 
     public readonly backgroundPattern: SVGPatternElement;
     public readonly backgroundRect: SVGRectElement;
@@ -55,7 +58,9 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
         }
         this.updateScrollPane();
 
-        // new EditorScrollbarSvg({ target: dom, props: { pane: this.scrollPane } })
+        this._scrollContainer = dom.appendChild(document.createElementNS(SVG_NS, "g"));
+        this._scrollContainer.style.transform = "translateX(250px)";
+        new EditorScrollbarSvg({ target: this._scrollContainer, props: { pane: this.scrollPane } })
     }
 
     public override renderScript(blocks: BlockInstance[], translation?: Vec2 | undefined): ScuffrSvgScriptRoot {
@@ -134,5 +139,10 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
         super.updateContentTransformDOM();
         this.backgroundSvgScale.setScale(this.contentScale, this.contentScale);
         this.backgroundSvgTranslation.setTranslate(this.contentTranslation.x, this.contentTranslation.y);
+    }
+
+    protected override _setScrollPane(scroll: ScuffEditorScrollableAreaData): void {
+        scroll.domSize.x -= 250;
+        super._setScrollPane(scroll);
     }
 }

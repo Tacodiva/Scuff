@@ -249,6 +249,12 @@ input.scuff-input {
 }
 
 .scuff-palette-background {
-    fill: var(--scuff-workspace-bg-main);
-    fill-opacity: 0.8;
+    fill: var(--scuff-palette-background);
+    stroke-width: 1;
+    stroke: var(--scuff-scrollbar);
+}
+
+.scuff-palette-text {
+    --scuff-font-fill: var(--scuff-workspace-text-secondary);
+    --scuff-block-font-weight: bold;   
 }

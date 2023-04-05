@@ -1,7 +1,8 @@
 .scuff-theme-default {
 	--scuff-workspace-bg-main: #111;
 	--scuff-workspace-bg-dots: #333;
-	--scuff-workspace-text: #f9f9f9;
+	--scuff-workspace-text-primary: #f9f9f9;
+	--scuff-workspace-text-secondary: #f9f9f9;
 
 	--scuff-block-font: "Helvetica Neue";
 	--scuff-block-font-fill: #ffffff;
@@ -12,6 +13,8 @@
 	--scuff-block-input-font-fill: #575E75;
 	--scuff-block-input-select: #4d97ff40;
 	--scuff-block-input-stroke-invalid: #f00a;
+
+	--scuff-palette-background: #202020cc;
 
 	--scuff-block-decor-dark: #00000098;
 	--scuff-block-decor-light: #FFD5E6;
@@ -29,9 +32,11 @@
 .scuff-theme-light {
 	--scuff-workspace-bg-main: #f9f9f9;
 	--scuff-workspace-bg-dots: #ddd;
-	--scuff-workspace-text: #111;
+	--scuff-workspace-text-primary: #111;
+	--scuff-workspace-text-secondary: #575E75;
 
 	--scuff-scrollbar: #bbb;
+	--scuff-palette-background: #f9f9f9cc;
 
 	--scuff-context-menu-text: #111;
 	--scuff-context-menu-background: #fff;

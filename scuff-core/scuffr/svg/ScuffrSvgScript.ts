@@ -20,12 +20,14 @@ export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript>
     protected _root: ScuffrSvgScriptRoot | null;
     protected _ghost: ScuffrSvgBlockGhost | null;
     public get ghost(): ScuffrSvgBlockGhost | null { return this._ghost };
+    public readonly scriptContainer: ScuffrElementScriptContainer;
 
     public readonly attachmentPoints: ScuffrAttachmentPointList;
     public abstract readonly isSubscript: boolean;
 
     public constructor(container: SVGElement, root: ScuffrSvgScriptRoot | null, scriptContainer: ScuffrElementScriptContainer, script: TScript, translation?: Vec2) {
-        super(container.appendChild(document.createElementNS(SVG_NS, "g")), scriptContainer, translation);
+        super(container.appendChild(document.createElementNS(SVG_NS, "g")), scriptContainer.workspace, translation);
+        this.scriptContainer = scriptContainer;
         if (root) this._root = root;
         else this._root = this.getRoot();
 

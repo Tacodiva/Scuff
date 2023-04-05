@@ -22,9 +22,10 @@ export class ScuffrSvgBlockContent extends ScuffrSvgElementParent implements Scu
 
     public get root() { return this.parent.root; }
     public get block() { return this.parent.block; }
+    public get scriptContainer() { return this.parent.parent.scriptContainer }
 
     public constructor(parent: ScuffrSvgBlockInstance) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.scriptContainer);
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [];
         this.inputs = [];

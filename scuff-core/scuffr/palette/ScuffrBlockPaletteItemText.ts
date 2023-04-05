@@ -14,12 +14,11 @@ export class ScuffrBlockPaletteItemText implements ScuffrBlockPaletteItem {
         this.text = text;
     }
 
-    public render(editor: ScuffrEditorPalette, translation: Vec2): ScuffrSvgElement {
-        const ele = new ScuffrSvgText(editor, this.text.str, editor.scriptContainer);
+    public render(palette: ScuffrEditorPalette, translation: Vec2): ScuffrSvgElement {
+        const ele = new ScuffrSvgText(palette.elementContainer, this.text.str, { x: 5, y: 20 }, "scuff-palette-text");
         ele.update(false);
         ele.translationParent = { x: translation.x, y: translation.y - ele.dimensions.y / 2 };
         ele.updateTranslation();
-        editor.children.push(ele);
-        return ele;
+        return palette.appendElement(ele);
     }
 }

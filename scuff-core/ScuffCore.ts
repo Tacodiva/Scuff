@@ -47,7 +47,7 @@ export interface ScuffCore {
 
 export class ScuffCoreImpl implements ScuffCore {
 
-    public static readonly version: Version = [0, 21];
+    public static readonly version: Version = [0, 22];
     public readonly version: Version;
 
     private _extensions: Map<string, ScuffExtension>;
@@ -128,12 +128,12 @@ export class ScuffCoreImpl implements ScuffCore {
         const targetL = new Target();
         targetL.blockScripts.scripts.push(script.clone());
         targetL.blockScripts.transformScale = 1.5;
-        targetL.blockScripts.transformPosition = {x: 200, y: 75};
+        targetL.blockScripts.transformPosition = { x: 300, y: 0 };
 
         const targetR = new Target();
         targetR.blockScripts.scripts.push(script);
         targetR.blockScripts.transformScale = 1.5;
-        targetR.blockScripts.transformPosition = {x: 200, y: 75};
+        targetR.blockScripts.transformPosition = { x: 500, y: 75 };
 
         new WorkspaceDefinitionComponent({ target: document.body });
 

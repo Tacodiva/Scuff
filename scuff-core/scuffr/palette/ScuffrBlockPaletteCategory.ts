@@ -14,7 +14,7 @@ export class ScuffrBlockPaletteCategory {
         this.id = id;
         this.name = name;
         this._items = [];
-        // this._items.push(new ScuffrBlockPaletteItemText(name));
+        this._items.push(new ScuffrBlockPaletteItemText(name));
     }
 
     public addBlock(...blocks: BlockType[]): this {

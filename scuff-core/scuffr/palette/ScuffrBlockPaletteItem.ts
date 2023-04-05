@@ -3,5 +3,5 @@ import type { ScuffrEditorPalette } from "../ScuffrEditorPalette";
 import type { ScuffrSvgElement } from "../svg/ScuffrSvgElement";
 
 export interface ScuffrBlockPaletteItem {
-    render(editor: ScuffrEditorPalette, translation: Vec2): ScuffrSvgElement;
+    render(palette: ScuffrEditorPalette, translation: Vec2): ScuffrSvgElement;
 }

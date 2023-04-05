@@ -14,7 +14,7 @@ class Content extends ScuffrSvgElementParent {
     public parent: ScuffrSvgInputDropdown;
 
     constructor(parent: ScuffrSvgInputDropdown) {
-        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.scriptContainer);
+        super(parent.dom.appendChild(document.createElementNS(SVG_NS, "g")), parent.workspace);
         this.parent = parent;
         this.children = [
             new ScuffrSvgText(this, ""),
