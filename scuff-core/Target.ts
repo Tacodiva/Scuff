@@ -1,6 +1,6 @@
 import { BlockScripts } from "./block/BlockScripts";
 
-class Target {
+export class Target {
 
     public blockScripts : BlockScripts;
 
@@ -10,5 +10,3 @@ class Target {
 
 
 }
-
-export { Target as default }

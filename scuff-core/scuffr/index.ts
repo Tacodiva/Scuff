@@ -6,10 +6,10 @@ export { ScuffrSvgScriptRoot } from './svg/ScuffrSvgScriptRoot';
 export { ScuffrSvgScript } from './svg/ScuffrSvgScript';
 // <-
 
-export { ScuffrSvgElement as ScuffrSvg } from './svg/ScuffrSvgElement';
-export { ScuffrSvgElementParent as ScuffrSvgElementParent } from './svg/ScuffrSvgElementParent';
+export { ScuffrSvgElement } from './svg/ScuffrSvgElement';
+export { ScuffrSvgElementParent } from './svg/ScuffrSvgElementParent';
 export { type ScuffrSvgBlockPart } from './svg/ScuffrSvgBlockPart';
-export { ScuffrSvgInputBase as ScuffrSvgBlockPartBackground } from './svg/ScuffrSvgBlockInputBase';
+export { ScuffrSvgInputBase } from './svg/ScuffrSvgBlockInputBase';
 export { type ScuffrSvgInput } from './svg/ScuffrSvgInput';
 export { ScuffrSvgInputBlank } from './svg/ScuffrSvgInputBlank';
 export { ScuffrSvgInputLiteral } from './svg/ScuffrSvgInputLiteral';
@@ -18,7 +18,16 @@ export { ScuffrSvgBlockInstance } from './svg/ScuffrSvgBlockInstance';
 export { ScuffrSvgBlockContent } from './svg/ScuffrSvgBlockContent';
 export { ScuffrSvgText } from './svg/ScuffrSvgText';
 export { ScuffrSvgDummy } from './svg/ScuffrSvgDummy';
+
 export { ScuffrWorkspace } from './ScuffrWorkspace';
+export { ScuffrTextSizeCache } from './ScuffrTextSizeCache';
+export { ScuffrEditorPaletteScriptContainer } from './ScuffrEditorPaletteScriptContainer';
+export { ScuffrEditorPalette } from './ScuffrEditorPalette';
+export { ScuffrEditorPane } from './ScuffrEditorPane';
+export { ScuffrElementScriptContainer } from './ScuffrElementScriptContainer';
+export { ScuffrElement } from './ScuffrElement';
+export { ScuffrReferenceChain } from './ScuffrReferenceChain';
+export { default as WorkspaceBackgroundCompnent } from './WorkspaceBackgroundCompnent.svelte';
 export * from './ScuffrReferenceTypes';
 export * from './ScuffrReference';
 

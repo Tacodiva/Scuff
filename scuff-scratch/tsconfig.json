@@ -8,9 +8,11 @@
     "target": "ES2021",
     "module": "ES2022",
     "paths": {
-      "scuff": [
-        "../scuff-core"
-      ]
-    }
+      "scuff": ["../scuff-core"],
+    },
+    "importsNotUsedAsValues": "remove",
+    "preserveValueImports": false,
+    "isolatedModules": false,
+    "esModuleInterop": false,
   }
 }

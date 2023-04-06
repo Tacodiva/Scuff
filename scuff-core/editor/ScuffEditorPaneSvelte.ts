@@ -7,9 +7,9 @@ type SvelteComponentInfo<T extends SvelteComponent> = readonly [
     props?: any
 ];
 
-export class ScuffEditorSveltePane<T extends SvelteComponent> extends ScuffEditorPane {
+export class ScuffEditorPaneSvelte<T extends SvelteComponent> extends ScuffEditorPane {
     public static create(info: SvelteComponentInfo<SvelteComponent>, minSize?: Vec2): ScuffEditorPaneFactory {
-        return pane => new ScuffEditorSveltePane(pane, info, minSize);
+        return pane => new ScuffEditorPaneSvelte(pane, info, minSize);
     }
 
     public readonly component: T;

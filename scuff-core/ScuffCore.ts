@@ -1,19 +1,7 @@
 
 import type { ScuffExtension } from "./api/ScuffExtension";
 import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
-import Target from "./Target";
-import type { BlockScriptRoot } from "./block/BlockScriptRoot";
-import type { ScuffrWorkspace } from "./scuffr";
-import type { SvelteComponent } from "svelte";
-import { ScuffEditor } from "./editor/ScuffEditor";
-import { ScuffEditorSveltePane } from "./editor/ScuffEditorSveltePane";
-import ScuffEditorDefautComponent from "./editor/ScuffEditorDefautComponent.svelte";
-import { ScuffEditorPaneSplit } from "./editor/ScuffEditorSplitPane";
-import ScuffEditorInfoComponent from "./editor/ScuffEditorInfoComponent.svelte";
-import { ScuffrEditorPane } from "./scuffr/ScuffrEditorPane";
-import WorkspaceBackgroundCompnent from "./editor/WorkspaceBackgroundCompnent.svelte";
 import WorkspaceDefinitionComponent from './editor/WorkspaceDefinitionComponent.svelte'
-import type { ScuffrBlockPalette } from "./scuffr/palette/ScuffrBlockPalette";
 
 type Version = [number, number];
 
@@ -41,8 +29,6 @@ export interface ScuffCore {
      * unknown, an error is thrown.
      */
     getExtensionAsync(id: string): Promise<ScuffExtension>;
-
-    main(script: BlockScriptRoot, palette: ScuffrBlockPalette): void;
 }
 
 export class ScuffCoreImpl implements ScuffCore {
@@ -87,6 +73,8 @@ export class ScuffCoreImpl implements ScuffCore {
                 registerExtension(result[0], result[1]);
             ready(this);
         });
+        
+        new WorkspaceDefinitionComponent({ target: document.body });
     }
 
     public hasExtension(id: string): boolean {
@@ -112,40 +100,5 @@ export class ScuffCoreImpl implements ScuffCore {
                 throw new Error() // Extension not found
             listeners?.push(resolve);
         });
-    }
-
-    public main(script: BlockScriptRoot, palette: ScuffrBlockPalette): void {
-        document.body.classList.add("scuff-theme-default");
-        if (location.href.includes("light"))
-            document.body.classList.add("scuff-theme-light");
-        if (location.href.includes("contrast"))
-            document.body.classList.add("scuff-theme-contrast-blocks");
-        if (location.href.includes("bold"))
-            document.body.classList.add("scuff-theme-bold");
-        if (location.href.includes("neon"))
-            document.body.classList.add("scuff-theme-neon");
-
-        const targetL = new Target();
-        targetL.blockScripts.scripts.push(script.clone());
-        targetL.blockScripts.transformScale = 1.5;
-        targetL.blockScripts.transformPosition = { x: 300, y: 0 };
-
-        const targetR = new Target();
-        targetR.blockScripts.scripts.push(script);
-        targetR.blockScripts.transformScale = 1.5;
-        targetR.blockScripts.transformPosition = { x: 500, y: 75 };
-
-        new WorkspaceDefinitionComponent({ target: document.body });
-
-        new ScuffEditor(document.body,
-            ScuffEditorPaneSplit.createHorizontal(
-                ScuffEditorPaneSplit.createVertical(
-                    ScuffEditorSveltePane.create([ScuffEditorInfoComponent]),
-                    ScuffrEditorPane.create(targetL.blockScripts, WorkspaceBackgroundCompnent, palette),
-                    0.3
-                ),
-                ScuffrEditorPane.create(targetR.blockScripts, WorkspaceBackgroundCompnent, palette)
-            )
-        );
     }
 }
