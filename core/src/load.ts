@@ -39,7 +39,7 @@ export default async function (config: ScuffConfig): Promise<ScuffCore> {
 
     let loadPromises: Promise<unknown>[] = [];
 
-    loadPromises.push(loadCSS(new URL("scuff-core.css", config.path).href));
+    loadPromises.push(loadCSS(new URL("scuff.css", config.path).href));
 
     for (const loader of extensionLoaders) {
         loader.path = new URL(loader.path!, document.baseURI).href;

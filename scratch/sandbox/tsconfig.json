@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "include": [
     "**/*"
   ],
@@ -7,9 +7,6 @@
   "compilerOptions": {
     "target": "ES2021",
     "module": "ES2022",
-    "paths": {
-      "scuff": ["../scuff-core"],
-    },
     "importsNotUsedAsValues": "remove",
     "preserveValueImports": false,
     "isolatedModules": false,

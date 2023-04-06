@@ -1,6 +1,4 @@
 node_modules
 package-lock.json
 .vscode
-public/lib/scuff-core
-public/lib/scuff-scratch/scuff-*
-public/lib/index.*
+public/bundle
