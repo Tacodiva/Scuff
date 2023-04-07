@@ -8,19 +8,21 @@ import emitFiles from 'rollup-plugin-emit-files'
 
 export default [
     {
-        input: 'scratch/sandbox/index.ts',
+        input: 'scratch/virtual-machine/index.ts',
         output: {
             format: 'iife',
-            file: 'scratch/sandbox.js.txt',
+            name: "ScuffVM",
+            file: 'scratch/virtual-machine.js.txt',
+            exports: "named"
         },
         plugins: [
             typescript(
                 {
-                    tsconfig: "scratch/sandbox/tsconfig.json",
+                    tsconfig: "scratch/virtual-machine/tsconfig.json",
                 }
             ),
 
-            terser(),
+            production && terser(),
         ]
     },
     {
@@ -44,7 +46,7 @@ export default [
             }),
 
             string({
-                include: "scratch/sandbox.js.txt"
+                include: "scratch/virtual-machine.js.txt"
             }),
 
             typescript(

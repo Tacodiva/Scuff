@@ -1,6 +1,7 @@
 import { BlockScriptInput, BlockScriptRoot, ScuffEditor, ScuffEditorDefaultComponent, ScuffEditorInfoComponent, ScuffEditorPaneSplit, ScuffEditorPaneSvelte, ScuffrEditorPane, Target, WorkspaceBackgroundCompnent } from "scuff";
 import { ScratchBlocks } from "./blocks";
 import { ScratchPalette } from "./palette";
+import { EditorPaneProject } from "./vm/editor/EditorPaneProject";
 
 export class ScratchEditor {
 
@@ -79,11 +80,11 @@ export class ScratchEditor {
             ScuffEditorPaneSplit.createHorizontal(
                 ScuffrEditorPane.create(targetL.blockScripts, WorkspaceBackgroundCompnent, ScratchPalette),
                 ScuffEditorPaneSplit.createVertical(
-                    ScuffEditorPaneSvelte.create([ScuffEditorDefaultComponent]),
+                    EditorPaneProject.create(),
                     ScuffEditorPaneSvelte.create([ScuffEditorInfoComponent]),
-                    0.5
+                    0.01
                 ),
-                0.70
+                0.99
                 // ScuffrEditorPane.create(targetR.blockScripts, WorkspaceBackgroundCompnent, ScratchPalette)
             )
         );

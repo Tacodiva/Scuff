@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "include": [
     "**/*"
-  ],
+, "../messages.ts"  ],
   "exclude": [],
   "compilerOptions": {
     "target": "ES2021",
