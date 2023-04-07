@@ -1,6 +1,6 @@
 <script>
 
-    import { ScuffCoreImpl } from "../ScuffCore";
+    import { ScuffCoreImpl } from "../../ScuffCore";
 
 </script>
 

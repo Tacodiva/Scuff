@@ -48,7 +48,7 @@ export class ScuffrEditorPaletteScriptContainer extends ScuffrElementScriptConta
     }
 
     public override onDrag(startPosition: Vec2): boolean {
-        this.workspace.startInteraction(new ScuffrInteractionPanning(this, startPosition));
+        new ScuffrInteractionPanning(this, startPosition).start();
         return true;
     }
 
@@ -69,21 +69,15 @@ export class ScuffrEditorPaletteScriptContainer extends ScuffrElementScriptConta
         if (this.parent.elementContainer)
             this.parent.elementContainer.updateContentTransformDOM();
     }
-
-    protected override _setScrollPane(scroll: ScuffEditorScrollableAreaData): void {
-        scroll.contentTopLeft.x = 0;
-        scroll.contentBottomRight.x = 1;
-        scroll.contentTopLeft.y = 0;
-        scroll.contentBottomRight.y += 25;
-        super._setScrollPane(scroll);
-    }
-
     protected override _getContentBounds(): Bounds {
-        let bounds = super._getContentBounds();
+        let bounds = Bounds.copy(super._getContentBounds());
         if (this.parent.elementContainer) {
             const otherBounds = this.parent.elementContainer.dom.getBoundingClientRect();
             bounds = Bounds.smallestContaining(bounds, otherBounds);
         }
+        bounds.x = 0;
+        bounds.y = 0;
+        bounds.height += 25;
         return bounds;
     }
 }

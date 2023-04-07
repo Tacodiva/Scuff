@@ -1,29 +1,29 @@
 import type { Vec2 } from "../utils/Vec2";
 import { ScuffrTextSizeCache } from "./ScuffrTextSizeCache";
-import type { ScuffrInteraction } from "./interactions/ScuffrInteraction";
 import type { ScuffrCmd } from "./commands/ScuffrCmd";
 import { ScuffrElement } from "./ScuffrElement";
 import type { ScuffrElementParent } from "./ScuffrElementParent";
+import type { ScuffEditor } from "../editor";
 
 export abstract class ScuffrWorkspace extends ScuffrElement<SVGSVGElement> implements ScuffrElementParent {
     public parent: null;
+    public readonly editor: ScuffEditor;
     public abstract readonly children: readonly ScuffrElement[];
 
     private readonly _textSizeCache: ScuffrTextSizeCache;
 
-    private _interaction: ScuffrInteraction | null;
     private _mouseDownPos: Vec2 | null;
 
     private readonly _commandHistory: ScuffrCmd[];
     private _commandHistoryPresent: number;
 
-    public constructor(target: SVGSVGElement) {
+    public constructor(target: SVGSVGElement, editor: ScuffEditor) {
         super(target);
+        this.editor = editor;
         this.parent = null;
-        
-        this._interaction = null;
+
         this._mouseDownPos = null;
-        
+
         this._commandHistory = [];
         this._commandHistoryPresent = 0;
 
@@ -72,51 +72,22 @@ export abstract class ScuffrWorkspace extends ScuffrElement<SVGSVGElement> imple
         return this;
     }
 
-    public onKeyDown(event: KeyboardEvent): boolean {
-        switch (event.key) {
-            case 'z':
-                if (event.ctrlKey) {
-                    this.undo();
-                    return true;
-                }
-                break;
-            case 'y':
-                if (event.ctrlKey) {
-                    this.redo();
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
-
     public addListeners() {
-        window.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
+        this.dom.addEventListener("keydown", this.eventKeyDownListener, { passive: false });
         this.dom.addEventListener("mousedown", this.eventMouseDownListener, { passive: false });
-        window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
-        window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
+        this.dom.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
+        this.dom.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
         this.dom.addEventListener("wheel", this.eventWheelListener, { passive: false });
-        window.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
+        this.dom.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false });
     }
 
     public removeListeners() {
-        window.removeEventListener("keydown", this.eventKeyDownListener);
+        this.dom.removeEventListener("keydown", this.eventKeyDownListener);
         this.dom.removeEventListener("mousedown", this.eventMouseDownListener);
-        window.removeEventListener("mouseup", this.eventMouseUpListener);
-        window.removeEventListener("mousemove", this.eventMouseMoveListener);
+        this.dom.removeEventListener("mouseup", this.eventMouseUpListener);
+        this.dom.removeEventListener("mousemove", this.eventMouseMoveListener);
         this.dom.removeEventListener("wheel", this.eventWheelListener);
-        window.removeEventListener("contextmenu", this.eventContextMenuListener);
-    }
-
-    public endInteraction() {
-        if (!this._interaction) return;
-        this._interaction.onEnd();
-        this._interaction = null;
-    }
-
-    public startInteraction(interaction: ScuffrInteraction) {
-        this.endInteraction();
-        this._interaction = interaction;
+        this.dom.removeEventListener("contextmenu", this.eventContextMenuListener);
     }
 
     private _dispatch<T>(element: any, listenerInvoker: (element: ScuffrElement) => boolean): boolean {
@@ -140,11 +111,17 @@ export abstract class ScuffrWorkspace extends ScuffrElement<SVGSVGElement> imple
     }
 
     private readonly eventKeyDownListener = (event: KeyboardEvent) => {
-        if (this._interaction) {
-            this._interaction.onKeyDown(event);
-        }
-        if (!this._interaction) {
-            this.onKeyDown(event);
+        switch (event.key) {
+            case 'z':
+                if (event.ctrlKey) {
+                    this.undo();
+                }
+                break;
+            case 'y':
+                if (event.ctrlKey) {
+                    this.redo();
+                }
+                break;
         }
     }
 
@@ -152,60 +129,34 @@ export abstract class ScuffrWorkspace extends ScuffrElement<SVGSVGElement> imple
         if ((event.buttons & 1) === 0)
             return;
         this._mouseDownPos = event;
-        if (this._interaction) {
-            if (this._interaction.onMouseDown(event))
-                return;
-        }
-        if (!this._interaction) {
-            event.preventDefault();
-        }
+        event.preventDefault();
     }
 
     private readonly eventMouseUpListener = (event: MouseEvent) => {
         if (event.button !== 0)
             return;
-        if (this._interaction) {
-            if (this._interaction.onMouseUp(event))
-                return;
-        }
-        if (!this._interaction && this._mouseDownPos) {
-            if (this._dispatch(event.target, (element) => element.onClick(event)))
-                event.preventDefault();
-        }
+        if (this._dispatch(event.target, (element) => element.onClick(event)))
+            event.preventDefault();
         this._mouseDownPos = null;
     }
 
     private readonly eventMouseMoveListener = (event: MouseEvent) => {
-        if (this._interaction) {
-            this._interaction.onMouseMove(event);
-        }
-        if (!this._interaction) {
-            if ((event.buttons & 1) !== 0 && this._mouseDownPos) {
-                // You can move the mouse a small amount before starting a drag
-                //  just incase you intended a click not a drag.
-                const dx = event.x - this._mouseDownPos.x;
-                const dy = event.y - this._mouseDownPos.y;
-                if (dx * dx + dy * dy > 16) {
-                    if (this._dispatch(event.target, (element) => element.onDrag(event)))
-                        event.preventDefault();
-                    this._mouseDownPos = null;
-                }
-            }
-            if (this._interaction) {
-                (this._interaction as ScuffrInteraction).onMouseMove(event);
+        if ((event.buttons & 1) !== 0 && this._mouseDownPos) {
+            // You can move the mouse a small amount before starting a drag
+            //  just incase you intended a click not a drag.
+            const dx = event.x - this._mouseDownPos.x;
+            const dy = event.y - this._mouseDownPos.y;
+            if (dx * dx + dy * dy > 16) {
+                if (this._dispatch(event.target, (element) => element.onDrag(event)))
+                    event.preventDefault();
+                this._mouseDownPos = null;
             }
         }
-        // this.debugRender();
     }
 
     private readonly eventWheelListener = (event: WheelEvent) => {
-        if (this._interaction) {
-            this._interaction.onMouseWheel(event);
-        }
-        if (!this._interaction) {
-            if (this._dispatch(event.target, (element) => element.onWheel(event)))
-                event.preventDefault();
-        }
+        if (this._dispatch(event.target, (element) => element.onWheel(event)))
+            event.preventDefault();
     }
 
     private readonly eventContextMenuListener = (event: MouseEvent) => {

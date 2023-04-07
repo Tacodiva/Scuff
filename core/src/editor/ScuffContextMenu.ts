@@ -1,11 +1,7 @@
-import type { l10nString } from "../../l10n";
-import type { Vec2 } from "../../utils/Vec2";
-import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
-import type { ScuffrWorkspace } from "../ScuffrWorkspace";
-import { ScuffrInteraction } from "./ScuffrInteraction";
+import type { l10nString } from "../l10n";
+import type { Vec2 } from "../utils/Vec2";
 
-
-export interface ScuffrContextMenuItem {
+export interface ScuffCtxMenuItem {
     text: string;
     enabled: boolean;
     action(event: MouseEvent): void;
@@ -38,7 +34,7 @@ interface ScuffrCtxMenuItemSubmenu extends ScuffrCtxMenuItemBase {
     action?(event: MouseEvent): void;
 }
 
-class ScuffrContextMenu {
+export class ScuffContextMenu {
     public readonly items: ScuffrCtxMenuItem[];
     public readonly container: HTMLElement;
     public readonly classes: string[];
@@ -51,7 +47,7 @@ class ScuffrContextMenu {
 
     private readonly _menuDimensions: Vec2;
 
-    private _submenu: ScuffrContextMenu | null;
+    private _submenu: ScuffContextMenu | null;
     private _submenuStable: boolean;
 
     public constructor(pos: Vec2, items: ScuffrCtxMenuItem[], classes: string[], align: "corner" | "first", container?: HTMLElement, xReflectWidth: number = 0) {
@@ -190,7 +186,7 @@ class ScuffrContextMenu {
 
     private _openSubmenu(items: ScuffrCtxMenuItem[], position: Vec2) {
         this._closeSubmenu();
-        this._submenu = new ScuffrContextMenu(position, items, this.classes, "first", this.container.appendChild(document.createElement("div")), this._menuDimensions.x);
+        this._submenu = new ScuffContextMenu(position, items, this.classes, "first", this.container.appendChild(document.createElement("div")), this._menuDimensions.x);
         this._submenu.onAction = this.onAction;
     }
 
@@ -211,41 +207,3 @@ class ScuffrContextMenu {
     }
 }
 
-export class ScuffrInteractionContextMenu extends ScuffrInteraction {
-
-    public readonly menu: ScuffrContextMenu;
-
-    public constructor(root: ScuffrElementScriptContainer, pos: Vec2, items: ScuffrCtxMenuItem[], classes: string[]) {
-        super(root);
-        this.menu = new ScuffrContextMenu(pos, items, classes, "corner");
-        this.menu.onAction = this._menuOnAction;
-    }
-
-    private readonly _menuOnAction = (item: ScuffrCtxMenuItem) => {
-        this.end();
-    }
-
-    public override onEnd(): void {
-        this.menu.close();
-    }
-
-    public override onMouseWheel(event: MouseEvent): void {
-        if (!this.menu.svg.contains(event.target as Node))
-            super.onMouseWheel(event);
-    }
-
-    public override onMouseDown(event: MouseEvent): void {
-        event.preventDefault();
-    }
-
-    public override onMouseUp(event: MouseEvent): void {
-        if (!this.menu.container.contains(event.target as Node))
-            super.onMouseUp(event);
-    }
-
-    public override onMouseMove(event: MouseEvent): void {
-        if (!this.menu.container.contains(event.target as Node))
-            super.onMouseMove(event);
-        this.menu.onMouseMove(event);
-    }
-}

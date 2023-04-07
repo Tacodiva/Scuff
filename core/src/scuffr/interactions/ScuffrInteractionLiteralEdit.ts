@@ -1,9 +1,8 @@
 import type { ScuffrSvgInputLiteral } from "..";
+import { ScuffEditorInteraction } from "../../editor/ScuffEditorInteraction";
 import { ScuffrCmdSetInputLiteral } from "../commands/ScuffrCmdSetInputLiteral";
-import type { ScuffrWorkspace } from "../ScuffrWorkspace";
-import { ScuffrInteraction } from "./ScuffrInteraction";
 
-export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
+export class ScuffrInteractionLiteralEdit extends ScuffEditorInteraction {
     public readonly scuffrInput: ScuffrSvgInputLiteral;
     public readonly svgForeignObject: SVGForeignObjectElement;
     public readonly htmlInput: HTMLInputElement;
@@ -12,7 +11,7 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
     public inputValid: boolean;
 
     public constructor(input: ScuffrSvgInputLiteral) {
-        super(input.parent.scriptContainer);
+        super(input.workspace.editor);
         this.scuffrInput = input;
         this.initalValue = input.getValue();
         this.inputValid = true;
@@ -65,7 +64,7 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
         if (!this.inputValid) {
             this.scuffrInput.setValue(this.initalValue);
         } else if (this.scuffrInput.getValue() !== this.initalValue) {
-            this.root.workspace.submitCommand(
+            this.scuffrInput.workspace.submitCommand(
                 new ScuffrCmdSetInputLiteral(this.scuffrInput, this.scuffrInput.getValue(), this.initalValue),
                 false
             );
@@ -77,17 +76,18 @@ export class ScuffrInteractionLiteralEdit extends ScuffrInteraction {
     }
 
     public override onMouseMove(event: MouseEvent): void {
-        if (event.target !== this.htmlInput)
-            super.onMouseMove(event);
+        if (event.target !== this.htmlInput && (event.buttons & 1) !== 0)
+            this.end();
     }
 
     public override onMouseDown(event: MouseEvent): void {
         if (event.target !== this.htmlInput)
-            super.onMouseDown(event);
+            event.preventDefault();
     }
 
     public override onMouseUp(event: MouseEvent): void {
-        if (event.target !== this.htmlInput)
-            super.onMouseUp(event);
+        if (event.target === this.htmlInput)
+            event.stopPropagation();
+        else this.end();
     }
 }

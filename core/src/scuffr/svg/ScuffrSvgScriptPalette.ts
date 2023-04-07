@@ -19,7 +19,7 @@ export class ScuffrSvgScriptPalette extends ScuffrSvgScriptRoot {
 
     public override onChildBlockDrag(reference: ScuffrReferenceBlock, event: MouseEvent): boolean {
         const pos = this.targetContainer.toWorkspaceCoords(this.scriptContainer.toViewportCoords(this.script.translation));
-        this.workspace.startInteraction(new ScuffrInteractionDragScript(new ScuffrCmdScriptSelectSpawn(this.targetContainer, this.script.blocks, pos), event));
+        new ScuffrInteractionDragScript(new ScuffrCmdScriptSelectSpawn(this.targetContainer, this.script.blocks, pos), event).start();
         return true;
     }
 }

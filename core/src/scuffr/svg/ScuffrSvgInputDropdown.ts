@@ -52,7 +52,7 @@ export class ScuffrSvgInputDropdown extends ScuffrSvgInputBase<Content> implemen
     }
 
     public override onClick(event: MouseEvent): boolean {
-        this.workspace.startInteraction(new ScuffrInteractionDropdown(this))
+        new ScuffrInteractionDropdown(this).start();
         return true;
     }
 }

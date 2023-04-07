@@ -25,11 +25,13 @@ export abstract class ScuffVM {
             direction: 90
         });
 
+        // createDrawable returns a number not void
         const drawableID2 = this.renderer.createDrawable(LLK.renderEngine.LayerGroup.Sprite) as unknown as number;
-        const skinId = this.renderer.createSVGSkin(CAT_SVG, [50, 50]) as unknown as number;
-        this.renderer.updateDrawableProperties(drawableID2, {
-            skinId: skinId,
-        });
+
+        // createSVGSkin returns a number not an SVGSkin. I think this is the same with all the create___Skin methods
+        const skinId = this.renderer.createSVGSkin(CAT_SVG, [50, 50]) as any as number;
+
+        this.renderer.updateDrawableSkinId(drawableID2, skinId);
 
         this.renderer.resize(480, 360);
 

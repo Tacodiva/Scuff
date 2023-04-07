@@ -1,10 +1,9 @@
 import type { BlockDropdownOption } from "../../block";
+import { ScuffEditorInteraction } from "../../editor/ScuffEditorInteraction";
 import { ScuffrCmdSetInputDropdown } from "../commands/ScuffrCmdSetInputDropdown";
 import type { ScuffrSvgInputDropdown } from "../svg/ScuffrSvgInputDropdown";
-import type { ScuffrWorkspace } from "../ScuffrWorkspace";
-import { ScuffrInteraction } from "./ScuffrInteraction";
 
-export class ScuffrInteractionDropdown extends ScuffrInteraction {
+export class ScuffrInteractionDropdown extends ScuffEditorInteraction {
     public static readonly MAX_HEIGHT = 300;
 
     public readonly scuffrInput: ScuffrSvgInputDropdown;
@@ -21,7 +20,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
     public readonly htmlInput: HTMLInputElement;
 
     public constructor(dropdown: ScuffrSvgInputDropdown) {
-        super(dropdown.parent.scriptContainer);
+        super(dropdown.workspace.editor);
         this.scuffrInput = dropdown;
 
         this.svgMenu = document.body.appendChild(document.createElementNS(SVG_NS, "svg"));
@@ -92,7 +91,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
 
     private _setOption(option: BlockDropdownOption) {
         if (this.scuffrInput.value.id !== option.id) {
-            this.root.workspace.submitCommand(
+            this.scuffrInput.workspace.submitCommand(
                 new ScuffrCmdSetInputDropdown(this.scuffrInput, option)
             );
         }
@@ -141,6 +140,7 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
             optionDom.addEventListener("click", e => {
                 this._setOption(option);
                 this.end();
+                e.stopPropagation();
             });
             optionDom.addEventListener("mousemove", e => {
                 this._setHighlight(optionIdx);
@@ -161,22 +161,25 @@ export class ScuffrInteractionDropdown extends ScuffrInteraction {
         window.removeEventListener("keypress", this._keypressListener);
     }
 
-    public override onMouseWheel(event: MouseEvent): void {
-        if (!this.svgMenu.contains(event.target as Node))
-            super.onMouseWheel(event);
+    public override onMouseMove(event: MouseEvent): void {
+        if (!this.svgMenu.contains(event.target as Node) && (event.buttons & 1) !== 0)
+            this.end();
     }
 
     public override onMouseDown(event: MouseEvent): void {
-        event.preventDefault();
+        if (event.target !== this.htmlInput)
+            event.preventDefault();
     }
 
     public override onMouseUp(event: MouseEvent): void {
-        if (!this.svgMenu.contains(event.target as Node))
-            super.onMouseUp(event);
+        if (event.target === this.htmlInput)
+            event.stopPropagation();
+        else if (!this.svgMenu.contains(event.target as Node))
+            this.end();
     }
 
-    public override onMouseMove(event: MouseEvent): void {
+    public override onMouseWheel(event: MouseEvent): void {
         if (!this.svgMenu.contains(event.target as Node))
-            super.onMouseMove(event);
+            this.end();
     }
 }

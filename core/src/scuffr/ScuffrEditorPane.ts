@@ -1,6 +1,6 @@
 import type { SvelteComponent } from "svelte";
 import type { BlockScripts } from "../block";
-import { ScuffEditorPane, type ScuffEditorPaneFactory, type ScuffEditorPaneInfo } from "../editor/ScuffEditorPane";
+import { ScuffEditorPane, type ScuffEditorPaneFactory, type ScuffEditorPaneInfo } from "../editor/panes/ScuffEditorPane";
 import type { ScuffrBlockPalette } from "./palette/ScuffrBlockPalette";
 import { ScuffrEditorWorkspace } from "./ScuffrEditorWorkspace";
 

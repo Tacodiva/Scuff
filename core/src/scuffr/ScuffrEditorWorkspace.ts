@@ -16,7 +16,7 @@ export class ScuffrEditorWorkspace extends ScuffrWorkspace {
 
 
     public constructor(pane: ScuffrEditorPane, target: SVGSVGElement) {
-        super(target);
+        super(target, pane.editor);
 
         this.pane = pane;
 

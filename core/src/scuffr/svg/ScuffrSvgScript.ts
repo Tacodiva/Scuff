@@ -234,12 +234,12 @@ export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript>
         const pos = { ...draggedChild.getAbsoluteTranslation() };
         pos.x += draggedChild.leftOffset;
 
-        this.workspace.startInteraction(new ScuffrInteractionDragScript(
+        new ScuffrInteractionDragScript(
             new ScuffrCmdScriptSelectScriptBlocks(
                 this.getReference(),
                 reference.index, Infinity,
                 pos
-            ), event));
+            ), event).start();
         return true;
     }
 }

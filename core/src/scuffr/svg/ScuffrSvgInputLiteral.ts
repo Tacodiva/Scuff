@@ -42,7 +42,7 @@ export class ScuffrSvgInputLiteral extends ScuffrSvgInputBase<ScuffrSvgText> imp
 
     public override onClick(event: MouseEvent): boolean {
         event.preventDefault();
-        this.workspace.startInteraction(new ScuffrInteractionLiteralEdit(this));
+        new ScuffrInteractionLiteralEdit(this).start();
         return true;
     }
 

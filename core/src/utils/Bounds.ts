@@ -22,6 +22,10 @@ export namespace Bounds {
         height: 0
     };
 
+    export function copy(bounds: Bounds): MutBounds {
+        return { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height };
+    }
+
     export function dimensions(bounds: Bounds): Vec2 {
         return { x: bounds.width, y: bounds.height };
     }

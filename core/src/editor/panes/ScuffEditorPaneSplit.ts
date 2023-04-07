@@ -1,8 +1,8 @@
 
 import { ScuffEditorPane, type ScuffEditorPaneFactory, type ScuffEditorPaneInfo } from "./ScuffEditorPane";
-import { Axis, type AxisInfo } from '../utils/Axis';
-import { Bounds } from "../utils/Bounds";
-import type { Vec2 } from "../utils/Vec2";
+import { Axis, type AxisInfo } from '../../utils/Axis';
+import { Bounds } from "../../utils/Bounds";
+import { ScuffEditorInteractionDrag } from "../ScuffEditorInteractionDrag";
 
 const DIVIDER_HALF_SIZE = 1;
 const DIVIDER_SIZE = DIVIDER_HALF_SIZE * 2;
@@ -16,6 +16,36 @@ export class ScuffEditorPaneSplit extends ScuffEditorPane {
     public static createVertical(top: ScuffEditorPaneFactory, bottom: ScuffEditorPaneFactory, position?: number): ScuffEditorPaneFactory {
         return pane => new ScuffEditorPaneSplit(pane, top, bottom, position, Axis.Y);
     }
+
+    private static DragInteraction = class extends ScuffEditorInteractionDrag {
+        public readonly pane: ScuffEditorPaneSplit;
+        public readonly offset: number;
+
+        public constructor(pane: ScuffEditorPaneSplit, e: MouseEvent) {
+            super(pane.editor);
+            this.pane = pane;
+            this.offset = this.pane._position * this.pane._bounds[this.pane.axis.dim] - e[this.pane.axis.name];
+            e.preventDefault();
+            e.stopPropagation();    
+        }
+
+        public override onStart(): void {
+            this.pane.divider.classList.add("scuff-dragging");
+            super.onStart();
+        }
+
+        public override onEnd(): void {
+            this.pane.divider.classList.remove("scuff-dragging");
+            super.onEnd();
+        }
+
+        public override onMouseMove(e: MouseEvent): void {
+            this.pane._position = (this.offset + e[this.pane.axis.name]) / this.pane._bounds[this.pane.axis.dim];
+            this.pane._position = Math.max(0, Math.min(1, this.pane._position));
+            this.pane.onBoundsUpdate();
+            super.onMouseMove(e);
+        }
+    };
 
     public readonly divider: HTMLDivElement;
     public readonly spacer: HTMLDivElement;
@@ -39,20 +69,9 @@ export class ScuffEditorPaneSplit extends ScuffEditorPane {
 
         this.divider = this.target.appendChild(document.createElement("div"));
         this.divider.classList.add("scuff-pane-split-divider", "scuff-pane-split-divider-" + axisInfo.dir);
-        this.divider.addEventListener("mousedown", e => {
-            const offset = this._position * this._bounds[this.axis.dim] - e[axisInfo.name];
-            this.editor.startDrag({
-                onMouseMove: e => {
-                    this._position = (offset + e[axisInfo.name]) / this._bounds[this.axis.dim];
-                    this._position = Math.max(0, Math.min(1, this._position));
-                    this.divider.classList.add("scuff-dragging");
-                    this.onBoundsUpdate();
-                },
-                onEnd: () => {
-                    this.divider.classList.remove("scuff-dragging");
-                }
-            }, e);
-        });
+        this.divider.addEventListener("mousedown", e =>
+            this.editor.startInteraction(new ScuffEditorPaneSplit.DragInteraction(this, e))
+        );
 
         this._one.target.classList.add("scuff-pane");
         this._two.target.classList.add("scuff-pane");

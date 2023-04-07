@@ -77,12 +77,10 @@ export class ScuffrSvgBlockContent extends ScuffrSvgElementParent implements Scu
         const block = this.inputs[reference.index].rendered;
         const translation = block.getAbsoluteTranslation();
         translation.x += block.leftOffset;
-        this.workspace.startInteraction(
-            new ScuffrInteractionDragScript(
-                new ScuffrCmdScriptSelectBlockInput(reference, translation),
-                event
-            ),
-        );
+        new ScuffrInteractionDragScript(
+            new ScuffrCmdScriptSelectBlockInput(reference, translation),
+            event
+        ).start();
         return true;
     }
 

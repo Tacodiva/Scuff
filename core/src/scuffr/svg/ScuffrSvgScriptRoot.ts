@@ -38,7 +38,7 @@ export class ScuffrSvgScriptRoot extends ScuffrSvgScript<BlockScriptRoot> {
 
     public override onChildBlockDrag(reference: ScuffrReferenceBlock, event: MouseEvent): boolean {
         if (reference.index === 0) {
-            this.workspace.startInteraction(new ScuffrInteractionDragScript(new ScuffrCmdScriptSelectRoot(this.getReference()), event));
+            new ScuffrInteractionDragScript(new ScuffrCmdScriptSelectRoot(this.getReference()), event).start();
             return true;
         }
         return super.onChildBlockDrag(reference, event);

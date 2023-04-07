@@ -7,11 +7,11 @@ import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import type { BlockPartInput } from "../../block/BlockPartInput";
 import type { ScuffrShapeContentLine } from "../shape/ScuffrShapeContentLine";
-import { ScuffrInteractionContextMenu } from "../interactions/ScuffrInteractionContextMenu";
-import { l10n } from "../../l10n";
 import type { ScuffrReferenceBlock, ScuffrReferenceParentBlock } from "../ScuffrReferenceTypes";
 import { ScuffrSvgBlockPartBase } from "./ScuffrSvgBlockPartBase";
 import { ScuffrSvgScriptInput } from "./ScuffrSvgScriptInput";
+import { l10n } from "../../l10n";
+import { ScuffEditorInteractionCtxMenu } from "../../editor/ScuffEditorInteractionCtxMenu";
 
 export class ScuffrSvgBlockInstance extends ScuffrSvgBlockPartBase<ScuffrSvgBlockContent> implements ScuffrSvgBlock, ScuffrSvgInput {
     public readonly block: BlockInstance;
@@ -93,7 +93,7 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgBlockPartBase<ScuffrSvgBloc
     }
 
     public override onRightClick(event: MouseEvent): boolean {
-        this.workspace.startInteraction(new ScuffrInteractionContextMenu(this.parent.scriptContainer, event, [
+        new ScuffEditorInteractionCtxMenu(this.workspace.editor, event, [
             {
                 type: "action",
                 text: l10n.raw("Duplicate"),
@@ -160,7 +160,8 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgBlockPartBase<ScuffrSvgBloc
                     },
                 ]
             }
-        ], [...this.shape.categoryClasses, "scuff-context-menu-block"]));
+        ], [...this.shape.categoryClasses, "scuff-context-menu-block"])
+            .start();
         return true;
     }
 

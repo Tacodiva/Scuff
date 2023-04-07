@@ -1,6 +1,6 @@
-import { Bounds } from "../utils/Bounds";
-import type { Vec2 } from "../utils/Vec2";
-import type { ScuffEditor } from "./ScuffEditor";
+import { Bounds } from "../../utils/Bounds";
+import type { Vec2 } from "../../utils/Vec2";
+import type { ScuffEditor } from "../ScuffEditor";
 
 export type ScuffEditorPaneInfo
     = { editor: ScuffEditor, parent: ScuffEditorPane | null, target: HTMLDivElement };

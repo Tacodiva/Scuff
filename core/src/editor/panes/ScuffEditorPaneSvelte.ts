@@ -1,5 +1,5 @@
 import type { SvelteComponent } from "svelte";
-import type { Vec2 } from "../utils/Vec2";
+import type { Vec2 } from "../../utils/Vec2";
 import { ScuffEditorPane, type ScuffEditorPaneFactory, type ScuffEditorPaneInfo } from "./ScuffEditorPane";
 
 type SvelteComponentInfo<T extends SvelteComponent> = readonly [

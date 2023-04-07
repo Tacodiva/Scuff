@@ -103,7 +103,7 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
     }
 
     public override onDrag(startPosition: Vec2): boolean {
-        this.workspace.startInteraction(new ScuffrInteractionPanning(this, startPosition));
+        new ScuffrInteractionPanning(this, startPosition).start();
         return true;
     }
 

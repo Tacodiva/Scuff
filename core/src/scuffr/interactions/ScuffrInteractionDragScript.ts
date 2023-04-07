@@ -1,13 +1,15 @@
 import type { Vec2 } from "../../utils/Vec2";
 import type { ScuffrAttachmentPoint } from "../attachment-points/ScuffrAttachmentPoint";
 import type { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
-import { ScuffrInteraction } from "./ScuffrInteraction";
 import type { ScuffrCmdScriptSelect } from "../commands/ScuffrCmdScriptSelect";
 import { ScuffrCmdCompound } from "../commands";
+import { ScuffEditorInteraction } from "../../editor/ScuffEditorInteraction";
+import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 
-export class ScuffrInteractionDragScript extends ScuffrInteraction {
+export class ScuffrInteractionDragScript extends ScuffEditorInteraction {
     public static readonly ATTACH_RADIUS = 60;
 
+    public readonly root: ScuffrElementScriptContainer;
     public readonly script: ScuffrSvgScriptRoot;
     public readonly scriptSelector: ScuffrCmdScriptSelect;
     public readonly offset: Vec2;
@@ -15,15 +17,16 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
 
     private _attachmentPoint: ScuffrAttachmentPoint | null;
 
-    public constructor(scriptSelector: ScuffrCmdScriptSelect, startPos: Vec2) {
-        super(scriptSelector.root);
-        this.startPos = startPos;
+    public constructor(scriptSelector: ScuffrCmdScriptSelect, event: MouseEvent) {
+        super(scriptSelector.root.workspace.editor);
+        this.root = scriptSelector.root;
+        this.startPos = event;
 
         this.scriptSelector = scriptSelector;
         scriptSelector.do();
         this.script = this.root.getSelectedScript();
 
-        const startPosWorkspace = this.root.toWorkspaceCoords(startPos);
+        const startPosWorkspace = this.root.toWorkspaceCoords(event);
         this.offset = {
             x: this.script.translationX - startPosWorkspace.x,
             y: this.script.translationY - startPosWorkspace.y,
@@ -36,6 +39,7 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
     }
 
     public override onMouseMove(event: MouseEvent): void {
+        event.preventDefault();
         const scriptCoords = this.root.toWorkspaceCoords(event);
         scriptCoords.x += this.offset.x;
         scriptCoords.y += this.offset.y;
@@ -93,10 +97,16 @@ export class ScuffrInteractionDragScript extends ScuffrInteraction {
         return closest;
     }
 
-    public override onMouseUp(event: MouseEvent): boolean {
-        this.end();
-        return true;
+    public override onMouseDown(event: MouseEvent) {
+        event.preventDefault();
     }
 
-    public override onMouseDown(event: MouseEvent): void { }
+    public override onMouseUp(event: MouseEvent) {
+        this.end();
+        event.stopPropagation();
+    }
+
+    public override onMouseWheel(event: MouseEvent) {
+        this.end();
+    }
 }

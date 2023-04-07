@@ -1,5 +1,5 @@
-import type { ScuffEditorDragContext } from "./ScuffEditorDragContext";
-import type { ScuffEditorPane, ScuffEditorPaneFactory } from "./ScuffEditorPane";
+import type { ScuffEditorInteraction } from "./ScuffEditorInteraction";
+import type { ScuffEditorPane, ScuffEditorPaneFactory } from "./panes/ScuffEditorPane";
 
 export class ScuffEditor {
 
@@ -7,7 +7,7 @@ export class ScuffEditor {
     public readonly dom: HTMLDivElement;
     private readonly _resizeObserver: ResizeObserver;
 
-    private _drag: ScuffEditorDragContext | null;
+    private _interaction: ScuffEditorInteraction | null;
 
     public constructor(target: HTMLElement, root: ScuffEditorPaneFactory) {
         this.dom = target.appendChild(document.createElement("div"));
@@ -18,20 +18,28 @@ export class ScuffEditor {
 
         this.root.setBounds(target.getBoundingClientRect());
 
-        this._drag = null;
+        this._interaction = null;
 
-        window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false });
-        window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false });
+        window.addEventListener("keydown", this.eventKeyDownListener, { passive: false, capture: true });
+        window.addEventListener("mousedown", this.eventMouseDownListener, { passive: false, capture: true });
+        window.addEventListener("mouseup", this.eventMouseUpListener, { passive: false, capture: true });
+        window.addEventListener("mousemove", this.eventMouseMoveListener, { passive: false, capture: true });
+        window.addEventListener("wheel", this.eventWheelListener, { passive: false, capture: true });
+        window.addEventListener("contextmenu", this.eventContextMenuListener, { passive: false, capture: true });
 
         this._resizeObserver = new ResizeObserver(this.eventResizeObserver);
         this._resizeObserver.observe(this.dom);
     }
 
     public destroy() {
-        this.endDrag();
+        this.endInteraction();
 
+        window.removeEventListener("keydown", this.eventKeyDownListener);
+        window.removeEventListener("mousedown", this.eventMouseDownListener);
         window.removeEventListener("mouseup", this.eventMouseUpListener);
         window.removeEventListener("mousemove", this.eventMouseMoveListener);
+        window.removeEventListener("wheel", this.eventWheelListener);
+        window.removeEventListener("contextmenu", this.eventContextMenuListener);
 
         this._resizeObserver.disconnect();
 
@@ -43,33 +51,40 @@ export class ScuffEditor {
         this.root.setBounds(this.root.target.getBoundingClientRect());
     }
 
-    public startDrag(drag: ScuffEditorDragContext, e: MouseEvent) {
-        this.endDrag();
-        this._drag = drag;
-        this._drag.onMouseMove(e);
-        e.preventDefault();
-        e.stopPropagation();
+    public startInteraction(interaction: ScuffEditorInteraction) {
+        this.endInteraction();
+        this._interaction = interaction;
+        this._interaction.onStart();
     }
 
-    public endDrag(): boolean {
-        if (this._drag) {
-            this._drag.onEnd();
-            this._drag = null;
-            return true;
+    public endInteraction() {
+        if (this._interaction) {
+            this._interaction.onEnd();
+            this._interaction = null;
         }
-        return false;
+    }
+
+    private readonly eventKeyDownListener = (event: KeyboardEvent) => {
+        if (this._interaction) this._interaction.onKeyDown(event);
+    }
+
+    private readonly eventMouseDownListener = (event: MouseEvent) => {
+        if (this._interaction) this._interaction.onMouseDown(event);
     }
 
     private readonly eventMouseUpListener = (event: MouseEvent) => {
-        if (this.endDrag())
-            event.preventDefault();
+        if (this._interaction) this._interaction.onMouseUp(event);
     }
 
     private readonly eventMouseMoveListener = (event: MouseEvent) => {
-        if (this._drag) {
-            this._drag.onMouseMove(event);
-            event.preventDefault();
-            event.stopPropagation();
-        }
+        if (this._interaction) this._interaction.onMouseMove(event);
+    }
+
+    private readonly eventWheelListener = (event: WheelEvent) => {
+        if (this._interaction) this._interaction.onMouseWheel(event);
+    }
+
+    private readonly eventContextMenuListener = (event: MouseEvent) => {
+        if (this._interaction) this._interaction.onContextMenu(event);
     }
 }
