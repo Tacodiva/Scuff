@@ -1,7 +1,9 @@
+import type { ScuffCore } from "../ScuffCore";
 import type { ScuffEditorInteraction } from "./ScuffEditorInteraction";
 import type { ScuffEditorPane, ScuffEditorPaneFactory } from "./panes/ScuffEditorPane";
 
 export class ScuffEditor {
+    public readonly scuff: ScuffCore;
 
     public readonly root: ScuffEditorPane;
     public readonly dom: HTMLDivElement;
@@ -9,7 +11,9 @@ export class ScuffEditor {
 
     private _interaction: ScuffEditorInteraction | null;
 
-    public constructor(target: HTMLElement, root: ScuffEditorPaneFactory) {
+    public constructor(scuff: ScuffCore, target: HTMLElement, root: ScuffEditorPaneFactory) {
+        this.scuff = scuff;
+        
         this.dom = target.appendChild(document.createElement("div"));
         this.dom.classList.add("scuff-editor");
 
