@@ -1,8 +1,9 @@
-import { BlockScriptInput, BlockScriptRoot, ScuffEditor, ScuffEditorDefaultComponent, ScuffEditorInfoComponent, ScuffEditorPaneMonaco, ScuffEditorPaneSplit, ScuffEditorPaneSvelte, ScuffrEditorPane, Target, WorkspaceBackgroundCompnent } from "scuff";
+import { BlockScriptInput, BlockScriptRoot, BlockWorkspace, ScuffEditor, ScuffEditorDefaultComponent, ScuffEditorInfoComponent, ScuffEditorPaneMonaco, ScuffEditorPaneSplit, ScuffEditorPaneSvelte, ScuffProject, ScuffrEditorPane, Target, TargetComponentBlockWorkspace, WorkspaceBackgroundCompnent } from "scuff";
 import { ScratchBlocks } from "./blocks";
 import { ScratchPalette } from "./palette";
 import { EditorPaneProject } from "./vm/editor/EditorPaneProject";
 import { EXT } from "./ScuffScratch";
+import { ScuffScratchProject } from "./ScuffScratchProject";
 
 export class ScratchEditor {
 
@@ -67,19 +68,23 @@ export class ScratchEditor {
         if (location.href.includes("neon"))
             document.body.classList.add("scuff-theme-neon");
 
-        const targetL = new Target();
-        targetL.blockScripts.scripts.push(script.clone());
-        targetL.blockScripts.transformScale = 1.5;
-        targetL.blockScripts.transformPosition = { x: 300, y: 0 };
+        const project = new ScuffScratchProject();
 
-        const targetR = new Target();
-        targetR.blockScripts.scripts.push(script);
-        targetR.blockScripts.transformScale = 1.5;
-        targetR.blockScripts.transformPosition = { x: 500, y: 75 };
+        // const targetL = project.addTarget(new Target(project));
+        const blockScriptsL = project.background.addComponent(new TargetComponentBlockWorkspace(project.background, new BlockWorkspace()));
+        blockScriptsL.workspace.addScript(script.clone());
+        blockScriptsL.transformScale = 1.5;
+        blockScriptsL.transformPosition = { x: 300, y: 0 };
+
+        // const targetR = project.addTarget(new Target(project));
+        // const blockScriptsR = targetR.addComponent(new TargetComponentBlockWorkspace(targetR, new BlockWorkspace()));
+        // blockScriptsR.workspace.addScript(script);
+        // blockScriptsR.transformScale = 1.5;
+        // blockScriptsR.transformPosition = { x: 500, y: 75 };
 
         new ScuffEditor(EXT.scuff, document.body,
             ScuffEditorPaneSplit.createHorizontal(
-                ScuffrEditorPane.create(targetL.blockScripts, WorkspaceBackgroundCompnent, ScratchPalette),
+                ScuffrEditorPane.create(blockScriptsL, WorkspaceBackgroundCompnent, ScratchPalette),
                 ScuffEditorPaneSplit.createVertical(
                     EditorPaneProject.create(),
                     ScuffEditorPaneSvelte.create([ScuffEditorInfoComponent]),

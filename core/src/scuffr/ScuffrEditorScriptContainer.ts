@@ -48,10 +48,10 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
         this.backgroundSvgTranslation = this.workspace.dom.createSVGTransform();
         this.backgroundPattern.patternTransform.baseVal.appendItem(this.backgroundSvgTranslation);
 
-        this.contentTranslation = { ...this.parent.pane.scripts.transformPosition };
-        this.contentScale = this.parent.pane.scripts.transformScale;
+        this.contentTranslation = { ...this.parent.pane.component.transformPosition };
+        this.contentScale = this.parent.pane.component.transformScale;
 
-        for (const script of this.parent.pane.scripts.scripts) {
+        for (const script of this.parent.pane.component.workspace.scripts) {
             const rendered = new ScuffrSvgScriptRoot(this, script);
             rendered.updateAll();
             this.children.push(rendered);
@@ -65,7 +65,7 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
 
     public override renderScript(blocks: BlockInstance[], translation?: Vec2 | undefined): ScuffrSvgScriptRoot {
         const script = new BlockScriptRoot(blocks, translation);
-        this.parent.pane.scripts.scripts.push(script); 
+        this.parent.pane.component.workspace.addScript(script); 
         const rendered = new ScuffrSvgScriptRoot(this, script);
         rendered.updateAll();
         this.children.push(rendered);
@@ -75,14 +75,14 @@ export class ScuffrEditorScriptContainer extends ScuffrElementScriptContainer {
     public override createScript(blocks?: ScuffrSvgBlock[], translation?: Vec2): ScuffrSvgScriptRoot {
         const scriptBlocks = blocks?.map(block => (<ScuffrSvgBlockInstance>block).block);
         const script = new BlockScriptRoot(scriptBlocks, translation);
-        this.parent.pane.scripts.scripts.push(script);
+        this.parent.pane.component.workspace.addScript(script);
         const rendered = new ScuffrSvgScriptRoot(this, script, blocks);
         this.children.push(rendered);
         return rendered;
     }
 
     public override deleteScript(script: ScuffrSvgScriptRoot, deleteBlocks: boolean = true) {
-        this.parent.pane.scripts.scripts.splice(this.parent.pane.scripts.scripts.indexOf(script.script), 1);
+        this.parent.pane.component.workspace.deleteScript(script.script);
         this.children.splice(this.children.indexOf(script), 1);
         script.attachmentPoints.delete();
         script.dom.remove();

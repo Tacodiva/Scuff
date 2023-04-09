@@ -47,4 +47,8 @@ export abstract class ScuffVM {
 
     public start() {
     }
+
+    public destroy() {
+        
+    }
 }

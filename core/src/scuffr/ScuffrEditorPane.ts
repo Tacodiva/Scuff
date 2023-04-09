@@ -1,5 +1,5 @@
 import type { SvelteComponent } from "svelte";
-import type { BlockScripts } from "../block";
+import type { TargetComponentBlockWorkspace } from "../target/TargetComponentBlockWorkspace";
 import { ScuffEditorPane, type ScuffEditorPaneFactory, type ScuffEditorPaneInfo } from "../editor/panes/ScuffEditorPane";
 import type { ScuffrBlockPalette } from "./palette/ScuffrBlockPalette";
 import { ScuffrEditorWorkspace } from "./ScuffrEditorWorkspace";
@@ -8,18 +8,18 @@ export type BackgroundPattern = new (_: { target: Element }) => SvelteComponent;
 
 export class ScuffrEditorPane extends ScuffEditorPane {
 
-    public static create(scripts: BlockScripts, backgroundPattern: BackgroundPattern, palette: ScuffrBlockPalette): ScuffEditorPaneFactory {
-        return pane => new ScuffrEditorPane(pane, scripts, backgroundPattern, palette);
+    public static create(component: TargetComponentBlockWorkspace, backgroundPattern: BackgroundPattern, palette: ScuffrBlockPalette): ScuffEditorPaneFactory {
+        return pane => new ScuffrEditorPane(pane, component, backgroundPattern, palette);
     }
 
-    public readonly scripts: BlockScripts;
+    public readonly component: TargetComponentBlockWorkspace;
     public readonly workspace: ScuffrEditorWorkspace;
     public readonly BackgroundPattern: BackgroundPattern;
     public readonly palette: ScuffrBlockPalette;
 
-    private constructor(pane: ScuffEditorPaneInfo, scripts: BlockScripts, backgroundPattern: BackgroundPattern, palette: ScuffrBlockPalette) {
+    private constructor(pane: ScuffEditorPaneInfo, component: TargetComponentBlockWorkspace, backgroundPattern: BackgroundPattern, palette: ScuffrBlockPalette) {
         super(pane);
-        this.scripts = scripts;
+        this.component = component;
         this.BackgroundPattern = backgroundPattern;
         this.palette = palette;
 

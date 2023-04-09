@@ -11,7 +11,7 @@ export async function createScuffVM<T extends keyof ScuffVMTypeMap>(config: Scuf
     
     switch (config.type) {
         case "IFrame":
-            return ScuffVMIFrame.create(config);
+            return new ScuffVMIFrame(config);
         default:
             throw new Error(`Unknown VM '${config.type}'`);
     }

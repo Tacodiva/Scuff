@@ -11,7 +11,6 @@ export interface ScuffVMConfigBase {
 
 export interface ScuffVMConfigIFrame extends ScuffVMConfigBase {
     type: "IFrame",
-    id: string,
 }
 
 export type ScuffVMConfig = ScuffVMConfigIFrame;

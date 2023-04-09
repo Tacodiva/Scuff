@@ -80,8 +80,8 @@
     };
 
     $: visible = {
-        x: handleStart.x != 0 || handleEnd.x < $pane.domSize.x,
-        y: handleStart.y != 0 || handleEnd.y < $pane.domSize.y,
+        x: (handleStart.x !== 0 || handleEnd.x < $pane.domSize.x) && contentDimentions.x !== 0,
+        y: (handleStart.y !== 0 || handleEnd.y < $pane.domSize.y) && contentDimentions.y !== 0,
     };
 
     $: handleSize = {
