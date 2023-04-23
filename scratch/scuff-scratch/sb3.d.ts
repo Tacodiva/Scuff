@@ -78,7 +78,7 @@ export type ProjectSB3InputInputOnly = [
 ];
 
 export type ProjectSB3InputShadowedInput = [
-    type: ProjectSB3InputType.INPUT_ONLY,
+    type: ProjectSB3InputType.SHADOWED_INPUT,
     input: ProjectSB3InputValue,
     shadow: ProjectSB3InputValue
 ];
@@ -118,6 +118,17 @@ export interface ProjectSB3MutationControlStop extends ProjectSB3MutationBase {
 }
 
 export type ProjectSB3Mutation = ProjectSB3MutationProcedure | ProjectSB3MutationProcedurePrototype | ProjectSB3MutationControlStop;
+
+export type ProjectSB3BlockTopLevelVariable = [
+    type: ProjectSB3InputValueType.VARIABLE | ProjectSB3InputValueType.LIST,
+    /** The name of the broadcast, variable or list as shown in the editor. */
+    name: string,
+    /** The ID of the broadcast, variable or list. */
+    id: string,
+
+    x: number,
+    y: number
+];
 
 
 interface ProjectSB3BlockBase {
@@ -215,7 +226,7 @@ interface ProjectSB3TargetBase {
     /** A record associating broadcast IDs with their name. Normally only present in the stage. */
     broadcasts?: Record<string, string>;
     /** A record associating IDs with lists.  */
-    blocks: Record<string, ProjectSB3Block>;
+    blocks: Record<string, ProjectSB3Block | ProjectSB3BlockTopLevelVariable>;
     /** A record associating IDs with comments.  */
     comments: Record<string, ProjectSB3Comment>;
     /** The index in the costumes array of the current costume.  */
