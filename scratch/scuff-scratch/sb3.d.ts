@@ -196,7 +196,7 @@ export interface ProjectSB3Costume extends ProjectSB3Asset {
     rotationCenterY: number;
 }
 
-export interface ProjectSB3Sound {
+export interface ProjectSB3Sound extends ProjectSB3Asset {
     /** The sample rate of the sound in Hz. */
     rate: number;
     /** The number of samples in the sound. */
