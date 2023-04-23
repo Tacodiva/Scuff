@@ -1,15 +1,17 @@
 
 type ProjectSB3Extension = "pen" | "wedo2" | "music" | "microbit" | "text2speech" | "translate" | "videoSensing" | "ev3" | "makeymakey" | "boost" | "gdxfor";
 
+type ProjectSB3Value = string | number | boolean;
+
 export type ProjectSB3Variable = [
     name: string,
-    value: string | number,
+    value: ProjectSB3Value,
     isCloud?: true
 ];
 
 export type ProjectSB3List = [
     name: string,
-    value: (string | number)[]
+    value: (ProjectSB3Value)[]
 ];
 
 export const enum ProjectSB3InputValueType {
@@ -84,7 +86,7 @@ export type ProjectSB3InputShadowedInput = [
 export type ProjectSB3Input = ProjectSB3InputShadowOnly | ProjectSB3InputInputOnly | ProjectSB3InputShadowedInput;
 
 export type ProjectSB3Field = [
-    value: string | number,
+    value: ProjectSB3Value,
     /** The ID of the field's value. On present on certain fields. */
     id?: string
 ];
@@ -257,7 +259,7 @@ interface ProjectSB3MonitorBase {
     /** The opcode of the block the monitor belongs to. */
     opcode: string;
     /** An object associating names of inputs of the block the monitor belongs to with their values. */
-    params: Record<string, string | number>;
+    params: Record<string, ProjectSB3Value>;
     /** The name of the target the monitor belongs to, if any. */
     spriteName?: string;
     width: number;
