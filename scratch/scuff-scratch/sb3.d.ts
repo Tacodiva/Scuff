@@ -178,7 +178,16 @@ export interface ProjectSB3Comment {
     text: string;
 }
 
-export interface ProjectSB3Costume {
+interface ProjectSB3Asset {
+    /** The MD5 hash of the asset file. */
+    assetId: string;
+    name: string;
+    /** The name of the asset file. */
+    md5ext: string;
+    dataFormat: string;
+}
+
+export interface ProjectSB3Costume extends ProjectSB3Asset {
     /** The reciprocal of the scaling factor, if this costume is a bitmap. */
     bitmapResolution?: number;
     /** The x-coordinate of the center of the image. */
