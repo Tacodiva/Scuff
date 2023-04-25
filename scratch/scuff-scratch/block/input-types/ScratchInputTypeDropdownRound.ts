@@ -1,9 +1,9 @@
-import { BlockDropdownOption, BlockInput, BlockInstance, BlockPartInputFactory, BlockType, ScuffrSvgInput, ScuffrSvgInputDropdown, ScuffrReferenceInput, ScuffrShape, ScuffrShapeInputRound } from "scuff";
+import { BlockDropdownOption, BlockInput, BlockInstance, BlockPartInputFactory, BlockType, ScuffrSvgInput, ScuffrSvgInputDropdown, ScuffrReferenceInput, ScuffrShape, ScuffrShapeInputRound, BlockDropdownProvider } from "scuff";
 import { ScratchBlockTypeInput } from "../block-types/ScratchBlockTypeInput";
-import { ScratchDropdownOptionProvider, ScratchDropdownOptionRenderer, ScratchDropdownOptionShorthand, ScratchInputTypeDropdown } from "./ScratchInputTypeDropdown";
+import { ScratchDropdownOptionRenderer, ScratchDropdownOptionShorthand, ScratchInputTypeDropdown } from "./ScratchInputTypeDropdown";
 
 export class ScratchInputTypeDropdownRound extends ScratchInputTypeDropdown<BlockDropdownOption | BlockInstance> {
-    public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
+    public static readonly shape: ScuffrShape = new ScuffrShapeInputRound(32);
 
     public static readonly optionRenderer: ScratchDropdownOptionRenderer = {
         renderOption(option: BlockDropdownOption, reference: ScuffrReferenceInput): ScuffrSvgInput {
@@ -11,12 +11,16 @@ export class ScratchInputTypeDropdownRound extends ScratchInputTypeDropdown<Bloc
         }
     };
 
-    public static create(name: string, optionProvider: ScratchDropdownOptionProvider | ScratchDropdownOptionShorthand[]): BlockPartInputFactory {
-        return (type, id) => new ScratchInputTypeDropdownRound(id, name, type, optionProvider);
+    public static createOptions<T extends Record<string, string>>(obj: T): Record<keyof T, BlockDropdownOption> {
+        return ScratchInputTypeDropdown.createOptionsAny(ScratchInputTypeDropdownRound.optionRenderer, obj);
     }
 
-    public constructor(id: number, name: string, block: BlockType, optionProvider: ScratchDropdownOptionProvider | ScratchDropdownOptionShorthand[]) {
-        super(id, name, block, ScratchInputTypeDropdownRound.optionRenderer, optionProvider);;
+    public static create(name: string, options: BlockDropdownOption[] | BlockDropdownProvider): BlockPartInputFactory {
+        return (type, id) => new ScratchInputTypeDropdownRound(id, name, type, options);
+    }
+
+    public constructor(id: number, name: string, block: BlockType, options: BlockDropdownOption[] | BlockDropdownProvider) {
+        super(id, name, block, options);;
     }
 
     public override isValidValue(block: BlockInstance, value: BlockInput): BlockDropdownOption | BlockInstance | false {

@@ -5,6 +5,7 @@ import dts from 'rollup-plugin-dts';
 import { string } from "rollup-plugin-string";
 import { onwarn, production } from '../rollup-utils.mjs';
 import emitFiles from 'rollup-plugin-emit-files'
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 export default [
     {
@@ -48,6 +49,8 @@ export default [
             string({
                 include: "scratch/virtual-machine.js.txt"
             }),
+
+            nodeResolve(),
 
             typescript(
                 {

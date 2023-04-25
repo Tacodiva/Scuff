@@ -6,37 +6,28 @@ export interface ScratchDropdownOptionRenderer {
 
 export type ScratchDropdownOptionShorthand = [id: string, text: string];
 
-export interface ScratchDropdownOptionProvider {
-    getOptions(provider: BlockDropdownProvider, block: BlockInstance): BlockDropdownOption[];
-}
 
 export abstract class ScratchInputTypeDropdown<T extends BlockInput> extends BlockPartInputDropdown<T> {
 
-    public constructor(id: number, name: string, block: BlockType, optionRenderer: ScratchDropdownOptionRenderer, scratchOptionProvider: ScratchDropdownOptionProvider | ScratchDropdownOptionShorthand[]) {
-        let optionProvider: BlockDropdownProvider;
-
-        if (Array.isArray(scratchOptionProvider)) {
-            const scratchOptions: ScratchDropdownOptionShorthand[] = scratchOptionProvider;
-            const optionConverter: BlockDropdownProvider & { _convertedOptions: BlockDropdownOption[] | null } = {
-                ...optionRenderer,
-                _convertedOptions: null,
-                getOptions() {
-                    if (this._convertedOptions) return this._convertedOptions;
-                    this._convertedOptions = [];
-                    for (const scratchOption of scratchOptions)
-                        this._convertedOptions.push(new BlockDropdownOption(optionProvider, scratchOption[0], scratchOption[1]));
-                    return this._convertedOptions;
-                }
-            };
-            optionProvider = optionConverter;
-        } else {
-            optionProvider = {
-                ...optionRenderer,
-                getOptions(block: BlockInstance) {
-                    return scratchOptionProvider.getOptions(this, block);
-                }
-            };
+    public static createOptionsAny<T extends Record<string, string>>(renderer: ScratchDropdownOptionRenderer, obj: T): Record<keyof T, BlockDropdownOption> {
+        const optionsMap = {} as Record<keyof T, BlockDropdownOption>;
+        const optionsList: BlockDropdownOption[] = [];
+        const provider = {
+            ...renderer,
+            getOptions: () => optionsList
+        };
+        for (const key in obj) {
+            const option = new BlockDropdownOption(provider, key, obj[key]);
+            optionsMap[key] = option;
+            optionsList.push(option);
         }
-        super(id, name, block, optionProvider);
+        return optionsMap;
+    }
+
+    public constructor(id: number, name: string, block: BlockType, options: BlockDropdownOption[] | BlockDropdownProvider) {
+        if (Array.isArray(options)) {
+            options = options[0].provider;
+        }
+        super(id, name, block, options);
     }
 }

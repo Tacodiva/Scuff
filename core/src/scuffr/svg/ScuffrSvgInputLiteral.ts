@@ -9,7 +9,7 @@ import { ScuffrInteractionLiteralEdit } from "../interactions/ScuffrInteractionL
 import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 
 export class ScuffrSvgInputLiteral extends ScuffrSvgInputBase<ScuffrSvgText> implements ScuffrSvgInput {
-    public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
+    public static readonly shape: ScuffrShape = new ScuffrShapeInputRound(32);
 
     private _input: BlockInputLiteral;
 

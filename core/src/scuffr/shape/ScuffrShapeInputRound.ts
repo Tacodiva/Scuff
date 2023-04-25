@@ -4,8 +4,8 @@ import { ScuffrShapeInput } from "./ScuffrShapeInput";
 
 export class ScuffrShapeInputRound extends ScuffrShapeInput {
 
-    constructor() {
-        super({ x: 20, y: 32 });
+    constructor(minHeight: number) {
+        super({ x: 20, y: minHeight });
     }
 
     protected _inputCreatePath(size: Vec2): string {

@@ -21,7 +21,7 @@ export abstract class ScratchBlockType extends BlockType {
 
     public readonly category: ScratchBlockCategory;
 
-    constructor(data: ScratchBlockTypeData) {
+    protected constructor(data: ScratchBlockTypeData) {
         super(data);
         this.category = data.category;
     }

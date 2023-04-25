@@ -1,31 +1,31 @@
 import { ControlBlockForever, ControlBlockIf } from "./ControlBlocks";
 import { EventGreenFlagClicked } from "./EventBlocks";
-import { LooksBlockSay, LooksBlockSetEffectTo } from "./LooksBlocks";
-import { MotionBlockMoveSteps } from "./MotionBlocks";
 import { OperatorBlockEquals, OperatorBlockPlus } from "./OperatorBlocks";
-import { SensingBlockKeyPressed } from "./SensingBlocks";
+import { VariableBlockSetTo } from "./VariableBlocks";
 
 export const ScratchBlocks = {
     motion: {
-        move_steps: MotionBlockMoveSteps.create(),
+        // move_steps: MotionBlockMoveSteps.INSTANCE,
     },
     looks: {
-        say: LooksBlockSay.create(),
-        set_effect_to: LooksBlockSetEffectTo.create(),
+        // say: LooksBlockSay.INSTANCE,
+        // set_effect_to: LooksBlockSetEffectTo.INSTANCE,
     },
     event: {
-        flag_clicked: EventGreenFlagClicked.create(),
+        flag_clicked: EventGreenFlagClicked.INSTANCE,
     },
     control: {
-        if: ControlBlockIf.create(),
-        forever: ControlBlockForever.create(),
+        if: ControlBlockIf.INSTANCE,
+        forever: ControlBlockForever.INSTANCE,
     },
     sensing: {
-        key_pressed: SensingBlockKeyPressed.create(),
+        // key_pressed: SensingBlockKeyPressed.INSTANCE,
     },
     operator: {
-        add: OperatorBlockPlus.create(),
-        equals: OperatorBlockEquals.create(),
+        add: OperatorBlockPlus.INSTANCE,
+        equals: OperatorBlockEquals.INSTANCE,
     },
+    data: {
+        set_variable_to: VariableBlockSetTo.INSTANCE
+    }
 } as const;
-

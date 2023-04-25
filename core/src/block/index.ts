@@ -5,6 +5,7 @@ export * from './BlockType';
 export { BlockPartInput } from './BlockPartInput';
 export { BlockInstance } from './BlockInstance';
 export { BlockInputLiteral } from './BlockInputLiteral';
+export { BlockInputStatic } from './BlockInputStatic';
 export { type BlockInput } from './BlockInput';
 export { BlockPartIcon } from './BlockPartIcon';
 export { BlockPartInputDropdown } from './BlockPartInputDropdown';

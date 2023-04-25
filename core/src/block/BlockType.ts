@@ -112,10 +112,12 @@ export abstract class BlockType {
         let instance = new BlockInstance(this);
         if (!inputs) return instance;
         for (var key in inputs) {
-            let input = this._inputNameMap?.get(key);
+            const input = this._inputNameMap?.get(key);
             if (!input)
-                throw new Error(`No such input ${input} on block ${this.id}.`);
-            instance.setInput(input, inputs[key]);
+                throw new Error(`No such input ${key} on block ${this.id}.`);
+            const value = inputs[key];
+            if (value !== undefined)
+                instance.setInput(input, value);
         }
         return instance;
     }
@@ -128,7 +130,7 @@ export abstract class BlockType {
         return false;
     }
 
-    public getInput(name: string) : BlockPartInput | null {
+    public getInput(name: string): BlockPartInput | null {
         return this._inputNameMap.get(name) ?? null;
     }
 

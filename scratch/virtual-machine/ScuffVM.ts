@@ -17,8 +17,8 @@ export abstract class ScuffVM {
         this.renderer = new LLK.renderEngine(this.canvas);
         this.renderer.draw();
 
-        this.renderer.setLayerGroupOrdering([LLK.renderEngine.LayerGroup.Sprite]);
-        const drawableID = this.renderer.createDrawable(LLK.renderEngine.LayerGroup.Sprite) as unknown as number;
+        this.renderer.setLayerGroupOrdering(["group1"]);
+        const drawableID = this.renderer.createDrawable("group1");
         this.renderer.updateDrawableProperties(drawableID, {
             position: [0, 0],
             scale: 100,
@@ -26,10 +26,10 @@ export abstract class ScuffVM {
         });
 
         // createDrawable returns a number not void
-        const drawableID2 = this.renderer.createDrawable(LLK.renderEngine.LayerGroup.Sprite) as unknown as number;
+        const drawableID2 = this.renderer.createDrawable("group1");
 
         // createSVGSkin returns a number not an SVGSkin. I think this is the same with all the create___Skin methods
-        const skinId = this.renderer.createSVGSkin(CAT_SVG, [50, 50]) as any as number;
+        const skinId = this.renderer.createSVGSkin(CAT_SVG, [50, 50]);
 
         this.renderer.updateDrawableSkinId(drawableID2, skinId);
 

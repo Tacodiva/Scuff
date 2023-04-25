@@ -30,8 +30,6 @@ export class BlockInstance implements BlockInput {
     public readonly type: BlockType;
     private readonly _inputs: BlockInputInstanceInput[];
 
-    public constructor(type: BlockType);
-
     public constructor(type: BlockType) {
         this.type = type;
         this._inputs = [];

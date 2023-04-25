@@ -1,21 +1,20 @@
-import { BlockType, l10n, ScuffrBlockPaletteCategory } from "scuff";
-import { ScratchBlocks } from "../blocks";
 
-export class ScratchBlockCategory<K extends keyof typeof ScratchBlocks = keyof typeof ScratchBlocks> {
+export class ScratchBlockCategory {
     public readonly cssClass: string;
-    public readonly id: K;
+    public readonly id: string;
 
-    constructor(id: K) {
+    constructor(id: string) {
         this.id = id;
         this.cssClass = `scuff-block-category-${id}`;
     }
 }
 
-export const ScratchCategories: { [K in keyof typeof ScratchBlocks]: ScratchBlockCategory } = {
+export const ScratchCategories = {
     motion: new ScratchBlockCategory("motion"),
     looks: new ScratchBlockCategory("looks"),
     event: new ScratchBlockCategory("event"),
     control: new ScratchBlockCategory("control"),
     sensing: new ScratchBlockCategory("sensing"),
-    operator: new ScratchBlockCategory("operator")
-}
+    operator: new ScratchBlockCategory("operator"),
+    variable: new ScratchBlockCategory("data")
+};

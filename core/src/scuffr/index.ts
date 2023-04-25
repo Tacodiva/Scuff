@@ -14,6 +14,7 @@ export { type ScuffrSvgInput } from './svg/ScuffrSvgInput';
 export { ScuffrSvgInputBlank } from './svg/ScuffrSvgInputBlank';
 export { ScuffrSvgInputLiteral } from './svg/ScuffrSvgInputLiteral';
 export { ScuffrSvgInputDropdown } from './svg/ScuffrSvgInputDropdown'
+export { ScuffrSvgInputStatic } from './svg/ScuffrSvgInputStatic';
 export { ScuffrSvgBlockInstance } from './svg/ScuffrSvgBlockInstance';
 export { ScuffrSvgBlockContent } from './svg/ScuffrSvgBlockContent';
 export { ScuffrSvgText } from './svg/ScuffrSvgText';

@@ -10,8 +10,8 @@ import("scuff").then(async module => {
         ]
     });
 
+    new scratch.ScratchEditor((window as any).project = await scratch.loadProject(839655537));
     document.getElementById("scuff-loading")?.remove();
-    new scratch.ScratchEditor();
 });
 
 export { };

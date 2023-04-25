@@ -15,6 +15,6 @@ export class BlockDropdownOption implements BlockInput {
     }
 
     public clone(): BlockInput {
-        return new BlockDropdownOption(this.provider, this.id, this.text); 
+        return new BlockDropdownOption(this.provider, this.id, this.text);
     }
 }

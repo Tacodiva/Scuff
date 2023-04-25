@@ -9,7 +9,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^10.0.1",
-    "@turbowarp/types": "^0.0.7",
+    "@turbowarp/types": "^0.0.8",
     "@types/requirejs": "^2.1.34",
     "concurrently": "^7.6.0",
     "monaco-editor-types": "^1.0.1",
@@ -28,5 +28,8 @@
     "svelte-preprocess": "^5.0.0",
     "tslib": "^2.4.1",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "wasm-spider": "^1.0.0"
   }
 }

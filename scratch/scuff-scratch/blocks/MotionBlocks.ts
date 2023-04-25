@@ -6,15 +6,15 @@ import { ScratchInputTypeNumber } from "../block/input-types/ScratchInputTypeNum
 import { ScratchInputTypeDropdown } from "../block/input-types/ScratchInputTypeDropdown";
 import { ScratchInputTypeDropdownSquare } from "../block/input-types/ScratchInputTypeDropdownSquare";
 
-export class MotionBlockMoveSteps extends ScratchBlockTypeStackable {
-    static create(): MotionBlockMoveSteps {
-        return new MotionBlockMoveSteps(
-            ScratchBlockTypeStackable.parseDescription({
-                id: "move_steps",
-                text: l10n.raw("move % steps"),
-                inputs: [ScratchInputTypeNumber.create("test", 69)],
-                category: ScratchCategories.motion,
-            })
-        );
-    }
-}
+// export class MotionBlockMoveSteps extends ScratchBlockTypeStackable {
+//     static create(): MotionBlockMoveSteps {
+//         return new MotionBlockMoveSteps(
+//             ScratchBlockTypeStackable.parseDescription({
+//                 id: "motion_movesteps",
+//                 text: l10n.raw("move % steps"),
+//                 inputs: [ScratchInputTypeNumber.create("test", 69)],
+//                 category: ScratchCategories.motion,
+//             })
+//         );
+//     }
+// }
