@@ -1,6 +1,5 @@
 import type { ScuffProject } from "../ScuffProject";
 import type { TargetComponent } from "./TargetComponent";
-import { TargetComponentBlockWorkspace } from "./TargetComponentBlockWorkspace";
 
 export class Target {
     public readonly project: ScuffProject;

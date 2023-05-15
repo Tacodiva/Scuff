@@ -1,4 +1,4 @@
-import type { Vec2 } from "../utils/Vec2";
+import type { MutVec2 } from "../utils/Vec2";
 import { TargetComponent } from "./TargetComponent";
 import type { Target } from "./Target";
 import type { BlockWorkspace } from "../block/BlockWorkspace";
@@ -7,7 +7,7 @@ export class TargetComponentBlockWorkspace extends TargetComponent {
 
     public workspace: BlockWorkspace;
 
-    public transformPosition: Vec2;
+    public transformPosition: MutVec2;
     public transformScale: number;
 
     public constructor(target: Target, workspace: BlockWorkspace) {

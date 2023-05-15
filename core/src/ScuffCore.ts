@@ -1,9 +1,8 @@
 
-import type { ScuffExtension } from "./api/ScuffExtension";
-import type { ScuffExtensionLoader } from "./api/ScuffExtensionLoader";
-import WorkspaceDefinitionComponent from './editor/WorkspaceDefinitionComponent.svelte'
+import type { ScuffModule } from "./api/ScuffModule";
 
-type Version = [number, number];
+/**  An array of two number, the major version followed by the minor version. */
+export type Version = [number, number];
 
 /**
  * The main class used by extension to add and modify content in Scuff.
@@ -11,24 +10,23 @@ type Version = [number, number];
 export interface ScuffCore {
 
     /**
-     * The current version of ScuffCore. Is an array of two number, the major version followed
-     * by the minor version.
+     * The current version of ScuffCore.
      */
     readonly version: Version;
     /**
-     * @returns A boolean indicating if there is a known extension with the given ID.
+     * @returns A boolean indicating if there is a known module with the given ID.
      */
-    hasExtension(id: string): boolean;
+    hasModule(id: string): boolean;
     /**
-     * Get and returns a loaded extension with the given ID. If the extension is unknown or
-     * the extension is not loaded, an error is thrown.
+     * Gets and returns a loaded module with the given ID. If the module is unknown or
+     * the module is not loaded, an error is thrown.
      */
-    getExtension(id: string): ScuffExtension;
+    getModule(id: string): ScuffModule;
     /**
-     * Get and returns a loaded or unloaded extension with a given ID. If the extension is
+     * Gets and returns a loaded or unloaded module with a given ID. If the module is
      * unknown, an error is thrown.
      */
-    getExtensionAsync(id: string): Promise<ScuffExtension>;
+    getModuleAsync(id: string): Promise<ScuffModule>;
 }
 
 export class ScuffCoreImpl implements ScuffCore {
@@ -36,66 +34,62 @@ export class ScuffCoreImpl implements ScuffCore {
     public static readonly version: Version = [0, 23];
     public readonly version: Version;
 
-    private _extensions: Map<string, ScuffExtension>;
-    private _extensionListeners: Map<string, ((ext: ScuffExtension) => void)[]> | null;
+    private _modules: Map<string, ScuffModule>;
+    private _moduleListeners: Map<string, ((ext: ScuffModule) => void)[]> | null;
 
-    public constructor(loaders: ScuffExtensionLoader[], ready: (core: ScuffCoreImpl) => void) {
+    public constructor(modules: ScuffModule[], ready: (core: ScuffCoreImpl) => void) {
         this.version = ScuffCoreImpl.version;
-        this._extensions = new Map();
-        let extensionPromises = this._extensionListeners = new Map();
+        this._modules = new Map();
+        let modulePromises = this._moduleListeners = new Map();
 
-        for (const loader of loaders) {
-            if (this._extensionListeners.has(loader.id))
+        for (const module of modules) {
+            if (this._moduleListeners.has(module.scuffModuleInfo.id))
                 throw new Error();
-            this._extensionListeners.set(loader.id, []);
+            this._moduleListeners.set(module.scuffModuleInfo.id, []);
         }
 
-        const registerExtension = (id: string, ext: ScuffExtension) => {
-            this._extensions.set(id, ext);
-            for (const promise of extensionPromises.get(id))
-                promise(ext);
+        const registerModule = (module: ScuffModule) => {
+            this._modules.set(module.scuffModuleInfo.id, module);
+            for (const promise of modulePromises.get(module.scuffModuleInfo.id))
+                promise(module);
         }
 
-        const promises: Promise<[string, ScuffExtension]>[] = [];
+        const promises: Promise<void>[] = [];
 
-        for (const loader of loaders) {
-            let loadResult = loader.load(this);
+        for (const module of modules) {
+            let loadResult = module.scuffModuleInfo.load(this);
 
             if (loadResult instanceof Promise) {
-                promises.push(loadResult.then(result => [loader.id, result]));
+                promises.push(loadResult.then(() => registerModule(module)));
             } else {
-                registerExtension(loader.id, loadResult);
+                registerModule(module);
             }
         }
 
-        Promise.all(promises).then(resolved => {
-            for (const result of resolved)
-                registerExtension(result[0], result[1]);
+        Promise.all(promises).then(() => {
             ready(this);
         });
-        
-        new WorkspaceDefinitionComponent({ target: document.body });
     }
 
-    public hasExtension(id: string): boolean {
-        return this._extensions.has(id) || !!this._extensionListeners?.has(id);
+    public hasModule(id: string): boolean {
+        return this._modules.has(id) || !!this._moduleListeners?.has(id);
     }
 
-    public getExtension(id: string): ScuffExtension {
-        const ext = this._extensions.get(id);
+    public getModule(id: string): ScuffModule {
+        const ext = this._modules.get(id);
         if (!ext)
-            if (this.hasExtension(id))
+            if (this.hasModule(id))
                 throw new Error(); // Extension hasn't loaded yet
             else
                 throw new Error(); // Extension not found
         return ext;
     }
 
-    public getExtensionAsync(id: string): Promise<ScuffExtension> {
+    public getModuleAsync(id: string): Promise<ScuffModule> {
         return new Promise(resolve => {
-            let extension = this._extensions.get(id);
+            let extension = this._modules.get(id);
             if (extension) return resolve(extension);
-            let listeners = this._extensionListeners?.get(id);
+            let listeners = this._moduleListeners?.get(id);
             if (!listeners)
                 throw new Error() // Extension not found
             listeners?.push(resolve);
