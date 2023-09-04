@@ -1,0 +1,21 @@
+{
+  "name": "@scuff/www",
+  "author": "Tacodiva",
+  "version": "0.23.0",
+  "scripts": {
+    "start": "npm run build && serve public",
+    "build": "rollup -c",
+    "dev": "concurrently \"serve public\" \"rollup -c -w\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "rollup-plugin-css-only": "^4.3.0",
+    "rollup-plugin-livereload": "^2.0.5",
+    "serve": "^14.2.0"
+  },
+  "dependencies": {
+    "@scuff/core": "*",
+    "@scuff/editor": "*",
+    "@scuff/scratch": "*"
+  }
+}

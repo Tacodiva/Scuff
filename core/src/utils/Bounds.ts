@@ -1,4 +1,4 @@
-import type { Vec2 } from './Vec2';
+import type { MutVec2 } from './Vec2';
 
 export interface Bounds {
     readonly x: number;
@@ -26,7 +26,7 @@ export namespace Bounds {
         return { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height };
     }
 
-    export function dimensions(bounds: Bounds): Vec2 {
+    export function dimensions(bounds: Bounds): MutVec2 {
         return { x: bounds.width, y: bounds.height };
     }
 
@@ -34,7 +34,7 @@ export namespace Bounds {
         return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
     }
 
-    export function from(pos: Vec2, dim: Vec2): MutBounds {
+    export function from(pos: MutVec2, dim: MutVec2): MutBounds {
         return { ...pos, width: dim.x, height: dim.y };
     }
 

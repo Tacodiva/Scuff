@@ -1,4 +1,4 @@
-import type { Vec2 } from "./Vec2";
+import type { MutVec2 } from "./Vec2";
 
 export type Axis = "x" | "y";
 export type AxisInfo = typeof Axis.X | typeof Axis.Y;
@@ -45,7 +45,7 @@ export namespace Axis {
         return X;
     }
 
-    export function vector(axis: Axis | AxisInfo, parallel: number, cross: number): Vec2 {
+    export function vector(axis: Axis | AxisInfo, parallel: number, cross: number): MutVec2 {
         if (isX(axis)) return { x: parallel, y: cross };
         return { x: cross, y: parallel };
     }

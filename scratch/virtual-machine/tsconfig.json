@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "include": [
-    "**/*"
-, "../shared/messages.tsages.ts"  ],
-  "exclude": [],
+    "**/*",
+    "../shared/*"
+  ],
   "compilerOptions": {
     "target": "ES2021",
     "module": "ES2022",
@@ -11,5 +11,6 @@
     "preserveValueImports": false,
     "isolatedModules": false,
     "esModuleInterop": false,
+    "declaration": false
   }
 }

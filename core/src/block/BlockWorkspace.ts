@@ -1,4 +1,3 @@
-import type { BlockScript } from "./BlockScript";
 import type { BlockScriptRoot } from "./BlockScriptRoot";
 
 export class BlockWorkspace {

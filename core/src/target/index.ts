@@ -1,4 +1,4 @@
 
-export { Target } from './Target';
-export { TargetComponent } from './TargetComponent';
-export { TargetComponentBlockWorkspace } from './TargetComponentBlockWorkspace';
+export * from './Target';
+export * from './TargetComponent';
+export * from './TargetComponentBlockWorkspace';
