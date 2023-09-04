@@ -1,7 +1,7 @@
 import type { Vec2 } from "@scuff/core";
 import type { ScuffrElementParent } from "../ScuffrElementParent";
 import { ScuffrSvgElement } from "./ScuffrSvgElement";
-import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
+import type { ScuffrSvgBlockPart, ScuffrSvgBlockPartCloneFactory } from "./ScuffrSvgBlockPart";
 
 export class ScuffrSvgText extends ScuffrSvgElement implements ScuffrSvgBlockPart {
     public readonly parent: ScuffrElementParent;
@@ -39,5 +39,10 @@ export class ScuffrSvgText extends ScuffrSvgElement implements ScuffrSvgBlockPar
         this.topLeftOffset = { x: 0, y: this.dimensions.x / 2 };
         this.dom.appendChild(this._textNode);
         super.update(propagateUp);
+    }
+
+    public createCloneFactory(): ScuffrSvgBlockPartCloneFactory {
+        const text = this.text;
+        return reference => new ScuffrSvgText(reference.parent, text);
     }
 }

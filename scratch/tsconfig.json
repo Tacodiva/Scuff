@@ -9,7 +9,7 @@
     "./virtual-machine/**"
   ],
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "paths": {
       "@scuff/editor": [
         "../node_modules/@scuff/editor/dist/esm/index.d.ts"

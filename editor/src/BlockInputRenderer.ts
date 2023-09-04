@@ -7,5 +7,4 @@ export abstract class BlockTypeComponentRenderer {
 
     public abstract getBackground(block: BlockInstance): ScuffrColouredShape;
     public abstract createParts(block: BlockInstance): ScuffrSvgBlockPart[];
-
 }

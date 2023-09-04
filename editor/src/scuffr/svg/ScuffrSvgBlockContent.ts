@@ -49,18 +49,22 @@ export class ScuffrSvgBlockContent extends ScuffrSvgElementParent implements Scu
         return this.parent.getReference();
     }
 
-    public setInputByIndex(index: number, input: ScuffrSvgInput) {
-        this.parent.block.setInputByIndex(index, input.asInput());
-        const oldInput = this.inputs[index];
-        if (!oldInput)
-            throw new Error(`No input ${this.block.type.inputs[index].name} on block ${this.parent.block.type.id}.`);
-        this.dom.replaceChild(input.dom, oldInput.rendered.dom);
-        if (oldInput.rendered.onAncestryChange)
-            oldInput.rendered.onAncestryChange(null);
-        input.setParent({ index: oldInput.input.index, parent: this });
-        this.children[oldInput.partIndex] = input;
-        this.inputs[oldInput.input.index] = { input: oldInput.input, rendered: input, partIndex: oldInput.partIndex };
-        oldInput.input.createAttachmentPoints(this, input);
+    /**
+     * Replaces one of our child block parts with another.
+     * @param index The index of the child to replace.
+     * @param replacement The part to replace it with.
+     * @returns Our old child which has been replaced.
+     */
+    public replaceChild(index: number, replacement: ScuffrSvgBlockPart): ScuffrSvgBlockPart {
+        const oldInput = this.children[index];
+        this.dom.replaceChild(replacement.dom, oldInput.dom);
+        if (oldInput.onAncestryChange)
+            oldInput.onAncestryChange(null);
+        if (replacement.setParent)
+            replacement.setParent({ index, parent: this });
+        this.children[index] = replacement;
+        // oldInput.input.createAttachmentPoints(this, input);
         this.update(true);
+        return oldInput;
     }
 }

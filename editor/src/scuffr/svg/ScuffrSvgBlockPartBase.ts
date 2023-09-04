@@ -1,18 +1,17 @@
-import type { ScuffrPointAttachable } from "../attachment-points/ScuffrAttachmentPoint";
 import { ScuffrAttachmentPointList } from "../attachment-points/ScuffrAttachmentPointList";
 import { ScuffrSvgShape } from "./ScuffrSvgShape";
-import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
-import type { ScuffrSvgElement } from "./ScuffrSvgElement";
+import type { ScuffrSvgBlockPart, ScuffrSvgBlockPartCloneFactory } from "./ScuffrSvgBlockPart";
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import type { ScuffrColouredShape } from "../shape/ScuffrColouredShape";
-import type { ScuffrReference, ScuffrReferenceable } from "../ScuffrReference";
 import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 import type { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import type { ScuffrSvgShapeContent } from "./ScuffrSvgShapeContent";
+import type { ScuffrAttachmentPoint } from "../attachment-points/ScuffrAttachmentPoint";
+import type { ScuffrShapeModifier } from "../shape";
 
 export abstract class ScuffrSvgBlockPartBase<TContent extends ScuffrSvgShapeContent> extends ScuffrSvgShape<TContent> implements ScuffrSvgBlockPart {
     public parent: ScuffrSvgBlockContent;
-    public readonly attachmentPoints: ScuffrAttachmentPointList;
+    public attachmentPoints: ScuffrAttachmentPointList | undefined;
     private _reference: ScuffrReferenceInput;
     public root: ScuffrSvgScriptRoot;
 
@@ -21,7 +20,13 @@ export abstract class ScuffrSvgBlockPartBase<TContent extends ScuffrSvgShapeCont
         this.parent = reference.parent;
         this.root = reference.parent.root;
         this._reference = reference;
-        this.attachmentPoints = new ScuffrAttachmentPointList(this.root);
+    }
+
+    public addAttachmentPoint(point: ScuffrAttachmentPoint): number {
+        if (!this.attachmentPoints)
+            this.attachmentPoints = new ScuffrAttachmentPointList(this.root);
+        this.attachmentPoints.push(point);
+        return this.attachmentPoints.list.length - 1;
     }
 
     public setParent(reference: ScuffrReferenceInput): void {
@@ -39,11 +44,13 @@ export abstract class ScuffrSvgBlockPartBase<TContent extends ScuffrSvgShapeCont
 
     public onAncestryChange(root: ScuffrSvgScriptRoot | null) {
         if (root !== null) this.root = root;
-        this.attachmentPoints.onAncestryChange(root);
+        this.attachmentPoints?.onAncestryChange(root);
     }
 
     public override onTranslationUpdate(): void {
         super.onTranslationUpdate();
-        this.attachmentPoints.recalculateTranslation();
+        this.attachmentPoints?.recalculateTranslation();
     }
+
+    public abstract createCloneFactory(): ScuffrSvgBlockPartCloneFactory;
 }

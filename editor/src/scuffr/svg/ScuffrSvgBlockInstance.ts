@@ -1,4 +1,4 @@
-import type { ScuffrSvgBlockPart } from "./ScuffrSvgBlockPart";
+import type { ScuffrSvgBlockPart, ScuffrSvgBlockPartCloneFactory } from "./ScuffrSvgBlockPart";
 import type { ScuffrSvgScriptRoot } from "./ScuffrSvgScriptRoot";
 import { ScuffrSvgBlockContent } from "./ScuffrSvgBlockContent";
 import type { ScuffrShapeContentLine } from "../shape/ScuffrShapeContentLine";
@@ -10,7 +10,8 @@ import type { ScuffrSvgBlock } from "./ScuffrSvgBlock";
 import { ScuffrSvgShape } from "./ScuffrSvgShape";
 import { ScuffrAttachmentPointList } from "../attachment-points/ScuffrAttachmentPointList";
 import { BlockTypeComponentRenderer } from "../../BlockInputRenderer";
-import type { ScuffrColouredShape } from "../shape";
+import type { ScuffrColouredShape, ScuffrShapeModifier } from "../shape";
+import type { ScuffrAttachmentPoint } from "../attachment-points/ScuffrAttachmentPoint";
 
 export class ScuffrSvgBlockInstance extends ScuffrSvgShape<ScuffrSvgBlockContent> implements ScuffrSvgBlockPart, ScuffrSvgBlock {
     public readonly block: BlockInstance;
@@ -18,7 +19,7 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgShape<ScuffrSvgBlockContent
     public reference: ScuffrReferenceBlock;
     public get parent(): ScuffrReferenceParentBlock { return this.reference.parent; }
 
-    public readonly attachmentPoints: ScuffrAttachmentPointList;
+    public attachmentPoints: ScuffrAttachmentPointList | undefined;
     public root: ScuffrSvgScriptRoot;
 
     public constructor(block: BlockInstance, parentRef: ScuffrReferenceBlock) {
@@ -28,8 +29,13 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgShape<ScuffrSvgBlockContent
         this.reference = parentRef;
         this.block = block;
         this.root = parentRef.parent.getRoot();
-        this.attachmentPoints = new ScuffrAttachmentPointList(this.root);
         this.content.renderAll();
+    }
+
+    public addAttachmentPoint(point: ScuffrAttachmentPoint): void {
+        if (!this.attachmentPoints)
+            this.attachmentPoints = new ScuffrAttachmentPointList(this.root);
+        this.attachmentPoints.push(point);
     }
 
     public getReferenceValue(index: number): ScuffrSvgBlockPart {
@@ -51,7 +57,8 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgShape<ScuffrSvgBlockContent
 
     public onAncestryChange(root: ScuffrSvgScriptRoot | null): void {
         if (root !== null) this.root = root;
-        this.attachmentPoints.onAncestryChange(root);
+        if (this.attachmentPoints)
+            this.attachmentPoints.onAncestryChange(root);
         for (const child of this.content.children) {
             if (child.onAncestryChange) child.onAncestryChange(root);
         }
@@ -90,7 +97,13 @@ export class ScuffrSvgBlockInstance extends ScuffrSvgShape<ScuffrSvgBlockContent
 
     public override onTranslationUpdate(): void {
         super.onTranslationUpdate();
-        this.attachmentPoints.recalculateTranslation();
+        if (this.attachmentPoints)
+            this.attachmentPoints.recalculateTranslation();
+    }
+
+    public createCloneFactory(): ScuffrSvgBlockPartCloneFactory {
+        const block = this.block.clone();
+        return reference => new ScuffrSvgBlockInstance(block, reference);
     }
 
     public getWrapperInput(checkEmpty: boolean = true): ScuffrSvgScriptInput | null {

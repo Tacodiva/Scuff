@@ -5,6 +5,7 @@ import { ScuffrInteractionLiteralEdit } from "../interactions/ScuffrInteractionL
 import type { ScuffrReferenceInput } from "../ScuffrReferenceTypes";
 import { ScuffrSvgBlockPartBase } from "./ScuffrSvgBlockPartBase";
 import type { ScuffrSvgBlockContent, ScuffrSvgElementParent } from "..";
+import type { ScuffrSvgBlockPartCloneFactory } from "./ScuffrSvgBlockPart";
 
 export interface ScuffrProviderInputLiteral {
     getText(): string;
@@ -15,7 +16,7 @@ export class ScuffrSvgInputLiteral extends ScuffrSvgBlockPartBase<ScuffrSvgText>
     public readonly parent: ScuffrSvgBlockContent;
     public static readonly shape: ScuffrShape = new ScuffrShapeInputRound();
 
-    private _data: ScuffrProviderInputLiteral;
+    private readonly _data: ScuffrProviderInputLiteral;
     private _text: string;
     private _textValid: boolean;
 
@@ -54,4 +55,10 @@ export class ScuffrSvgInputLiteral extends ScuffrSvgBlockPartBase<ScuffrSvgText>
         new ScuffrInteractionLiteralEdit(this).start();
         return true;
     }
+
+    public createCloneFactory(): ScuffrSvgBlockPartCloneFactory {
+        const data = this._data;
+        return (reference) => new ScuffrSvgInputLiteral(reference, data);
+    }
+
 }

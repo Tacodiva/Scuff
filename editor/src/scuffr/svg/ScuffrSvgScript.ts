@@ -12,8 +12,9 @@ import type { ScuffrReferenceBlock } from "../ScuffrReferenceTypes";
 import { ScuffrCmdScriptSelectScriptBlocks } from "../commands";
 import type { ScuffrElementScriptContainer } from "../ScuffrElementScriptContainer";
 import type { BlockScript, Vec2 } from "@scuff/core";
+import type { ScuffrAttachmentPoint, ScuffrPointAttachable } from "../attachment-points/ScuffrAttachmentPoint";
 
-export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript> extends ScuffrSvgElementParent implements ScuffrReferenceLink<ScuffrSvgBlock> {
+export abstract class ScuffrSvgScript<TScript extends BlockScript = BlockScript> extends ScuffrSvgElementParent implements ScuffrReferenceLink<ScuffrSvgBlock>, ScuffrPointAttachable {
     public children: ScuffrSvgBlock[];
     public readonly script: TScript;
     protected _root: ScuffrSvgScriptRoot | null;

@@ -1,52 +1,36 @@
-import type { BlockPartInput } from "../../block/BlockPartInput";
 import { ScuffrAttachmentPoint } from "./ScuffrAttachmentPoint";
-import type { ScuffrSvgInput } from "../svg/ScuffrSvgInput";
-import { ScuffrCmdAttchInputTakeScript } from "../commands/ScuffrCmdAttchInputTakeScript";
-import { ScuffrSvgBlockInstance } from "../svg/ScuffrSvgBlockInstance";
-import { ScuffrSvgBlockContent } from "../svg/ScuffrSvgBlockContent";
-import { ScuffrCmdScriptSelectBlockInput } from "../commands/ScuffrCmdScriptSelectBlockInput";
-import { ScuffrCmdCompound } from "../commands/ScuffrCmdCompound";
-import type { ScuffrSvgScriptRoot } from "../svg/ScuffrSvgScriptRoot";
 import type { ScuffrCmd } from "../commands/ScuffrCmd";
-import { ScuffrCmdScriptSwapSelected } from "../commands/ScuffrCmdScriptSwapSelected";
+import type { ScuffrSvgBlockPart } from "../svg/ScuffrSvgBlockPart";
+import type { ScuffrReferenceable } from "../ScuffrReference";
+import { ScuffrSvgBlockInstance } from "../svg/ScuffrSvgBlockInstance";
+import { ScuffrInteractionDragScript } from "../interactions/ScuffrInteractionDragScript";
+import type { ScuffEditorInteractionDrag } from "../../editor/ScuffEditorInteractionDrag";
 
-export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
+export abstract class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint<ScuffrInteractionDragScript> {
     public readonly block: ScuffrSvgBlockInstance;
-    public readonly input: BlockPartInput;
-    public readonly parent: ScuffrSvgInput;
+    public readonly parent: ScuffrSvgBlockPart & ScuffrReferenceable;
 
-    public constructor(block: ScuffrSvgBlockInstance, input: BlockPartInput, part: ScuffrSvgInput) {
+    public constructor(part: ScuffrSvgBlockPart & ScuffrReferenceable) {
         super();
         this.parent = part;
-        this.block = block;
-        this.input = input;
-        this.parent.attachmentPoints.push(this);
+        if (!(part.parent instanceof ScuffrSvgBlockInstance))
+            throw new Error("ScuffrAttachmentPointBlockInput part's parent must be a block instance.");
+        this.block = part.parent;
     }
 
-    public canTakeScript(script: ScuffrSvgScriptRoot): boolean {
-        if (script.children.length !== 1) return false;
-        return !!this.input.isValidValue(this.block.block, script.script.blocks[0]);
+    protected abstract canAttachBlock(block: ScuffrSvgBlockInstance): boolean;
+    protected abstract attachBlock(block: ScuffrSvgBlockInstance): ScuffrCmd;
+
+    public canAttach(drag: ScuffEditorInteractionDrag): drag is ScuffrInteractionDragScript {
+        if (!(drag instanceof ScuffrInteractionDragScript))
+            return false;
+        if (drag.script.children.length !== 1)
+            return false;
+        return this.canAttachBlock(drag.script.children[0] as ScuffrSvgBlockInstance);
     }
 
-    public takeScriptCommand(script: ScuffrSvgScriptRoot): ScuffrCmd {
-        let cmd: ScuffrCmd = new ScuffrCmdAttchInputTakeScript(this.parent.getReference());
-
-        const replacedInput = this.block.getInput(this.input);
-        if (replacedInput instanceof ScuffrSvgBlockInstance) {
-            let rootBlock = this.block;
-            while (rootBlock.parent instanceof ScuffrSvgBlockContent)
-                rootBlock = rootBlock.parent.parent;
-            replacedInput.attachmentPoints.clear();
-            const rootTranslation = { ...rootBlock.getAbsoluteTranslation() };
-            rootTranslation.x += rootBlock.leftOffset - replacedInput.rightOffset - 40;
-            cmd = new ScuffrCmdCompound(
-                new ScuffrCmdScriptSelectBlockInput(replacedInput.getReference(), rootTranslation),
-                new ScuffrCmdScriptSwapSelected(1, cmd.root),
-                cmd
-            );
-        }
-
-        return cmd;
+    public attach(drag: ScuffrInteractionDragScript): ScuffrCmd {
+        return this.attachBlock(drag.script.children[0] as ScuffrSvgBlockInstance);
     }
 
     public get root() {
@@ -60,5 +44,4 @@ export class ScuffrAttachmentPointBlockInput extends ScuffrAttachmentPoint {
     public unhighlight(): void {
         this.parent.dom.classList.remove("scuff-input-highlight");
     }
-
 }

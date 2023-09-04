@@ -3,28 +3,28 @@ import type { ScuffrReference } from "../ScuffrReference";
 import { ScuffrReferenceChain } from "../ScuffrReferenceChain";
 import type { ScuffrCmd } from "./ScuffrCmd";
 
-export class ScuffrCmdAttchInputTakeScript implements ScuffrCmd {
+export class ScuffrCmdBlockReplaceBlockPart implements ScuffrCmd {
 
-    public source: ScuffrReferenceChain;
-    public get root() { return this.source.root; }
+    public targetPart: ScuffrReferenceChain;
+    public get root() { return this.targetPart.root; }
 
-    public constructor(input: ScuffrReference) {
-        this.source = new ScuffrReferenceChain(input);
+    public constructor(targetPart: ScuffrReference) {
+        this.targetPart = new ScuffrReferenceChain(targetPart);
     }
 
     public do(): void {
         const script = this.root.getSelectedScript();
-        const inputReference = this.source.getTerminalReference();
+        const inputReference = this.targetPart.getTerminalReference();
 
         if (!(inputReference.parent instanceof ScuffrSvgBlockInstance))
             throw new Error("ScuffrCmdTakeScriptInput target parent must be a block instance");
 
-        inputReference.parent.content.setInputByIndex(inputReference.index, script.children[0] as ScuffrSvgBlockInstance);
+        const replacedChild = inputReference.parent.content.replaceChild(inputReference.index, script.children[0] as ScuffrSvgBlockInstance);
         this.root.deleteScript(script, false);
     }
 
     public undo(): void {
-        const inputReference = this.source.getTerminalReference();
+        const inputReference = this.targetPart.getTerminalReference();
 
         if (!(inputReference.parent instanceof ScuffrSvgBlockInstance))
             throw new Error("ScuffrCmdTakeScriptInput target parent must be a block instance");
